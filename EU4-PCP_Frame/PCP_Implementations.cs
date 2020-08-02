@@ -17,12 +17,12 @@ namespace EU4_PCP_Frame
         #region Overrides and Helper Functions
 
         /// <summary>
-        /// Appends an array of strings with a new <see cref="string"/>, growing the array if the last cell isn't empty.
+        /// Appends an array of strings with a new <see cref="string"/>, growing the array if the last cell isn't empty. <br />
         /// [Emulates the List.Add() method for arrays.]
         /// </summary>
         /// <param name="arr">The array to be modified.</param>
         /// <param name="item">The item to be added.</param>
-        public static void Add(this string[] arr, string item)
+        public static void Add(ref string[] arr, string item)
 		{
 			if (arr[arr.Length - 1].Length > 0)
 				Array.Resize(ref arr, arr.Length + 1);
@@ -215,7 +215,9 @@ namespace EU4_PCP_Frame
 				List<FileObj> filesList = new List<FileObj>();
 				foreach (var member in members.Where(m => m.Type == scope))
 				{
-					if (selectedMod && !member.Path.Contains(Directory.GetParent(gamePath + locPath).FullName))
+					//if (selectedMod && !member.Path.Contains(Directory.GetParent(gamePath + locPath).FullName))
+					//	continue;
+					if (!selectedMod && !member.Path.Contains(Directory.GetParent(gamePath + locPath).FullName))
 						continue;
 					filesList.Add(new FileObj(member.Path));
 				}
@@ -225,7 +227,7 @@ namespace EU4_PCP_Frame
 				{
 					var lFile = filesList[i];
 					var memberFiles = locFiles.Where(f => f == lFile);
-					if (!memberFiles.Any() || (selectedMod &&
+					if (memberFiles?.Any() == false || (selectedMod &&
 						!lFile.Path.Contains(Directory.GetParent(steamModPath + locPath).FullName)))
 					{
 						abort = true;
@@ -285,7 +287,7 @@ namespace EU4_PCP_Frame
 						}
                         catch (Exception) { }
 
-						if (selectedMod is null && member && member.Count != collection.Count)
+						if (!selectedMod && member && member.Count != collection.Count)
 						{
 							success = false;
 							member.Count = collection.Count;
@@ -304,8 +306,12 @@ namespace EU4_PCP_Frame
 					foreach (Match prov in collection)
 					{
 						string name = prov.Value.Split('"')[1].Trim();
-						if (name.Length < 1) continue;
-						provinces[prov.Value.Split(':')[0].ToInt()].LocName = name;
+						var provId = prov.Value.Split(':')[0].ToInt();
+
+						if (name.Length < 1 || provId >= provinces.Length) continue;
+						if (provinces[provId].LocName != "" && locFile.Path.Contains(gamePath)) continue;
+
+						provinces[provId].LocName = name;
 					}
 				});
 
@@ -323,15 +329,15 @@ namespace EU4_PCP_Frame
 			{
 				case Mode.Read:
 					string[] lines = { };
-
+					
 					lines = scope switch
 					{
-						LocScope.Province => Settings.Default.ProvLocFiles.Split('\n','\r'),
-						LocScope.Bookmark => Settings.Default.BookLocFiles.Split('\n', '\r'),
+						LocScope.Province => Settings.Default.ProvLocFiles.Split(separators, StringSplitOptions.RemoveEmptyEntries),
+						LocScope.Bookmark => Settings.Default.BookLocFiles.Split(separators, StringSplitOptions.RemoveEmptyEntries),
 						_ => throw new NotImplementedException()
 					};
 
-					foreach (var member in lines)
+					foreach (var member in lines.Where(l => l.Length > 5))
 					{
 						members.Add(new MembersCount(member.Split('|')));
 					}
@@ -340,7 +346,7 @@ namespace EU4_PCP_Frame
 					string join = "";
 					foreach (var member in members.Where(m => m.Type == scope))
 					{
-						join += $"{member}\n\r";
+						join += $"{member}\r\n";
 					}
 					join = join.Substring(0, join.Length - 2);
 					switch (scope)
@@ -370,6 +376,7 @@ namespace EU4_PCP_Frame
 				if (!match.Success) return;
 				int i = match.Value.ToInt();
 				if (i >= provinces.Length) return;
+				if (provinces[i].Owner) return;
 
 				string provFile = File.ReadAllText(p_file.Path);
 				var currentOwner = LastEvent(provFile, EventType.Province);
@@ -566,10 +573,13 @@ namespace EU4_PCP_Frame
 				}
 				else
 				{
+					var cul = cultures.Where(cul => cul.Name == priCul);
+					if (!cul.Any()) return;
+
 					var country = new Country
 					{
 						Code = code,
-						Culture = cultures.First(cul => cul.Name == priCul)
+						Culture = cul.First()
 					};
 
 					lock (countryLock)
@@ -722,9 +732,9 @@ namespace EU4_PCP_Frame
 			{
 				if (!prov) { continue; }
 				prov.DynName = "";
+				if (!showRnw) { prov.IsRNW(); }
 				if (!prov.Owner)
 				{
-					if (!showRnw) { prov.IsRNW(); }
 					if (prov.Show
 						&& prov.DefName.Length < 1
 						&& prov.LocName.Length < 1)
@@ -813,6 +823,8 @@ namespace EU4_PCP_Frame
 				}
 				else bookmarks.Add(tempBooks[i]);
 			}
+			if (counter > 1)
+				bookmarks[0] = tempBooks.First(b => b.DefBook);
 		}
 
 		/// <summary>
@@ -882,17 +894,28 @@ namespace EU4_PCP_Frame
 				var nameMatch = modNameRE.Match(mFile);
 				var pathMatch = modPathRE.Match(mFile);
 				var verMatch = modVerRE.Match(mFile);
+				var remoteMatch = remoteModRE.Match(mFile).Success;
 
 				if (!(nameMatch.Success && pathMatch.Success && verMatch.Success)) return;
+
+				var modPath = pathMatch.Value;
+				if (!remoteMatch)
+                {
+					if (Directory.Exists(Directory.GetParent(paradoxModPath).FullName + @"\" + modPath.TrimStart('/', '\\')))
+						modPath = Directory.GetParent(paradoxModPath).FullName + @"\" + modPath.TrimStart('/', '\\');
+					else return;
+				}
 
 				mods.Add(new ModObj
 				{
 					Name = nameMatch.Value,
-					Path = pathMatch.Value,
+					Path = modPath,
 					Ver = verMatch.Value,
 					Replace = ReplacePrep(mFile)
 				});
 			});
+
+			mods.Sort();
 		}
 
 		/// <summary>

@@ -59,7 +59,7 @@ namespace EU4_PCP_Frame
 
 		// MISC
 		public static readonly string appName = "EU4 Province Color Picker";
-		public static readonly string appVer = "1.4.0";
+		public static readonly string appVer = "1.4.2";
 		public static readonly string[] notEnglish = { "_l_french", "_l_german", "_l_spanish" };
 		public static readonly string[] notCulture = {
 			"graphical_culture", "second_graphical_culture", "male_names", "female_names", "dynasty_names", "primary"};
@@ -72,10 +72,7 @@ namespace EU4_PCP_Frame
 		public static readonly int widthSB = SystemInformation.VerticalScrollBarWidth;
 		public static readonly Encoding UTF7 = Encoding.UTF7;
 		public static readonly Encoding UTF8 = new UTF8Encoding(false);
-		public static readonly char[] separators = { '\n', '\r' };
-		public static readonly sbyte splitOptions = (sbyte)StringSplitOptions.RemoveEmptyEntries;
-		public static readonly CheckState indeterminate = CheckState.Indeterminate;
-		public static readonly CheckState unchekt = CheckState.Unchecked; // unchecked is a C# keyword
+		public static readonly string[] separators = new string[] { "\n", "\r" };
 
 		// STRING LISTS
 		public static List<string> definesFiles = new List<string>();
@@ -116,11 +113,13 @@ namespace EU4_PCP_Frame
 		public static readonly Regex maxProvRE = new Regex(@"(?<=^max_provinces *= *)\d+", RegexOptions.Multiline);
 		public static readonly Regex defMapRE = new Regex(@"max_provinces.*");
 		public static readonly Regex modFileRE = new Regex(@"\w+\.mod$");
-		public static readonly Regex modNameRE = new Regex(@"(?<=^name *= *"")[\w ]+(?="")", RegexOptions.Multiline);
+		public static readonly Regex modNameRE = new Regex(@"(?<=^name *= *"").+?(?="")", RegexOptions.Multiline);
 		public static readonly Regex modReplaceRE = new Regex(@"(?<=^replace_path *= *"")[\w /]+(?="")", RegexOptions.Multiline);
 		public static readonly Regex modVerRE = new Regex(@"(?<=^supported_version *= *"")\d+(\.\d+)*", RegexOptions.Multiline);
 		public static readonly Regex modPathRE = new Regex(@"(?<=^path *= *"")[\w /:]+(?="")", RegexOptions.Multiline);
 		public static readonly Regex rnwRE = new Regex(@"(Unused(Land){0,1}\d+|RNW)");
+		public static readonly Regex remoteModRE = new Regex("remote_file_id", RegexOptions.Multiline);
+		public static readonly Regex newLineRE = new Regex(".*?[\r\n]");
 	}
 
 	public class P_Color
@@ -132,6 +131,17 @@ namespace EU4_PCP_Frame
 
 		public P_Color(byte[] provColor)
 		{
+			R = provColor[0];
+			G = provColor[1];
+			B = provColor[2];
+			Color = Color.FromArgb(R, G, B);
+		}
+
+		public P_Color(params string[] stringColor)
+        {
+			byte[] provColor = new byte[3];
+			stringColor.ToByte(out provColor);
+
 			R = provColor[0];
 			G = provColor[1];
 			B = provColor[2];
@@ -182,10 +192,15 @@ namespace EU4_PCP_Frame
 				Color.B.ToString() };
 		}
 
+		public string ToCsv()
+        {
+			return $"{Index};{Color.R};{Color.G};{Color.B};{DefName};x";
+		}
+
 		public void IsRNW()
 		{
 			if (GlobVar.rnwRE.Match(DefName).Success)
-			{ Show = false; }
+				Show = false;
 		}
 	}
 
@@ -293,7 +308,7 @@ namespace EU4_PCP_Frame
 
 		public static implicit operator bool(MembersCount obj)
 		{
-			return obj is object;
+			return (obj is object && obj.Path != null);
 		}
 
 		public override string ToString()
@@ -304,9 +319,6 @@ namespace EU4_PCP_Frame
 		public MembersCount(string[] member)
 		{
 			Path = member[0];
-
-			if (member.Length < 3) return;
-
 			Count = int.Parse(member[1]);
 			Type = (LocScope)int.Parse(member[2]);
 		}
@@ -314,7 +326,7 @@ namespace EU4_PCP_Frame
 		public MembersCount() { }
 	}
 
-	public class ModObj
+	public class ModObj : IComparable<ModObj>
     {
 		public string Name;
 		public string Path;
@@ -331,7 +343,12 @@ namespace EU4_PCP_Frame
 			return Name;
 		}
 
-		public ModObj() { }
+        public int CompareTo(ModObj other)
+        {
+            return Name.CompareTo(other.Name);
+        }
+
+        public ModObj() { }
 
     }
 

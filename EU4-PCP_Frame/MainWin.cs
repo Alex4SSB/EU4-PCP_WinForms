@@ -11,27 +11,27 @@ using DarkUI.Forms;
 using System.Windows.Forms;
 using static EU4_PCP_Frame.GlobVar;
 using static EU4_PCP_Frame.PCP_Implementations;
+using System.Runtime.InteropServices;
 
 namespace EU4_PCP_Frame
 {
-    public partial class MainWin : DarkForm
-    {
-        public MainWin()
-        {
-            InitializeComponent();
-        }
+	public partial class MainWin : DarkForm
+	{
+		public MainWin()
+		{
+			InitializeComponent();
+		}
 
-        private void MainWin_Load(object sender, EventArgs e)
-        {
-            Show();
+		private void MainWin_Load(object sender, EventArgs e)
+		{
+			Show();
 
-            Critical(CriticalType.Begin);
-            SettingsInit();
-            bool Success = LaunchSequence();
-            if (!Success) ClearScreen();
-            Critical(CriticalType.Finish, Success);
-        }
-
+			Critical(CriticalType.Begin);
+			SettingsInit();
+			bool Success = LaunchSequence();
+			if (!Success) ClearScreen();
+			Critical(CriticalType.Finish, Success);
+		}
 
 		/// <summary>
 		/// Handles the beginning and finishing of (relatively) long-execution-time sections.
@@ -73,34 +73,38 @@ namespace EU4_PCP_Frame
 		/// </summary>
 		private void SettingsInit()
 		{
-			if (Settings.Default.AutoLoad == 0)
-				DisableLoadMCB.CheckState = indeterminate;
-			if (Settings.Default.AutoLoad == 1)
-				RemLoadMCB.CheckState = indeterminate;
-			if (Settings.Default.AutoLoad == 2)
-				FullyLoadMCB.CheckState = indeterminate;
+			AutoLoadSM.Tag = "Radio";
+			ProvNamesSM.Tag = "CheckBox";
+			DuplicatesSM.Tag = "CheckBox";
 
-			DefinNamesMCB.Checked = true;
+			if (Settings.Default.AutoLoad == 0)
+				DisableLoadMCB.State(true);
+			if (Settings.Default.AutoLoad == 1)
+				RemLoadMCB.State(true);
+			if (Settings.Default.AutoLoad == 2)
+				FullyLoadMCB.State(true);
+
+			DefinNamesMCB.State(true);
 			if (Settings.Default.ProvNames > 0)
 			{
-				LocNamesMCB.Checked = true;
+				LocNamesMCB.State(true);
 				if (Settings.Default.ProvNames > 1)
 				{
-					DynNamesMCB.Checked = true;
+					DynNamesMCB.State(true);
 					GameBookmarkCB.Enabled = true;
 					ModBookmarkCB.Enabled = true;
 				}
 			}
 
-			CheckDupliMCB.Checked = Settings.Default.ColorDupli;
-			ShowAllProvsMCB.Checked = Settings.Default.ShowRNW;
+			CheckDupliMCB.State(Settings.Default.ColorDupli);
+			ShowAllProvsMCB.State(Settings.Default.ShowRNW);
 			ShowAllProvsMCB.Enabled = true;
-			if (ShowAllProvsMCB.Checked)
+			if (ShowAllProvsMCB.State())
 			{
-				IgnoreRnwMCB.Enabled = CheckDupliMCB.Checked;
-				IgnoreRnwMCB.Checked = Settings.Default.IgnoreRNW;
+				IgnoreRnwMCB.Enabled = CheckDupliMCB.State();
+				IgnoreRnwMCB.State(Settings.Default.IgnoreRNW);
 			}
-			else IgnoreRnwMCB.Checked = true;
+			else IgnoreRnwMCB.State(true);
 		}
 
 		/// <summary>
@@ -116,7 +120,7 @@ namespace EU4_PCP_Frame
 			GameProvCountTB.Text = "";
 			GameProvShownTB.Text = "";
 			GameMaxProvTB.Text = "";
-			GameMaxProvTB.BackColor = GameProvCountTB.BackColor;
+			GameMaxProvTB.BackColor = Colors.GreyBackground;
 		}
 
 		/// <summary>
@@ -137,11 +141,12 @@ namespace EU4_PCP_Frame
 			else ModSelCB.Enabled = false;
 
 			ModBrowseB.Enabled = true;
-			if (FullyLoadMCB.CheckState == indeterminate &&
+			if (FullyLoadMCB.State() &&
 				ModSelCB.Items.Contains(Settings.Default.LastSelMod))
 			{
 				ModSelCB.SelectedItem = Settings.Default.LastSelMod;
-				steamModPath = mods[ModSelCB.SelectedIndex - 1].Path;
+				selectedMod = mods[ModSelCB.SelectedIndex - 1];
+				steamModPath = selectedMod.Path;
 			}
 			else ModSelCB.SelectedIndex = 0;
 
@@ -154,7 +159,7 @@ namespace EU4_PCP_Frame
 		/// <returns><see langword="true"/> upon failure or if auto-loading is disabled.</returns>
 		private bool ValGame()
 		{
-			if (DisableLoadMCB.CheckState == CheckState.Checked ||
+			if (DisableLoadMCB.State() ||
 				Settings.Default.GamePath.Length == 0 ||
 				!PathHandler(Scope.Game, Mode.Read)) return true;
 			gamePath = GamePathTB.Text;
@@ -251,9 +256,9 @@ namespace EU4_PCP_Frame
 		/// <returns><see langword="false"/> if any of the sub-sequences fails.</returns>
 		private bool MainSequence()
 		{
-			enLoc = LocNamesMCB.Checked;
-			enDyn = DynNamesMCB.Checked;
-			showRnw = ShowAllProvsMCB.Checked;
+			enLoc = LocNamesMCB.State();
+			enDyn = DynNamesMCB.State();
+			showRnw = ShowAllProvsMCB.State();
 			updateCountries = false;
 			ClearArrays();
 
@@ -500,19 +505,31 @@ namespace EU4_PCP_Frame
 					break;
 			}
 
+			// Update TB colors
+			ProvCountColor();
+
+			return false;
+		}
+
+		/// <summary>
+		/// Handles colorization of province count textboxes.
+		/// </summary>
+		private void ProvCountColor()
+		{
 			if (GameMaxProvTB.Text.Length > 0 && !selectedMod)
 			{
 				GameMaxProvTB.BackColor = GameMaxProvTB.Text.Gt(GameProvCountTB.Text)
-					? Color.LightGreen : Color.OrangeRed;
+					? Color.DarkOliveGreen : Color.Maroon;
 			}
 
 			if (ModMaxProvTB.Text.Length > 0)
 			{
 				ModMaxProvTB.BackColor = ModMaxProvTB.Text.Gt(ModProvCountTB.Text)
-					? Color.LightGreen : Color.OrangeRed;
-			}
+					? Color.DarkOliveGreen : Color.Maroon;
 
-			return false;
+				ModProvCountTB.BackColor = ModProvCountTB.Text.Gt(GameProvCountTB.Text)
+					? Colors.GreyBackground : Color.Maroon;
+			}
 		}
 
 		/// <summary>
@@ -520,7 +537,7 @@ namespace EU4_PCP_Frame
 		/// </summary>
 		private void DupliPrep()
 		{
-			if (!CheckDupliMCB.Checked || !selectedMod)
+			if (!CheckDupliMCB.State() || !selectedMod)
 			{
 				DupliTable.Rows.Clear();
 				return;
@@ -581,7 +598,7 @@ namespace EU4_PCP_Frame
 		/// <returns><see langword="true"/> if Bookmarks should be updated.</returns>
 		private bool BookStatus(bool Enabled)
 		{
-			return (Enabled || DynNamesMCB.Checked) && !(
+			return (Enabled || DynNamesMCB.State()) && !(
 				GameBookmarkCB.SelectedIndex > 0 || (
 				ModBookmarkCB.SelectedIndex > 0 && selectedMod));
 		}
@@ -589,22 +606,31 @@ namespace EU4_PCP_Frame
 		private void PopulateTable()
 		{
 			Province[] SelProv = provinces.Where(Prov => Prov && Prov.Show).ToArray();
-
+			var oldCount = ProvTable.RowCount;
 			ProvTable.RowCount = SelProv.Length;
+
+			if (oldCount < ProvTable.RowCount)
+			{
+				for (int Row = oldCount; Row < SelProv.Length; Row++)
+				{
+					if (Row % 2 == 0)
+					{
+						for (int Column = 1; Column < 6; Column++)
+						{
+							ProvTable[Column, Row].Style.BackColor = Colors.HeaderBackground;
+						}
+					}
+				}
+			}
+
 			for (int Prov = 0; Prov < SelProv.Length; Prov++)
 			{
-				if (Prov % 2 == 0)
-                {
-                    for (int Column = 1; Column < 6; Column++)
-                    {
-						ProvTable[Column, Prov].Style.BackColor = Colors.HeaderBackground;
-					}
-                }
 				ProvTable[0, Prov].Style.BackColor = SelProv[Prov].Color;
 				ProvTable.Rows[Prov].SetValues(SelProv[Prov].ToRow());
 				provinces[SelProv[Prov].Index].TableIndex = Prov;
 			}
 			ProvTableSB.Maximum = ProvTable.RowCount - ProvTable.DisplayedRowCount(false) + 1;
+			ProvTable.ClearSelection();
 			if (ProvTableSB.Maximum < 1)
 				ProvTableSB.Visible = false;
 			else
@@ -618,6 +644,8 @@ namespace EU4_PCP_Frame
 		private void PopulateBooks(Scope Scope)
 		{
 			if (!BookStatus(false)) return;
+
+			if (!bookmarks.Where(b => b.Code != null).Any()) return;
 
 			var Books = new List<string>(bookmarks.Select(b => b.Name));
 
@@ -642,7 +670,7 @@ namespace EU4_PCP_Frame
 		/// <returns><see langword="true"/> if bookmark CBs should be enabled.</returns>
 		private bool PrepEnableBooks(Scope Scope)
 		{
-			if (!DynNamesMCB.Checked) return false;
+			if (!DynNamesMCB.State()) return false;
 			return Scope switch
 			{
 				Scope.Game => GameBookmarkCB.Items.Count > 0,
@@ -719,7 +747,7 @@ namespace EU4_PCP_Frame
 					break;
 			}
 
-			showRnw = ShowAllProvsMCB.Checked;
+			showRnw = ShowAllProvsMCB.State();
 			updateCountries = true;
 			CountryCulSetup();
 			OwnerSetup();
@@ -818,10 +846,11 @@ namespace EU4_PCP_Frame
 		/// </summary>
 		private void NewProv()
 		{
-			string[] Definition;
+			string[] defFile;
 			try
 			{
-				Definition = File.ReadAllText(steamModPath + definPath, UTF8).Split(separators, splitOptions);
+				// Read all lines from the mod definition file
+				defFile = File.ReadAllText(steamModPath + definPath, UTF7).Split(separators, StringSplitOptions.RemoveEmptyEntries);
 			}
 			catch (Exception)
 			{
@@ -829,21 +858,42 @@ namespace EU4_PCP_Frame
 				return;
 			}
 
-			Definition.Add(
-				$"{NextProvNumberTB.Text};{RedTB.Text};{GreenTB.Text};{BlueTB.Text};{NextProvNameTB.Text};x\n\r");
+			// A new line to be added when writing back to the file, in case there is no new line at the end of the file
+			var newLine = newLineRE.Match(defFile[defFile.Length - 1]).Success ? "" : "\r\n";
+
+			// Create an object of the new province
+			var newProv = new Province {
+				Index = NextProvNumberTB.Text.ToInt(),
+				DefName = NextProvNameTB.Text,
+				Color = new P_Color(RedTB.Text, GreenTB.Text, BlueTB.Text)
+			};
+
+			// Add the new province to the provinces array
+			Array.Resize(ref provinces, provinces.Length + 1);
+			provinces[newProv] = newProv;
+
 			try
 			{
-				File.WriteAllText(steamModPath + definPath, string.Join("\n\r", Definition), UTF8);
+				// Add the new province to the definition file
+				File.AppendAllText(steamModPath + definPath, newLine + newProv.ToCsv() + "\r\n");
 			}
 			catch (Exception)
 			{
 				ErrorMsg(ErrorType.DefinWrite);
 				return;
 			}
-
+			
+			// Update prov counters
 			ModProvCountTB.Text = Inc(ModProvCountTB.Text, 1);
 			ModProvShownTB.Text = Inc(ModProvShownTB.Text, 1);
 			ModMaxProvTB.Text = Inc(ModMaxProvTB.Text, 1);
+
+			// In case the user gave the new province a strange name
+			newProv.IsRNW();
+			// Update ProvTable with the new province
+			PopulateTable();
+			// Update TB colors
+			ProvCountColor();
 
 			string DefMap;
 			try
@@ -881,260 +931,256 @@ namespace EU4_PCP_Frame
 		#region Control Handlers
 
 		private void GameBrowseB_Click(object sender, EventArgs e)
-        {
-            if (lockdown) return;
-            if (GamePathTB.Text != "") { BrowserFBD.SelectedPath = GamePathTB.Text; }
-            FolderBrowse(Scope.Game);
-        }
+		{
+			if (lockdown) return;
+			if (GamePathTB.Text != "") { BrowserFBD.SelectedPath = GamePathTB.Text; }
+			FolderBrowse(Scope.Game);
+		}
 
-        private void ModBrowseB_Click(object sender, EventArgs e)
-        {
-            if (lockdown) return;
-            if (ModPathTB.Text != "") { BrowserFBD.SelectedPath = ModPathTB.Text; }
-            FolderBrowse(Scope.Mod);
-        }
+		private void ModBrowseB_Click(object sender, EventArgs e)
+		{
+			if (lockdown) return;
+			if (ModPathTB.Text != "") { BrowserFBD.SelectedPath = ModPathTB.Text; }
+			FolderBrowse(Scope.Mod);
+		}
 
-        private void NextProvNameTB_TextChanged(object sender, EventArgs e)
-        {
-            AddProvB.Enabled = NextProvNameTB.Text.Count(c => c == ' ') < NextProvNameTB.Text.Length;
-        }
+		private void NextProvNameTB_TextChanged(object sender, EventArgs e)
+		{
+			AddProvB.Enabled = NextProvNameTB.Text.Count(c => c == ' ') < NextProvNameTB.Text.Length;
+		}
 
-        private void AddProvB_Click(object sender, EventArgs e)
-        {
-            if (lockdown) return;
-            NewProv();
-            ClearCP();
-        }
+		private void AddProvB_Click(object sender, EventArgs e)
+		{
+			if (lockdown) return;
+			NewProv();
+			ClearCP();
+		}
 
-        private void DisableLoadMCB_Click(object sender, EventArgs e)
-        {
-            if (DisableLoadMCB.CheckState == indeterminate) return;
+		private void DisableLoadMCB_Click(object sender, EventArgs e)
+		{
+			if (DisableLoadMCB.State()) return;
 
-            DisableLoadMCB.CheckState = indeterminate;
-            RemLoadMCB.CheckState =
-            FullyLoadMCB.CheckState = unchekt;
-            Settings.Default.AutoLoad = 0;
-        }
+			DisableLoadMCB.State(true);
 
-        private void RemLoadMCB_Click(object sender, EventArgs e)
-        {
-            if (RemLoadMCB.CheckState == indeterminate) return;
+			RemLoadMCB.State(false);
+			FullyLoadMCB.State(false);
+			Settings.Default.AutoLoad = 0;
+		}
 
-            RemLoadMCB.CheckState = indeterminate;
-            DisableLoadMCB.CheckState =
-            FullyLoadMCB.CheckState = unchekt;
-            Settings.Default.AutoLoad = 1;
-        }
+		private void RemLoadMCB_Click(object sender, EventArgs e)
+		{
+			if (RemLoadMCB.State()) return;
 
-        private void FullyLoadMCB_Click(object sender, EventArgs e)
-        {
-            if (FullyLoadMCB.CheckState == indeterminate) return;
+			RemLoadMCB.State(true);
+			DisableLoadMCB.State(false);
+			FullyLoadMCB.State(false);
+			Settings.Default.AutoLoad = 1;
+		}
 
-            FullyLoadMCB.CheckState = indeterminate;
-            DisableLoadMCB.CheckState =
-            RemLoadMCB.CheckState = unchekt;
-            Settings.Default.AutoLoad = 2;
-        }
+		private void FullyLoadMCB_Click(object sender, EventArgs e)
+		{
+			if (FullyLoadMCB.State()) return;
 
-        private void RandomizeB_Click(object sender, EventArgs e)
-        {
-            if (!lockdown) RndPrep();
-        }
+			FullyLoadMCB.State(true);
+			DisableLoadMCB.State(false);
+			RemLoadMCB.State(false);
+			Settings.Default.AutoLoad = 2;
+		}
 
-        private void CheckDupliMCB_CheckedChanged(object sender, EventArgs e)
-        {
-            if (ShowAllProvsMCB.Checked)
-                IgnoreRnwMCB.Enabled = CheckDupliMCB.Checked;
-            if (lockdown) return;
+		private void RandomizeB_Click(object sender, EventArgs e)
+		{
+			if (!lockdown) RndPrep();
+		}
 
-            Settings.Default.ColorDupli = CheckDupliMCB.Checked;
-            if (ProvTable.Rows.Count == 0) return;
-            Critical(CriticalType.Begin);
-            Critical(CriticalType.Finish, MainSequence());
-        }
+		private void CheckDupliMCB_CheckedChanged(object sender, EventArgs e)
+		{
+			if (ShowAllProvsMCB.State())
+				IgnoreRnwMCB.Enabled = CheckDupliMCB.State();
+			if (lockdown) return;
 
-        private void DefinNamesMCB_Click(object sender, EventArgs e)
-        {
-            DefinNamesMCB.Checked = true;
-            LocNamesMCB.Checked =
-            DynNamesMCB.Checked = false;
-            Settings.Default.ProvNames = 0;
+			Settings.Default.ColorDupli = CheckDupliMCB.State();
+			if (ProvTable.Rows.Count == 0) return;
+			Critical(CriticalType.Begin);
+			Critical(CriticalType.Finish, MainSequence());
+		}
 
-            if (ProvTable.Rows.Count == 0) return;
-            Critical(CriticalType.Begin);
-            Critical(CriticalType.Finish, MainSequence());
-        }
+		private void DefinNamesMCB_Click(object sender, EventArgs e)
+		{
+			DefinNamesMCB.State(true);
+			LocNamesMCB.State(false);
+			DynNamesMCB.State(false);
+			Settings.Default.ProvNames = 0;
+			
+			if (ProvTable.Rows.Count == 0) return;
+			Critical(CriticalType.Begin);
+			Critical(CriticalType.Finish, MainSequence());
+		}
 
-        private void LocNamesMCB_Click(object sender, EventArgs e)
-        {
-            DefinNamesMCB.Checked =
-            LocNamesMCB.Checked = true;
-            DynNamesMCB.Checked = false;
-            Settings.Default.ProvNames = 1;
+		private void LocNamesMCB_Click(object sender, EventArgs e)
+		{
+			DefinNamesMCB.State(true);
+			LocNamesMCB.State(true);
+			DynNamesMCB.State(false);
+			Settings.Default.ProvNames = 1;
 
-            if (ProvTable.Rows.Count == 0) return;
-            Critical(CriticalType.Begin);
-            Critical(CriticalType.Finish, MainSequence());
-        }
+			if (ProvTable.Rows.Count == 0) return;
+			Critical(CriticalType.Begin);
+			Critical(CriticalType.Finish, MainSequence());
+		}
 
-        private void DynNamesMCB_Click(object sender, EventArgs e)
-        {
-            DefinNamesMCB.Checked =
-            LocNamesMCB.Checked =
-            DynNamesMCB.Checked = true;
-            Settings.Default.ProvNames = 2;
+		private void DynNamesMCB_Click(object sender, EventArgs e)
+		{
+			DefinNamesMCB.State(true);
+			LocNamesMCB.State(true);
+			DynNamesMCB.State(true);
+			Settings.Default.ProvNames = 2;
 
-            if (ProvTable.Rows.Count == 0) return;
-            Critical(CriticalType.Begin);
-            Critical(CriticalType.Finish, MainSequence());
-        }
+			if (ProvTable.Rows.Count == 0) return;
+			Critical(CriticalType.Begin);
+			Critical(CriticalType.Finish, MainSequence());
+		}
 
-        private void ShowAllProvsMCB_Click(object sender, EventArgs e)
-        {
-            Settings.Default.ShowRNW = ShowAllProvsMCB.Checked;
+		private void ShowAllProvsMCB_Click(object sender, EventArgs e)
+		{
+			ShowAllProvsMCB.State(!ShowAllProvsMCB.State());
+			Settings.Default.ShowRNW = ShowAllProvsMCB.State();
 
-            if (!ShowAllProvsMCB.Checked)
-            {
-                IgnoreRnwMCB.Enabled = false;
-                IgnoreRnwMCB.Checked = true;
-            }
-            else
-                IgnoreRnwMCB.Enabled = true;
+			if (!ShowAllProvsMCB.State())
+			{
+				IgnoreRnwMCB.Enabled = false;
+				IgnoreRnwMCB.State(true);
+			}
+			else
+				IgnoreRnwMCB.Enabled = true;
 
-            if (ProvTable.Rows.Count == 0) return;
-            Critical(CriticalType.Begin);
-            Critical(CriticalType.Finish, MainSequence());
-        }
+			if (ProvTable.Rows.Count == 0) return;
+			Critical(CriticalType.Begin);
+			Critical(CriticalType.Finish, MainSequence());
+		}
 
-        private void DupliTable_DoubleClick(object sender, EventArgs e)
-        {
-            if (DupliTable.SelectedCells.Count != 1) return;
+		private void DupliTable_DoubleClick(object sender, EventArgs e)
+		{
+			if (DupliTable.SelectedCells.Count != 1) return;
 
-            string val = DupliTable.SelectedCells[0].Value.ToString();
-            ProvTable.FirstDisplayedScrollingRowIndex =
-                duplicates.First(p => p.Prov1.ToString() == val || p.Prov2.ToString() == val).Prov1.TableIndex;
-        }
+			string val = DupliTable.SelectedCells[0].Value.ToString();
+			ProvTable.FirstDisplayedScrollingRowIndex =
+				duplicates.First(p => p.Prov1.ToString() == val || p.Prov2.ToString() == val).Prov1.TableIndex;
+		}
 
-        //private void ProvTable_CellClick(object sender, DataGridViewCellEventArgs e)
-        //{
-        //    if (!lockdown && e.RowIndex > -1)
-        //        SPGenPB.BackColor = FromRow(ProvTable.Rows[e.RowIndex]);
-        //}
+		private void GameBookmarkCB_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			EnactBook(Scope.Game);
+		}
 
-        private void GameBookmarkCB_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            EnactBook(Scope.Game);
-        }
+		private void ModBookmarkCB_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			EnactBook(Scope.Mod);
+		}
 
-        private void ModBookmarkCB_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            EnactBook(Scope.Mod);
-        }
+		private void GameBookmarkCB_DropDown(object sender, EventArgs e)
+		{
+			foreach (var Item in GameBookmarkCB.Items)
+			{
+				TempL.Text = Item.ToString();
+				if (TempL.Width + 5 > GameBookmarkCB.DropDownWidth)
+					GameBookmarkCB.DropDownWidth = TempL.Width + 5;
+			}
+			if (GameBookmarkCB.Items.Count > GameBookmarkCB.MaxDropDownItems)
+				GameBookmarkCB.DropDownWidth += widthSB;
+		}
 
-        private void GameBookmarkCB_DropDown(object sender, EventArgs e)
-        {
-            foreach (var Item in GameBookmarkCB.Items)
-            {
-                TempL.Text = Item.ToString();
-                if (TempL.Width > GameBookmarkCB.DropDownWidth)
-                    GameBookmarkCB.DropDownWidth = TempL.Width;
-            }
-            if (GameBookmarkCB.Items.Count > GameBookmarkCB.MaxDropDownItems)
-                GameBookmarkCB.DropDownWidth += widthSB;
-        }
+		private void ModBookmarkCB_DropDown(object sender, EventArgs e)
+		{
+			foreach (var Item in ModBookmarkCB.Items)
+			{
+				TempL.Text = Item.ToString();
+				if (TempL.Width > ModBookmarkCB.DropDownWidth)
+					ModBookmarkCB.DropDownWidth = TempL.Width;
+			}
+			if (ModBookmarkCB.Items.Count > ModBookmarkCB.MaxDropDownItems)
+				ModBookmarkCB.DropDownWidth += widthSB;
+		}
 
-        private void ModBookmarkCB_DropDown(object sender, EventArgs e)
-        {
-            foreach (var Item in ModBookmarkCB.Items)
-            {
-                TempL.Text = Item.ToString();
-                if (TempL.Width > ModBookmarkCB.DropDownWidth)
-                    ModBookmarkCB.DropDownWidth = TempL.Width;
-            }
-            if (ModBookmarkCB.Items.Count > ModBookmarkCB.MaxDropDownItems)
-                ModBookmarkCB.DropDownWidth += widthSB;
-        }
+		private void GamePathTB_MouseHover(object sender, EventArgs e)
+		{
+			TextBoxTT.SetToolTip(GamePathTB, GamePathTB.Text);
+		}
 
-        private void GamePathTB_MouseHover(object sender, EventArgs e)
-        {
-            TextBoxTT.SetToolTip(GamePathTB, GamePathTB.Text);
-        }
+		private void ModPathTB_MouseHover(object sender, EventArgs e)
+		{
+			TextBoxTT.SetToolTip(ModPathTB, ModPathTB.Text);
+		}
 
-        private void ModPathTB_MouseHover(object sender, EventArgs e)
-        {
-            TextBoxTT.SetToolTip(ModPathTB, ModPathTB.Text);
-        }
+		private void ModSelCB_MouseHover(object sender, EventArgs e)
+		{
+			TextBoxTT.SetToolTip(ModSelCB, ModSelCB.Text);
+		}
 
-        private void ModSelCB_MouseHover(object sender, EventArgs e)
-        {
-            TextBoxTT.SetToolTip(ModSelCB, ModSelCB.Text);
-        }
+		private void GameBookmarkCB_MouseHover(object sender, EventArgs e)
+		{
+			TextBoxTT.SetToolTip(GameBookmarkCB, GameBookmarkCB.Text);
+		}
 
-        private void GameBookmarkCB_MouseHover(object sender, EventArgs e)
-        {
-            TextBoxTT.SetToolTip(GameBookmarkCB, GameBookmarkCB.Text);
-        }
+		private void ModBookmarkCB_MouseHover(object sender, EventArgs e)
+		{
+			TextBoxTT.SetToolTip(ModBookmarkCB, ModBookmarkCB.Text);
+		}
 
-        private void ModBookmarkCB_MouseHover(object sender, EventArgs e)
-        {
-            TextBoxTT.SetToolTip(ModBookmarkCB, ModBookmarkCB.Text);
-        }
+		private void GameStartDateTB_MouseHover(object sender, EventArgs e)
+		{
+			TextBoxTT.SetToolTip(GameStartDateTB, dateFormat);
+		}
 
-        private void GameStartDateTB_MouseHover(object sender, EventArgs e)
-        {
-            TextBoxTT.SetToolTip(GameStartDateTB, dateFormat);
-        }
+		private void ModStartDateTB_MouseHover(object sender, EventArgs e)
+		{
+			TextBoxTT.SetToolTip(ModStartDateTB, dateFormat);
+		}
 
-        private void ModStartDateTB_MouseHover(object sender, EventArgs e)
-        {
-            TextBoxTT.SetToolTip(ModStartDateTB, dateFormat);
-        }
+		private void GlobSetM_DropDownOpening(object sender, EventArgs e)
+		{
+			AutoLoadSM.Enabled =
+			ProvNamesSM.Enabled = !lockdown;
+		}
 
-        private void GlobSetM_DropDownOpening(object sender, EventArgs e)
-        {
-            AutoLoadSM.Enabled =
-            ProvNamesSM.Enabled = !lockdown;
-        }
+		private void ModSetM_DropDownOpening(object sender, EventArgs e)
+		{
+			DuplicatesSM.Enabled = !lockdown;
+		}
 
-        private void ModSetM_DropDownOpening(object sender, EventArgs e)
-        {
-            DuplicatesSM.Enabled = !lockdown;
-        }
-
-        private void ProvNamesSM_DropDownOpening(object sender, EventArgs e)
-        {
+		private void ProvNamesSM_DropDownOpening(object sender, EventArgs e)
+		{
 			DefinNamesMCB.Enabled = BookStatus(true);
 			LocNamesMCB.Enabled =
 			DynNamesMCB.Enabled = DefinNamesMCB.Enabled;
 		}
 
-        private void StatsM_DropDownOpening(object sender, EventArgs e)
-        {
-            if (beginTiming == DateTime.MinValue || finishTiming < beginTiming)
-                LoadingValueML.Text = "";
-            else
-                LoadingValueML.Text = $"{finishTiming.Subtract(beginTiming).TotalSeconds:0.000} seconds";
-        }
+		private void StatsM_DropDownOpening(object sender, EventArgs e)
+		{
+			if (beginTiming == DateTime.MinValue || finishTiming < beginTiming)
+				LoadingValueML.Text = "";
+			else
+				LoadingValueML.Text = $"{finishTiming.Subtract(beginTiming).TotalSeconds:0.000} seconds";
+		}
 
-        private void MainWin_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            Settings.Default.Save();
-        }
+		private void MainWin_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			Settings.Default.Save();
+		}
 
-        private void ProvTable_Scroll(object sender, ScrollEventArgs e)
-        {
-            ProvTableSB.ScrollTo(e.NewValue);
-        }
+		private void ProvTable_Scroll(object sender, ScrollEventArgs e)
+		{
+			ProvTableSB.ScrollTo(e.NewValue);
+		}
 
-        private void ProvTableSB_MouseMove(object sender, MouseEventArgs e)
-        {
-            ProvTable.FirstDisplayedScrollingRowIndex = ProvTableSB.Value;
-        }
+		private void ProvTableSB_MouseMove(object sender, MouseEventArgs e)
+		{
+			ProvTable.FirstDisplayedScrollingRowIndex = ProvTableSB.Value;
+		}
 
-        private void ProvTableSB_Scroll(object sender, ScrollEventArgs e)
-        {
-            ProvTable.FirstDisplayedCell = ProvTable.Rows[e.NewValue].Cells[0];
-        }
+		private void ProvTableSB_Scroll(object sender, ScrollEventArgs e)
+		{
+			ProvTable.FirstDisplayedCell = ProvTable.Rows[e.NewValue].Cells[0];
+		}
 
 		private void ModSelCB_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -1142,7 +1188,108 @@ namespace EU4_PCP_Frame
 			ChangeMod();
 		}
 
+		private void ModSelCB_DropDown(object sender, EventArgs e)
+		{
+			foreach (var Item in ModSelCB.Items)
+			{
+				TempL.Text = Item.ToString();
+				if (TempL.Width + 5 > ModSelCB.DropDownWidth)
+					ModSelCB.DropDownWidth = TempL.Width + 5;
+			}
+			if (ModSelCB.Items.Count > ModSelCB.MaxDropDownItems)
+				ModSelCB.DropDownWidth += widthSB;
+		}
+
+		private void CheckDupliMCB_Click(object sender, EventArgs e)
+		{
+			CheckDupliMCB.State(!CheckDupliMCB.State());
+		}
+
+		private void IgnoreRnwMCB_Click(object sender, EventArgs e)
+		{
+			IgnoreRnwMCB.State(IgnoreRnwMCB.State());
+		}
+
+        private void GameMaxProvTB_MouseHover(object sender, EventArgs e)
+        {
+			string text;
+			if (GameMaxProvTB.BackColor == Color.Maroon)
+				text = "Amount of provinces exceeds the limit.";
+			else
+				text = "Amount of provinces is within the limit.";
+
+			TextBoxTT.SetToolTip(GameMaxProvTB, text);
+		}
+
+        private void ModMaxProvTB_MouseHover(object sender, EventArgs e)
+        {
+			string text;
+			if (ModMaxProvTB.BackColor == Color.Maroon)
+				text = "Amount of provinces exceeds the limit.";
+			else
+				text = "Amount of provinces is within the limit.";
+
+			TextBoxTT.SetToolTip(ModMaxProvTB, text);
+		}
+
+        private void ModProvCountTB_MouseHover(object sender, EventArgs e)
+        {
+			string text = "";
+			if (ModProvCountTB.BackColor == Color.Maroon)
+				text = "The game has more provinces, so name conflicts may occur.";
+
+			TextBoxTT.SetToolTip(ModProvCountTB, text);
+		}
+
 		#endregion
 
+	}
+
+	public static class MainWinExtensions
+	{
+		/// <summary>
+		/// Sets menu item check state. <br />
+		/// (Updates image in process)
+		/// </summary>
+		/// <param name="item">The menu item to set.</param>
+		/// <param name="checkState">The check state to set to the menu item.</param>
+		public static void State(this ToolStripMenuItem item, bool checkState)
+		{
+			item.Tag = checkState;
+
+			if (checkState)
+			{
+				item.Image = item.OwnerItem.Tag switch
+				{
+					"Radio" => Resources.CheckedRadio,
+
+					"CheckBox" => Resources.CheckedIconBox,
+
+					_ => throw new NotImplementedException(),
+				};
+			}
+			else
+			{
+				item.Image = item.OwnerItem.Tag switch
+				{
+					"RadioButton" => Resources.UncheckedRadio,
+
+					"CheckBox" => Resources.UncheckedBox,
+
+					_ => throw new NotImplementedException(),
+				};
+			}
+		}
+
+		/// <summary>
+		/// Gets menu item check state.
+		/// </summary>
+		/// <param name="item">The menu item of which to get the check state.</param>
+		/// <returns></returns>
+		public static bool State(this ToolStripMenuItem item)
+		{
+			if (item.Tag is null) return false;
+			return (bool)item.Tag;
+		}
 	}
 }
