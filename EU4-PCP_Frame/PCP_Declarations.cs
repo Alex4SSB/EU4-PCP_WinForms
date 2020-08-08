@@ -138,7 +138,7 @@ namespace EU4_PCP_Frame
 		}
 
 		public P_Color(params string[] stringColor)
-        {
+		{
 			byte[] provColor = new byte[3];
 			stringColor.ToByte(out provColor);
 
@@ -169,12 +169,12 @@ namespace EU4_PCP_Frame
 			return obj is object;
 		}
 
-        public static implicit operator int(Province p)
-        {
-            return p.Index;
-        }
+		public static implicit operator int(Province p)
+		{
+			return p.Index;
+		}
 
-        public override string ToString()
+		public override string ToString()
 		{
 			if (DynName.Length > 0) { return DynName; }
 			if (LocName.Length > 0) { return LocName; }
@@ -193,7 +193,7 @@ namespace EU4_PCP_Frame
 		}
 
 		public string ToCsv()
-        {
+		{
 			return $"{Index};{Color.R};{Color.G};{Color.B};{DefName};x";
 		}
 
@@ -279,26 +279,26 @@ namespace EU4_PCP_Frame
 			return StartDate.CompareTo(other.StartDate);
 		}
 
-        public override bool Equals(object obj)
-        {
-            return obj is Bookmark bookmark && StartDate == bookmark.StartDate;
-        }
+		public override bool Equals(object obj)
+		{
+			return obj is Bookmark bookmark && StartDate == bookmark.StartDate;
+		}
 
-        public override int GetHashCode()
-        {
+		public override int GetHashCode()
+		{
 			return base.GetHashCode();
-        }
+		}
 
-        public static bool operator ==(Bookmark left, Bookmark right)
-        {
+		public static bool operator ==(Bookmark left, Bookmark right)
+		{
 			return left.CompareTo(right) == 0;
 		}
 
 		public static bool operator !=(Bookmark left, Bookmark right)
-        {
+		{
 			return left.CompareTo(right) != 0;
 		}
-    }
+	}
 
 	public class MembersCount
 	{
@@ -327,7 +327,7 @@ namespace EU4_PCP_Frame
 	}
 
 	public class ModObj : IComparable<ModObj>
-    {
+	{
 		public string Name;
 		public string Path;
 		public string Ver; // Supported game version
@@ -343,14 +343,14 @@ namespace EU4_PCP_Frame
 			return Name;
 		}
 
-        public int CompareTo(ModObj other)
-        {
-            return Name.CompareTo(other.Name);
-        }
+		public int CompareTo(ModObj other)
+		{
+			return Name.CompareTo(other.Name);
+		}
 
-        public ModObj() { }
+		public ModObj() { }
 
-    }
+	}
 
 	public class Replace
 	{
@@ -385,10 +385,10 @@ namespace EU4_PCP_Frame
 			File = System.IO.Path.GetFileName(fPath);
 		}
 
-        public static bool operator ==(FileObj left, FileObj right)
-        {
+		public static bool operator ==(FileObj left, FileObj right)
+		{
 			return left.File == right.File;
-        }
+		}
 
 		public static bool operator !=(FileObj left, FileObj right)
 		{
@@ -396,16 +396,16 @@ namespace EU4_PCP_Frame
 		}
 
 		public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
+		{
+			return base.Equals(obj);
+		}
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
 
-        public override string ToString()
+		public override string ToString()
 		{
 			return Path;
 		}

@@ -11,7 +11,6 @@ using DarkUI.Forms;
 using System.Windows.Forms;
 using static EU4_PCP_Frame.GlobVar;
 using static EU4_PCP_Frame.PCP_Implementations;
-using System.Runtime.InteropServices;
 
 namespace EU4_PCP_Frame
 {
@@ -1210,8 +1209,8 @@ namespace EU4_PCP_Frame
 			IgnoreRnwMCB.State(IgnoreRnwMCB.State());
 		}
 
-        private void GameMaxProvTB_MouseHover(object sender, EventArgs e)
-        {
+		private void GameMaxProvTB_MouseHover(object sender, EventArgs e)
+		{
 			string text;
 			if (GameMaxProvTB.BackColor == Color.Maroon)
 				text = "Amount of provinces exceeds the limit.";
@@ -1221,8 +1220,8 @@ namespace EU4_PCP_Frame
 			TextBoxTT.SetToolTip(GameMaxProvTB, text);
 		}
 
-        private void ModMaxProvTB_MouseHover(object sender, EventArgs e)
-        {
+		private void ModMaxProvTB_MouseHover(object sender, EventArgs e)
+		{
 			string text;
 			if (ModMaxProvTB.BackColor == Color.Maroon)
 				text = "Amount of provinces exceeds the limit.";
@@ -1232,8 +1231,8 @@ namespace EU4_PCP_Frame
 			TextBoxTT.SetToolTip(ModMaxProvTB, text);
 		}
 
-        private void ModProvCountTB_MouseHover(object sender, EventArgs e)
-        {
+		private void ModProvCountTB_MouseHover(object sender, EventArgs e)
+		{
 			string text = "";
 			if (ModProvCountTB.BackColor == Color.Maroon)
 				text = "The game has more provinces, so name conflicts may occur.";

@@ -14,15 +14,15 @@ namespace EU4_PCP_Frame
 {
 	public static class PCP_Implementations
 	{
-        #region Overrides and Helper Functions
+		#region Overrides and Helper Functions
 
-        /// <summary>
-        /// Appends an array of strings with a new <see cref="string"/>, growing the array if the last cell isn't empty. <br />
-        /// [Emulates the List.Add() method for arrays.]
-        /// </summary>
-        /// <param name="arr">The array to be modified.</param>
-        /// <param name="item">The item to be added.</param>
-        public static void Add(ref string[] arr, string item)
+		/// <summary>
+		/// Appends an array of strings with a new <see cref="string"/>, growing the array if the last cell isn't empty. <br />
+		/// [Emulates the List.Add() method for arrays.]
+		/// </summary>
+		/// <param name="arr">The array to be modified.</param>
+		/// <param name="item">The item to be added.</param>
+		public static void Add(ref string[] arr, string item)
 		{
 			if (arr[arr.Length - 1].Length > 0)
 				Array.Resize(ref arr, arr.Length + 1);
@@ -151,13 +151,13 @@ namespace EU4_PCP_Frame
 
 		#endregion
 
-        /// <summary>
-        /// Creates the <see cref="Province"/> objects in the <see cref="provinces"/> array. <br />
-        /// Initializes with index, color, and name from definition file.
-        /// </summary>
-        /// <param name="path">Root folder to work on.</param>
-        /// <returns><see langword="false"/> if an exception occurs while trying to read from the definition file.</returns>
-        public static bool DefinSetup(string path)
+		/// <summary>
+		/// Creates the <see cref="Province"/> objects in the <see cref="provinces"/> array. <br />
+		/// Initializes with index, color, and name from definition file.
+		/// </summary>
+		/// <param name="path">Root folder to work on.</param>
+		/// <returns><see langword="false"/> if an exception occurs while trying to read from the definition file.</returns>
+		public static bool DefinSetup(string path)
 		{
 
 			string[] dFile;
@@ -281,11 +281,11 @@ namespace EU4_PCP_Frame
 					{
 						var member = new MembersCount();
 
-                        try
-                        {
+						try
+						{
 							member = members.First(m => Path.GetFileName(m.Path) == locFile.File);
 						}
-                        catch (Exception) { }
+						catch (Exception) { }
 
 						if (!selectedMod && member && member.Count != collection.Count)
 						{
@@ -541,13 +541,13 @@ namespace EU4_PCP_Frame
 			return pattern.Substring(0, pattern.Length - 1);
 		}
 
-        #region Culture
+		#region Culture
 
-        /// <summary>
-        /// Creates the <see cref="Country"/> objects in the <see cref="countries"/> list. <br />
-        /// Initializes with code and culture object.
-        /// </summary>
-        public static void CountryCulSetup()
+		/// <summary>
+		/// Creates the <see cref="Country"/> objects in the <see cref="countries"/> list. <br />
+		/// Initializes with code and culture object.
+		/// </summary>
+		public static void CountryCulSetup()
 		{
 			object countryLock = new object();
 			Parallel.ForEach(countryFiles, cFile =>
@@ -685,12 +685,12 @@ namespace EU4_PCP_Frame
 			catch (Exception) { }
 		}
 
-        #endregion
+		#endregion
 
-        /// <summary>
-        /// Attaches (the contents of) each file from province names to the relevant <see cref="Country"/> / <see cref="Culture"/>.
-        /// </summary>
-        public static void ProvNameSetup()
+		/// <summary>
+		/// Attaches (the contents of) each file from province names to the relevant <see cref="Country"/> / <see cref="Culture"/>.
+		/// </summary>
+		public static void ProvNameSetup()
 		{
 			Parallel.ForEach(provNameFiles, fileName =>
 			{
@@ -900,7 +900,7 @@ namespace EU4_PCP_Frame
 
 				var modPath = pathMatch.Value;
 				if (!remoteMatch)
-                {
+				{
 					if (Directory.Exists(Directory.GetParent(paradoxModPath).FullName + @"\" + modPath.TrimStart('/', '\\')))
 						modPath = Directory.GetParent(paradoxModPath).FullName + @"\" + modPath.TrimStart('/', '\\');
 					else return;
@@ -983,15 +983,15 @@ namespace EU4_PCP_Frame
 			duplicates.Clear();
 		}
 
-        #region File Fetching
+		#region File Fetching
 
-        /// <summary>
-        /// General function for fetching files from folders. <br />
-        /// Handles game, regular mod, and replace mod folders.
-        /// </summary>
-        /// <param name="scope">The type of the files to process.</param>
-        /// <returns><see langword="false"/> if an exception occurred and the processing was unsuccessful.</returns>
-        public static bool FetchFiles(FileType scope)
+		/// <summary>
+		/// General function for fetching files from folders. <br />
+		/// Handles game, regular mod, and replace mod folders.
+		/// </summary>
+		/// <param name="scope">The type of the files to process.</param>
+		/// <returns><see langword="false"/> if an exception occurred and the processing was unsuccessful.</returns>
+		public static bool FetchFiles(FileType scope)
 		{
 			var filesList = SelectList(scope);
 			IEnumerable<string> baseFiles, addFiles;
