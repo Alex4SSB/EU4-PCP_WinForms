@@ -1176,11 +1176,6 @@ namespace EU4_PCP_Frame
 			ProvTable.FirstDisplayedScrollingRowIndex = ProvTableSB.Value;
 		}
 
-		private void ProvTableSB_Scroll(object sender, ScrollEventArgs e)
-		{
-			ProvTable.FirstDisplayedCell = ProvTable.Rows[e.NewValue].Cells[0];
-		}
-
 		private void ModSelCB_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (lockdown) return;
@@ -1238,6 +1233,11 @@ namespace EU4_PCP_Frame
 				text = "The game has more provinces, so name conflicts may occur.";
 
 			TextBoxTT.SetToolTip(ModProvCountTB, text);
+		}
+
+        private void ProvTableSB_ValueChanged(object sender, DarkUI.Controls.ScrollValueEventArgs e)
+        {
+			ProvTable.FirstDisplayedCell = ProvTable.Rows[e.Value].Cells[0];
 		}
 
 		#endregion

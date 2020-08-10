@@ -82,8 +82,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DarkUI, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\DarkUI-master\DarkUI\bin\Debug\DarkUI.dll</HintPath>
+      <HintPath>..\packages\DarkUI.2.0.2\lib\DarkUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
