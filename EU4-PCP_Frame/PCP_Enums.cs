@@ -46,6 +46,13 @@
         Finish
     }
 
+    public enum CriticalScope
+    {
+        Game,
+        Mod,
+        Bookmark
+    }
+
     public enum ErrorType
     {
         DefinRead,

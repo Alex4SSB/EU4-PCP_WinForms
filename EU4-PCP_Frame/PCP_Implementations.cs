@@ -438,8 +438,9 @@ namespace EU4_PCP_Frame
 		/// <summary>
 		/// Sets the owner object of each <see cref="Province"/> object in the 
 		/// <see cref="provinces"/> array according to the start date.
+		/// <param name="updateOwner">true to ignore not empty owner.</param>
 		/// </summary>
-		public static void OwnerSetup()
+		public static void OwnerSetup(bool updateOwner = false)
 		{
 			Parallel.ForEach(provFiles, p_file =>
 			{
@@ -447,7 +448,7 @@ namespace EU4_PCP_Frame
 				if (!match.Success) return;
 				int i = match.Value.ToInt();
 				if (i >= provinces.Length) return;
-				if (provinces[i].Owner) return;
+				if (!updateOwner && provinces[i].Owner) return;
 
 				string provFile = File.ReadAllText(p_file.Path);
 				var currentOwner = LastEvent(provFile, EventType.Province);

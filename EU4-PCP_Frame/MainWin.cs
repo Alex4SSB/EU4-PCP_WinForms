@@ -37,7 +37,7 @@ namespace EU4_PCP_Frame
 		/// </summary>
 		/// <param name="Mode">Begin / Finish.</param>
 		/// <param name="Success"><see langword="true"/> to update FinishTiming.</param>
-		private void Critical(CriticalType Mode, bool Success) => Critical(Mode, Scope.Game, Success);
+		private void Critical(CriticalType Mode, bool Success) => Critical(Mode, CriticalScope.Game, Success);
 
 		/// <summary>
 		/// Handles the beginning and finishing of (relatively) long-execution-time sections.
@@ -45,7 +45,7 @@ namespace EU4_PCP_Frame
 		/// <param name="Mode">Begin / Finish.</param>
 		/// <param name="Scope">Game / Mod.</param>
 		/// <param name="Success"><see langword="true"/> to update FinishTiming.</param>
-		private void Critical(CriticalType Mode, Scope Scope = Scope.Game, bool Success = false)
+		private void Critical(CriticalType Mode, CriticalScope Scope = CriticalScope.Game, bool Success = false)
 		{
 			Text = $"{appName} {appVer}";
 			switch (Mode)
@@ -53,8 +53,16 @@ namespace EU4_PCP_Frame
 				case CriticalType.Begin:
 					beginTiming = DateTime.Now;
 					Cursor = Cursors.WaitCursor;
+
 					Text += " - Loading";
-					if (Scope == Scope.Mod) Text += " mod";
+					Text += Scope switch
+					{
+						CriticalScope.Game => "",
+						CriticalScope.Mod => " mod",
+						CriticalScope.Bookmark => " bookmark",
+						_ => ""
+					};
+
 					lockdown = true;
 					break;
 				case CriticalType.Finish:
@@ -728,9 +736,7 @@ namespace EU4_PCP_Frame
 		private void EnactBook(Scope Scope)
 		{
 			if (lockdown) return;
-			beginTiming = DateTime.Now;
-			Cursor =Cursors.WaitCursor;
-			Text = $"{appName} {appVer} - Loading bookmark";
+			Critical(CriticalType.Begin, CriticalScope.Bookmark);
 
 			switch (Scope)
 			{
@@ -749,14 +755,12 @@ namespace EU4_PCP_Frame
 			showRnw = ShowAllProvsMCB.State();
 			updateCountries = true;
 			CountryCulSetup();
-			OwnerSetup();
+			OwnerSetup(true);
 			ProvNameSetup();
 			DynamicSetup();
 			PopulateTable();
 
-			Cursor =Cursors.Default;
-			Text = $"{appName} {appVer}";
-			finishTiming = DateTime.Now;
+			Critical(CriticalType.Finish, true);
 		}
 
 		/// <summary>
@@ -792,7 +796,7 @@ namespace EU4_PCP_Frame
 			if (ModSelCB.SelectedIndex < 1)
 				Critical(CriticalType.Begin);
 			else
-				Critical(CriticalType.Begin, Scope.Mod);
+				Critical(CriticalType.Begin, CriticalScope.Mod);
 
 			ModStartDateTB.Text = "";
 			if (ModSelCB.SelectedIndex < 1)
@@ -1235,8 +1239,8 @@ namespace EU4_PCP_Frame
 			TextBoxTT.SetToolTip(ModProvCountTB, text);
 		}
 
-        private void ProvTableSB_ValueChanged(object sender, DarkUI.Controls.ScrollValueEventArgs e)
-        {
+		private void ProvTableSB_ValueChanged(object sender, DarkUI.Controls.ScrollValueEventArgs e)
+		{
 			ProvTable.FirstDisplayedCell = ProvTable.Rows[e.Value].Cells[0];
 		}
 
