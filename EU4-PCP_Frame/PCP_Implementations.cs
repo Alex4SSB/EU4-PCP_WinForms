@@ -161,6 +161,17 @@ namespace EU4_PCP_Frame
             _ => throw new NotImplementedException()
         };
 
+		/// <summary>
+		/// Determines member scope by whether it contains the game path.
+		/// </summary>
+		/// <param name="member">The member of which to determine the scope.</param>
+		public static void MemberScope(this MembersCount member)
+        {
+			member.Scope = 
+				member.Path.Contains(Directory.GetParent(gamePath + locPath).FullName) ? 
+				Scope.Game : Scope.Mod;
+		}
+
         #endregion
 
         /// <summary>
@@ -229,9 +240,7 @@ namespace EU4_PCP_Frame
 				List<FileObj> filesList = new List<FileObj>();
 				foreach (var member in members.Where(m => m.Type == scope))
 				{
-					//if (selectedMod && !member.Path.Contains(Directory.GetParent(gamePath + locPath).FullName))
-					//	continue;
-					if (!selectedMod && !member.Path.Contains(Directory.GetParent(gamePath + locPath).FullName))
+					if (!selectedMod && member.Scope == Scope.Mod)
 						continue;
 					filesList.Add(new FileObj(member.Path, FromLoc(scope)));
 				}
@@ -323,6 +332,7 @@ namespace EU4_PCP_Frame
 						Path = locFile.Path,
 						Type = scope
 					});
+					members.Last().MemberScope();
 				}
 
 				foreach (Match prov in collection)
@@ -411,6 +421,7 @@ namespace EU4_PCP_Frame
 					foreach (var member in lines.Where(l => l.Length > 5))
 					{
 						members.Add(new MembersCount(member.Split('|')));
+						members.Last().MemberScope();
 					}
 					break;
 				case Mode.Write:
@@ -645,8 +656,6 @@ namespace EU4_PCP_Frame
 								culture.Group = null;
 								break;
 							case 2:
-								//var tempCul = cultures.Where(cul => cul.Name == cGroup).ToList();
-								//if (tempCul.Any())
 								culture.Group = cGroup;
 								break;
 						}

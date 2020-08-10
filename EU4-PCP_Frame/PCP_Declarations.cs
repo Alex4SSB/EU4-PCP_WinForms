@@ -304,6 +304,7 @@ namespace EU4_PCP_Frame
 		public string Path;
 		public int Count;
 		public LocScope Type;
+		public Scope Scope;
 
 		public static implicit operator bool(MembersCount obj)
 		{
