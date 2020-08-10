@@ -149,15 +149,27 @@ namespace EU4_PCP_Frame
 			};
 		}
 
-		#endregion
-
 		/// <summary>
-		/// Creates the <see cref="Province"/> objects in the <see cref="provinces"/> array. <br />
-		/// Initializes with index, color, and name from definition file.
+		/// Converts LocScope to FileType.
 		/// </summary>
-		/// <param name="path">Root folder to work on.</param>
-		/// <returns><see langword="false"/> if an exception occurs while trying to read from the definition file.</returns>
-		public static bool DefinSetup(string path)
+		/// <param name="scope"><see cref="LocScope"/> enum.</param>
+		/// <returns><see cref="FileType"/> enum.</returns>
+		public static FileType FromLoc(LocScope scope) => scope switch
+        {
+            LocScope.Province => FileType.Province,
+            LocScope.Bookmark => FileType.Bookmark,
+            _ => throw new NotImplementedException()
+        };
+
+        #endregion
+
+        /// <summary>
+        /// Creates the <see cref="Province"/> objects in the <see cref="provinces"/> array. <br />
+        /// Initializes with index, color, and name from definition file.
+        /// </summary>
+        /// <param name="path">Root folder to work on.</param>
+        /// <returns><see langword="false"/> if an exception occurs while trying to read from the definition file.</returns>
+        public static bool DefinSetup(string path)
 		{
 
 			string[] dFile;
@@ -221,7 +233,7 @@ namespace EU4_PCP_Frame
 					//	continue;
 					if (!selectedMod && !member.Path.Contains(Directory.GetParent(gamePath + locPath).FullName))
 						continue;
-					filesList.Add(new FileObj(member.Path));
+					filesList.Add(new FileObj(member.Path, FromLoc(scope)));
 				}
 
 				bool abort = false;
@@ -1009,7 +1021,7 @@ namespace EU4_PCP_Frame
 
 			if (!selectedMod || SelectReplace(scope))
 			{
-				filesList.AddRange(baseFiles.Select(f => new FileObj(f)));
+				filesList.AddRange(baseFiles.Select(f => new FileObj(f, scope)));
 				return true;
 			}
 
@@ -1020,11 +1032,11 @@ namespace EU4_PCP_Frame
 			}
 			catch (Exception) { return false; }
 
-			filesList.AddRange(addFiles.Select(f => new FileObj(f)));
+			filesList.AddRange(addFiles.Select(f => new FileObj(f, scope)));
 
 			foreach (var b_file in baseFiles)
 			{
-				var TempFile = new FileObj(b_file);
+				var TempFile = new FileObj(b_file, scope);
 				if (ReplacedFile(scope, filesList.Where(c => c == TempFile))) { continue; }
 				filesList.Add(TempFile);
 			}

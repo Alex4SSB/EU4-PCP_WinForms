@@ -52,13 +52,13 @@ namespace EU4_PCP_Frame
 			{
 				case CriticalType.Begin:
 					beginTiming = DateTime.Now;
-					Cursor = System.Windows.Forms.Cursors.WaitCursor;
+					Cursor = Cursors.WaitCursor;
 					Text += " - Loading";
 					if (Scope == Scope.Mod) Text += " mod";
 					lockdown = true;
 					break;
 				case CriticalType.Finish:
-					Cursor = System.Windows.Forms.Cursors.Default;
+					Cursor = Cursors.Default;
 					if (Success) finishTiming = DateTime.Now;
 					lockdown = false;
 					break;
@@ -511,7 +511,7 @@ namespace EU4_PCP_Frame
 		}
 
 		/// <summary>
-		/// Handles colorization of province count textboxes.
+		/// Handles colorization of province count text-boxes.
 		/// </summary>
 		private void ProvCountColor()
 		{
@@ -729,7 +729,7 @@ namespace EU4_PCP_Frame
 		{
 			if (lockdown) return;
 			beginTiming = DateTime.Now;
-			Cursor =System.Windows.Forms.Cursors.WaitCursor;
+			Cursor =Cursors.WaitCursor;
 			Text = $"{appName} {appVer} - Loading bookmark";
 
 			switch (Scope)
@@ -754,7 +754,7 @@ namespace EU4_PCP_Frame
 			DynamicSetup();
 			PopulateTable();
 
-			Cursor =System.Windows.Forms.Cursors.Default;
+			Cursor =Cursors.Default;
 			Text = $"{appName} {appVer}";
 			finishTiming = DateTime.Now;
 		}
