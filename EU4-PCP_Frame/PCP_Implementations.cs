@@ -200,8 +200,10 @@ namespace EU4_PCP_Frame
 		/// Dynamically prepares the localisation files.
 		/// </summary>
 		/// <param name="scope">Province or Bookmark.</param>
-		public static void LocPrep(LocScope scope) // Dynamically prepares the localisation files
+		public static bool LocPrep(LocScope scope)
 		{
+			bool readSuccess;
+
 			string setting = scope switch
 			{
 				LocScope.Province => Settings.Default.ProvLocFiles,
@@ -237,85 +239,142 @@ namespace EU4_PCP_Frame
 					filesList[i] = memberFiles.First(); // For mod replacement files
 					locFiles.Remove(memberFiles.First());
 				}
-				if ((!abort && filesList.Count > 0) && BookAndProv(filesList, scope))
-					return;
+
+				// If members were recovered successfully 
+				if ((!abort && filesList.Count > 0) && NameSetup(filesList, scope, out readSuccess))
+					return readSuccess;
 			}
-			BookAndProv(locFiles, scope);
-			if (locSuccess)
+
+			// If there are no members in the settings, or the members have changed
+			NameSetup(locFiles, scope, out readSuccess);
+			if (readSuccess)
 				LocMembers(Mode.Write, scope);
+
+			return readSuccess;
 		}
 
-		private static bool BookAndProv(List<FileObj> files, LocScope scope) => scope switch
+		/// <summary>
+		/// Finds localisation names for Provinces and Bookmarks.
+		/// </summary>
+		/// <param name="lFiles">List of localisation files to work on.</param>
+		/// <param name="scope">Province or Bookmark.</param>
+		/// <param name="readSuccess"><see langword="false"/> if there was an error reading one of the files.</param>
+		/// <returns><see langword="false"/> if the member count of the game was NOT according to the settings.</returns>
+		private static bool NameSetup(List<FileObj> lFiles, LocScope scope, out bool readSuccess)
 		{
-			LocScope.Province => LocSetup(files),
-			LocScope.Bookmark => BookSetup(files),
-			_ => false,
+			bool success = true;
+			bool recall = members.Count(m => m.Type == scope) > 0;
+			bool locSuccess = true;
+
+			Regex locRE = scope switch // Select province or bookmark RegEx
+			{
+				LocScope.Province => locProvRE,
+
+				// bookRE is a dynamic RegEx and thus isn't defined in PCP_Declarations.
+				LocScope.Bookmark => new Regex($@"^ *({BookPattern()}):\d* *"".+""", RegexOptions.Multiline),
+				_ => throw new NotImplementedException()
+			};
+
+			Parallel.ForEach(lFiles, locFile =>
+			{
+				string l_file;
+				try
+				{
+					l_file = File.ReadAllText(locFile.Path, UTF7);
+				}
+				catch (Exception)
+				{
+					locSuccess = false;
+					return;
+				}
+
+				var collection = locRE.Matches(l_file);
+				if (recall)
+				{
+					var member = new MembersCount();
+					var tempMembers = members.Where(m => Path.GetFileName(m.Path) == locFile.File);
+					
+					if (tempMembers.Any())
+						member = tempMembers.First();
+
+					if (!selectedMod && member && member.Count != collection.Count)
+					{
+						success = false;
+						member.Count = collection.Count;
+					}
+				}
+				else if (collection.Count > 0)
+				{
+					members.Add(new MembersCount
+					{
+						Count = collection.Count,
+						Path = locFile.Path,
+						Type = scope
+					});
+				}
+
+				foreach (Match prov in collection)
+				{
+					NameSelect(prov.Value, locFile.Path, scope);
+				}
+			});
+
+			if (scope == LocScope.Bookmark &&
+				!success &&
+				bookmarks.Count(book => book.Name == null) == 0)
+			{ success = true; }
+
+			readSuccess = locSuccess;
+			return success;
+		}
+
+		/// <summary>
+		/// Calls a function to write the name of either a <see cref="Province"/> or a <see cref="Bookmark"/>.
+		/// </summary>
+		/// <param name="match">The RegEx match result.</param>
+		/// <param name="path">Localisation file path.</param>
+		/// <param name="scope">Province or Bookmark.</param>
+		/// <returns><see langword="true"/> if the name was written.</returns>
+		private static bool NameSelect(string match, string path, LocScope scope) => scope switch
+		{
+			LocScope.Province => NameProv(match, path),
+			LocScope.Bookmark => NameBook(match, path),
+			_ => false
 		};
 
 		/// <summary>
-		/// Sets the localisation name of each <see cref="Province"/> in the <see cref="provinces"/> array.
+		/// Writes the localisation name to the matching <see cref="Province"/>.
 		/// </summary>
-		/// <param name="lFiles">List of localisation files to work on.</param>
-		/// <returns><see langword="true"/> if the member count was according to the settings (only for the game).</returns>
-		private static bool LocSetup(List<FileObj> lFiles)
+		/// <param name="match">The RegEx match result. (Localisation file line)</param>
+		/// <param name="path">Localisation file path.</param>
+		/// <returns><see langword="true"/> if the name was written.</returns>
+		private static bool NameProv(string match, string path)
 		{
-			bool success = true;
-			bool recall = members.Count(m => m.Type == LocScope.Province) > 0;
-			locSuccess = true; // Indicates function success
+			string name = match.Split('"')[1].Trim();
+			var provId = match.Split(':')[0].ToInt();
 
-			Parallel.ForEach(lFiles, locFile =>
-				{
-					string l_file;
-					try
-					{
-						l_file = File.ReadAllText(locFile.Path, UTF7);
-					}
-					catch (Exception)
-					{
-						locSuccess = false;
-						return;
-					}
+			if (name.Length < 1 || provId >= provinces.Length) return false;
+			if (provinces[provId].LocName != "" && path.Contains(gamePath)) return false;
 
-					var collection = locProvRE.Matches(l_file);
-					if (recall)
-					{
-						var member = new MembersCount();
+			provinces[provId].LocName = name;
+			return true;
+		}
 
-						try
-						{
-							member = members.First(m => Path.GetFileName(m.Path) == locFile.File);
-						}
-						catch (Exception) { }
+		/// <summary>
+		/// Writes the name to the matching <see cref="Bookmark"/>.
+		/// </summary>
+		/// <param name="match">The RegEx match result. (Bookmark name)</param>
+		/// <param name="path">Localisation file path.</param>
+		/// <returns><see langword="true"/> if the name was written.</returns>
+		private static bool NameBook(string match, string path)
+		{
+			var tempBook = bookmarks.First(book => book.Code == bookLocCodeRE.Match(match).Value);
+			if (selectedMod && tempBook.Name != null &&
+			path.Contains(Directory.GetParent(gamePath + locPath).FullName))
+				return false;
+			tempBook.Name = locNameRE.Match(match).Value;
 
-						if (!selectedMod && member && member.Count != collection.Count)
-						{
-							success = false;
-							member.Count = collection.Count;
-						}
-					}
-					else if (collection.Count > 0)
-					{
-						members.Add(new MembersCount
-						{
-							Count = collection.Count,
-							Path = locFile.Path,
-							Type = LocScope.Province
-						});
-					}
-
-					foreach (Match prov in collection)
-					{
-						string name = prov.Value.Split('"')[1].Trim();
-						var provId = prov.Value.Split(':')[0].ToInt();
-
-						if (name.Length < 1 || provId >= provinces.Length) continue;
-						if (provinces[provId].LocName != "" && locFile.Path.Contains(gamePath)) continue;
-
-						provinces[provId].LocName = name;
-					}
-				});
-
-			return success;
+			return true;
 		}
 
 		/// <summary>
@@ -466,65 +525,6 @@ namespace EU4_PCP_Frame
 
 			if (pDate != DateTime.MinValue) pDate = pDate.AddYears(-1000);
 			return pDate;
-		}
-
-		/// <summary>
-		/// Finds the name localisation for all <see cref="Bookmark"/> objects in the <see cref="bookmarks"/> array.
-		/// </summary>
-		/// <param name="bFiles"></param>
-		/// <returns><see langword="true"/> if the member count was according to the settings (only for the game).</returns>
-		public static bool BookSetup(List<FileObj> bFiles)
-		{
-			bool success = true;
-			bool recall = members.Count(m => m.Type == LocScope.Bookmark) > 0;
-
-			// bookRE is a dynamic RegEx and thus isn't defined in PCP_Declarations.
-			Regex bookRE = new Regex($@"^ *({BookPattern()}):\d* *"".+""", RegexOptions.Multiline);
-
-			Parallel.ForEach(bFiles, locFile =>
-			{
-				string l_file = File.ReadAllText(locFile.Path, UTF7);
-				var collection = bookRE.Matches(l_file);
-				if (collection.Count > 0)
-				{
-					var member = new MembersCount();
-					try
-					{
-						member = members.First(m => m.Path == locFile.Path);
-					}
-					catch (Exception) { }
-					if (recall && member)
-					{
-						if (member.Count != collection.Count)
-							success = false;
-						member.Count = collection.Count;
-					}
-					else
-					{
-						members.Add(new MembersCount
-						{
-							Count = collection.Count,
-							Path = locFile.Path,
-							Type = LocScope.Bookmark
-						});
-					}
-				}
-				foreach (Match match in collection)
-				{
-					var tempBook = bookmarks.First(book => book.Code == bookLocCodeRE.Match(match.Value).Value);
-					if (selectedMod && tempBook.Name != null &&
-					locFile.Path.Contains(Directory.GetParent(gamePath + locPath).FullName))
-						continue;
-					tempBook.Name = locNameRE.Match(match.Value).Value;
-				}
-			});
-
-			if (!success)
-			{
-				if (bookmarks.Count(book => book.Name == null) == 0)
-					success = true;
-			}
-			return success;
 		}
 
 		/// <summary>
@@ -880,6 +880,7 @@ namespace EU4_PCP_Frame
 		/// </summary>
 		public static void ModPrep()
 		{
+			var modLock = new object();
 			string[] files;
 			try
 			{
@@ -906,13 +907,17 @@ namespace EU4_PCP_Frame
 					else return;
 				}
 
-				mods.Add(new ModObj
+				// With many mods in the folder, a context switch that will cause an OutOfRange exception is more likely
+				lock (modLock)
 				{
-					Name = nameMatch.Value,
-					Path = modPath,
-					Ver = verMatch.Value,
-					Replace = ReplacePrep(mFile)
-				});
+					mods.Add(new ModObj
+					{
+						Name = nameMatch.Value,
+						Path = modPath,
+						Ver = verMatch.Value,
+						Replace = ReplacePrep(mFile)
+					});
+				}
 			});
 
 			mods.Sort();

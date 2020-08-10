@@ -325,8 +325,8 @@ namespace EU4_PCP_Frame
 				ErrorMsg(ErrorType.LocFolder);
 				return false;
 			}
-			LocPrep(LocScope.Province);
-			if (!locSuccess)
+			
+			if (!LocPrep(LocScope.Province))
 			{
 				ErrorMsg(ErrorType.LocRead);
 				return false;
@@ -354,7 +354,7 @@ namespace EU4_PCP_Frame
 				ErrorMsg(ErrorType.NoCultures);
 				return false;
 			}
-			else if (cultures.Where(cul => cul.Group).Count() < 1)
+			else if (cultures.Where(cul => cul && cul.Group).Count() < 1)
 			{
 				ErrorMsg(ErrorType.NoCulGroups);
 				return false;

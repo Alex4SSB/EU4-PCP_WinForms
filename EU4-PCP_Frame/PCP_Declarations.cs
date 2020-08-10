@@ -15,7 +15,6 @@ namespace EU4_PCP_Frame
 		public static bool enDyn;
 		public static bool updateCountries;
 		public static bool lockdown = false;
-		public static bool locSuccess;
 
 		// GLOBAL OBJECTS
 		public static ModObj selectedMod;
