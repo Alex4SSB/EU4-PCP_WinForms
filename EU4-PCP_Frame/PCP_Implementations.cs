@@ -286,6 +286,7 @@ namespace EU4_PCP_Frame
 			bool success = true;
 			bool recall = members.Count(m => m.Type == scope) > 0;
 			bool locSuccess = true;
+			var nameLock = new object();
 
 			Regex locRE = scope switch // Select province or bookmark RegEx
 			{
@@ -326,13 +327,16 @@ namespace EU4_PCP_Frame
 				}
 				else if (collection.Count > 0)
 				{
-					members.Add(new MembersCount
+					lock (nameLock)
 					{
-						Count = collection.Count,
-						Path = locFile.Path,
-						Type = scope
-					});
-					members.Last().MemberScope();
+						members.Add(new MembersCount
+						{
+							Count = collection.Count,
+							Path = locFile.Path,
+							Type = scope
+						});
+						members.Last().MemberScope();
+					}
 				}
 
 				foreach (Match prov in collection)
@@ -617,7 +621,8 @@ namespace EU4_PCP_Frame
 		/// Initializes with code and culture group object.
 		/// </summary>
 		/// <param name="culFile">The culture file to work on.</param>
-		private static void CultureSetup(string culFile)
+		/// <param name="mutex">External lock to be provided when the function is parallelized.</param>
+		private static void CultureSetup(string culFile, object mutex = null)
 		{
 			string[] cFile;
 			try
@@ -643,22 +648,27 @@ namespace EU4_PCP_Frame
 					string temp = line.Substring(0, eIndex).Trim();
 					if (!notCulture.Contains(temp))
 					{
-
-						Culture culture = new Culture
-						{
-							Name = temp
-						};
+						var culture = new Culture(temp);
 						switch (brackets)
 						{
 							case 1:
 								cGroup = culture;
-								culture.Group = null;
 								break;
 							case 2:
 								culture.Group = cGroup;
 								break;
 						}
-						cultures.Add(culture);
+
+						// If the function isn't parallelized, there's no need for the lock
+						if (mutex != null)
+						{
+							lock (mutex)
+							{
+								cultures.Add(culture);
+							}
+						}
+						else
+							cultures.Add(culture);
 					}
 				}
 
@@ -672,6 +682,7 @@ namespace EU4_PCP_Frame
 		/// </summary>
 		public static void CulturePrep()
 		{
+			var cultureLock = new object();
 			CulFilePrep();
 
 			// Separate handling because parallel loop seems to work slower for one file.
@@ -681,7 +692,7 @@ namespace EU4_PCP_Frame
 			{
 				Parallel.ForEach(cultureFiles, culFile =>
 				{
-					CultureSetup(culFile);
+					CultureSetup(culFile, cultureLock);
 				});
 			}
 		}
@@ -833,13 +844,15 @@ namespace EU4_PCP_Frame
 			{
 				if (tempBooks[i] == tempBooks[i - 1])
 					counter++;
-				else if (counter > 1)
+				else
 				{
-					bookmarks[0] = tempBooks.First(b => b.DefBook);
-					counter = 1;
+					if (counter > 1)
+					{
+						bookmarks[0] = tempBooks.First(b => b.DefBook);
+						counter = 1;
+					}
 					bookmarks.Add(tempBooks[i]);
 				}
-				else bookmarks.Add(tempBooks[i]);
 			}
 			if (counter > 1)
 				bookmarks[0] = tempBooks.First(b => b.DefBook);

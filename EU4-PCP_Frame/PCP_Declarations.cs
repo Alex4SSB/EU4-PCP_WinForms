@@ -254,6 +254,13 @@ namespace EU4_PCP_Frame
 		{
 			return Name;
 		}
+
+		public Culture() { }
+
+		public Culture(string name)
+		{
+			Name = name;
+		}
 	}
 
 	public class Bookmark : IComparable<Bookmark>
