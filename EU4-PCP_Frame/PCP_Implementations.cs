@@ -1,4 +1,4 @@
-﻿using EU4_PCP_Frame.Properties;
+﻿using EU4_PCP.Properties;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

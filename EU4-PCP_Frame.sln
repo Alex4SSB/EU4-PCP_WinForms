@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30317.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EU4-PCP_Frame", "EU4-PCP_Frame\EU4-PCP_Frame.csproj", "{3174E7DC-5571-48CC-A10E-EA0B78277BC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EU4-PCP", "EU4-PCP_Frame\EU4-PCP.csproj", "{3174E7DC-5571-48CC-A10E-EA0B78277BC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

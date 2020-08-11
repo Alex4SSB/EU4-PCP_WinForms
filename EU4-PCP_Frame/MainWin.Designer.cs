@@ -170,7 +170,7 @@
             // 
             this.DisableLoadMCB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.DisableLoadMCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.DisableLoadMCB.Image = global::EU4_PCP_Frame.Properties.Resources.UncheckedRadio;
+            this.DisableLoadMCB.Image = global::EU4_PCP.Properties.Resources.UncheckedRadio;
             this.DisableLoadMCB.Name = "DisableLoadMCB";
             this.DisableLoadMCB.Size = new System.Drawing.Size(164, 22);
             this.DisableLoadMCB.Text = "Disabled";
@@ -180,7 +180,7 @@
             // 
             this.RemLoadMCB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.RemLoadMCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.RemLoadMCB.Image = global::EU4_PCP_Frame.Properties.Resources.UncheckedRadio;
+            this.RemLoadMCB.Image = global::EU4_PCP.Properties.Resources.UncheckedRadio;
             this.RemLoadMCB.Name = "RemLoadMCB";
             this.RemLoadMCB.Size = new System.Drawing.Size(164, 22);
             this.RemLoadMCB.Text = "Remember Paths";
@@ -190,7 +190,7 @@
             // 
             this.FullyLoadMCB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.FullyLoadMCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.FullyLoadMCB.Image = global::EU4_PCP_Frame.Properties.Resources.UncheckedRadio;
+            this.FullyLoadMCB.Image = global::EU4_PCP.Properties.Resources.UncheckedRadio;
             this.FullyLoadMCB.Name = "FullyLoadMCB";
             this.FullyLoadMCB.Size = new System.Drawing.Size(164, 22);
             this.FullyLoadMCB.Text = "Load Last Mod";
@@ -215,7 +215,7 @@
             // 
             this.DefinNamesMCB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.DefinNamesMCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.DefinNamesMCB.Image = global::EU4_PCP_Frame.Properties.Resources.UncheckedBox;
+            this.DefinNamesMCB.Image = global::EU4_PCP.Properties.Resources.UncheckedBox;
             this.DefinNamesMCB.Name = "DefinNamesMCB";
             this.DefinNamesMCB.Size = new System.Drawing.Size(174, 22);
             this.DefinNamesMCB.Text = "From Definition";
@@ -253,7 +253,7 @@
             // 
             this.ShowAllProvsMCB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.ShowAllProvsMCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.ShowAllProvsMCB.Image = global::EU4_PCP_Frame.Properties.Resources.UncheckedBox;
+            this.ShowAllProvsMCB.Image = global::EU4_PCP.Properties.Resources.UncheckedBox;
             this.ShowAllProvsMCB.Name = "ShowAllProvsMCB";
             this.ShowAllProvsMCB.Size = new System.Drawing.Size(174, 22);
             this.ShowAllProvsMCB.Text = "Show All Provinces";
