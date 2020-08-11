@@ -196,10 +196,12 @@ namespace EU4_PCP_Frame
 			return $"{Index};{Color.R};{Color.G};{Color.B};{DefName};x";
 		}
 
-		public void IsRNW()
+		public bool IsRNW(bool updateShow = true)
 		{
-			if (GlobVar.rnwRE.Match(DefName).Success)
+			var isRnw = GlobVar.rnwRE.Match(DefName).Success;
+			if (updateShow && isRnw)
 				Show = false;
+			return isRnw;
 		}
 	}
 
@@ -435,15 +437,13 @@ namespace EU4_PCP_Frame
 
 		public Dupli(Province prov1, Province prov2)
 		{
-			this.Prov1 = prov1;
-			this.Prov2 = prov2;
+			Prov1 = prov1;
+			Prov2 = prov2;
 		}
 
-		public string[] ToRow()
+		public override string ToString()
 		{
-			return new string[] { 
-				Prov1.ToString(), 
-				Prov2.ToString() };
+			return $"{Prov1} | {Prov2}";
 		}
 	}
 

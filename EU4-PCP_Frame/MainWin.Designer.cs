@@ -30,13 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWin));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.MainMS = new DarkUI.Controls.DarkMenuStrip();
             this.GlobSetM = new System.Windows.Forms.ToolStripMenuItem();
             this.AutoLoadSM = new System.Windows.Forms.ToolStripMenuItem();
@@ -109,11 +106,6 @@
             this.ModProvShownTB = new DarkUI.Controls.DarkTextBox();
             this.ModProvCountL = new DarkUI.Controls.DarkLabel();
             this.ModProvCountTB = new DarkUI.Controls.DarkTextBox();
-            this.ColorDupliGB = new DarkUI.Controls.DarkGroupBox();
-            this.DupliTableSB = new DarkUI.Controls.DarkScrollBar();
-            this.DupliTable = new System.Windows.Forms.DataGridView();
-            this.Province1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Province2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BrowserFBD = new System.Windows.Forms.FolderBrowserDialog();
             this.TextBoxTT = new System.Windows.Forms.ToolTip(this.components);
             this.DupliMarker1 = new DarkUI.Controls.DarkLabel();
@@ -122,8 +114,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.ProvTable)).BeginInit();
             this.GameInfoGB.SuspendLayout();
             this.ModInfoGB.SuspendLayout();
-            this.ColorDupliGB.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.DupliTable)).BeginInit();
             this.SuspendLayout();
             // 
             // MainMS
@@ -556,14 +546,14 @@
             this.ProvTable.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.ProvTable.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.ProvTable.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.Gainsboro;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.Transparent;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.ProvTable.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Gainsboro;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Transparent;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.ProvTable.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.ProvTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ProvTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ProvColor,
@@ -572,14 +562,14 @@
             this.ProvRed,
             this.ProvGreen,
             this.ProvBlue});
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle10.ForeColor = System.Drawing.Color.Gainsboro;
-            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
-            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.ProvTable.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Gainsboro;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.ProvTable.DefaultCellStyle = dataGridViewCellStyle3;
             this.ProvTable.EnableHeadersVisualStyles = false;
             this.ProvTable.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
             this.ProvTable.Location = new System.Drawing.Point(12, 154);
@@ -587,14 +577,14 @@
             this.ProvTable.Name = "ProvTable";
             this.ProvTable.ReadOnly = true;
             this.ProvTable.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.MenuBar;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.ProvTable.RowHeadersDefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.MenuBar;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.ProvTable.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.ProvTable.RowHeadersVisible = false;
             this.ProvTable.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.ProvTable.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -607,9 +597,9 @@
             // 
             // ProvColor
             // 
-            dataGridViewCellStyle9.BackColor = System.Drawing.Color.Lime;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.Transparent;
-            this.ProvColor.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Lime;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Transparent;
+            this.ProvColor.DefaultCellStyle = dataGridViewCellStyle2;
             this.ProvColor.HeaderText = "";
             this.ProvColor.Name = "ProvColor";
             this.ProvColor.ReadOnly = true;
@@ -998,101 +988,6 @@
             this.ModProvCountTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.ModProvCountTB.MouseHover += new System.EventHandler(this.ModProvCountTB_MouseHover);
             // 
-            // ColorDupliGB
-            // 
-            this.ColorDupliGB.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-            this.ColorDupliGB.Controls.Add(this.DupliTableSB);
-            this.ColorDupliGB.Controls.Add(this.DupliTable);
-            this.ColorDupliGB.Location = new System.Drawing.Point(418, 485);
-            this.ColorDupliGB.Name = "ColorDupliGB";
-            this.ColorDupliGB.Size = new System.Drawing.Size(221, 172);
-            this.ColorDupliGB.TabIndex = 40;
-            this.ColorDupliGB.TabStop = false;
-            this.ColorDupliGB.Text = "Color Duplicates";
-            this.ColorDupliGB.Visible = false;
-            // 
-            // DupliTableSB
-            // 
-            this.DupliTableSB.Location = new System.Drawing.Point(197, 22);
-            this.DupliTableSB.Maximum = 10;
-            this.DupliTableSB.Name = "DupliTableSB";
-            this.DupliTableSB.Size = new System.Drawing.Size(18, 144);
-            this.DupliTableSB.TabIndex = 33;
-            this.DupliTableSB.Text = "darkScrollBar2";
-            this.DupliTableSB.ViewSize = 1;
-            // 
-            // DupliTable
-            // 
-            this.DupliTable.AllowUserToAddRows = false;
-            this.DupliTable.AllowUserToDeleteRows = false;
-            this.DupliTable.AllowUserToResizeColumns = false;
-            this.DupliTable.AllowUserToResizeRows = false;
-            this.DupliTable.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.DupliTable.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.DupliTable.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle12.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.Gainsboro;
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DupliTable.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle12;
-            this.DupliTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.DupliTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Province1,
-            this.Province2});
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle13.ForeColor = System.Drawing.Color.Gainsboro;
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.DupliTable.DefaultCellStyle = dataGridViewCellStyle13;
-            this.DupliTable.EnableHeadersVisualStyles = false;
-            this.DupliTable.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.DupliTable.Location = new System.Drawing.Point(6, 22);
-            this.DupliTable.MultiSelect = false;
-            this.DupliTable.Name = "DupliTable";
-            this.DupliTable.ReadOnly = true;
-            this.DupliTable.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.MenuBar;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DupliTable.RowHeadersDefaultCellStyle = dataGridViewCellStyle14;
-            this.DupliTable.RowHeadersVisible = false;
-            this.DupliTable.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.DupliTable.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.DupliTable.RowTemplate.DefaultCellStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.DupliTable.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.DupliTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.DupliTable.Size = new System.Drawing.Size(209, 144);
-            this.DupliTable.TabIndex = 32;
-            this.DupliTable.DoubleClick += new System.EventHandler(this.DupliTable_DoubleClick);
-            // 
-            // Province1
-            // 
-            this.Province1.HeaderText = "Province 1";
-            this.Province1.Name = "Province1";
-            this.Province1.ReadOnly = true;
-            this.Province1.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Province1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Province1.Width = 94;
-            // 
-            // Province2
-            // 
-            this.Province2.HeaderText = "Province 2";
-            this.Province2.Name = "Province2";
-            this.Province2.ReadOnly = true;
-            this.Province2.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Province2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Province2.Width = 94;
-            // 
             // DupliMarker1
             // 
             this.DupliMarker1.BackColor = System.Drawing.Color.Maroon;
@@ -1109,7 +1004,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(651, 669);
             this.Controls.Add(this.DupliMarker1);
-            this.Controls.Add(this.ColorDupliGB);
             this.Controls.Add(this.ModInfoGB);
             this.Controls.Add(this.GameInfoGB);
             this.Controls.Add(this.ModSelL);
@@ -1142,8 +1036,6 @@
             this.GameInfoGB.PerformLayout();
             this.ModInfoGB.ResumeLayout(false);
             this.ModInfoGB.PerformLayout();
-            this.ColorDupliGB.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.DupliTable)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1184,7 +1076,6 @@
         private DarkUI.Controls.DarkLabel GameProvCountL;
         private DarkUI.Controls.DarkTextBox GameProvCountTB;
         private DarkUI.Controls.DarkGroupBox ModInfoGB;
-        private DarkUI.Controls.DarkScrollBar DupliTableSB;
         private DarkUI.Controls.DarkLabel ModBookmarkL;
         private DarkUI.Controls.DarkComboBox ModBookmarkCB;
         private DarkUI.Controls.DarkLabel ModStartDateL;
@@ -1195,8 +1086,6 @@
         private DarkUI.Controls.DarkTextBox ModProvShownTB;
         private DarkUI.Controls.DarkLabel ModProvCountL;
         private DarkUI.Controls.DarkTextBox ModProvCountTB;
-        private DarkUI.Controls.DarkGroupBox ColorDupliGB;
-        internal System.Windows.Forms.DataGridView DupliTable;
         private DarkUI.Controls.DarkLabel GenColL;
         private DarkUI.Controls.DarkButton AddProvB;
         private DarkUI.Controls.DarkLabel NextProvNameL;
@@ -1212,8 +1101,6 @@
         private DarkUI.Controls.DarkButton RandomizeB;
         private System.Windows.Forms.FolderBrowserDialog BrowserFBD;
         private System.Windows.Forms.ToolTip TextBoxTT;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Province1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Province2;
         private System.Windows.Forms.Label TempL;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProvColor;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProvNumber;

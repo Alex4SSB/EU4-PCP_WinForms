@@ -267,6 +267,9 @@ namespace EU4_PCP_Frame
 			enDyn = DynNamesMCB.State();
 			showRnw = ShowAllProvsMCB.State();
 			updateCountries = false;
+
+			// Repaint duplicate rows before clearing the list
+			PaintDupli(true);
 			ClearArrays();
 
 			if (BookStatus(true) && !DefinSetup(DecidePath()))
@@ -313,9 +316,6 @@ namespace EU4_PCP_Frame
 			ClearCP(); // Clear the color picker, and call the randomizer
 
 			DupliPrep();
-			if (DupliTable.Rows.Count > 0)
-				ColorDupliGB.Visible = true;
-			else ColorDupliGB.Visible = false;
 
 			return true;
 		}
@@ -534,7 +534,7 @@ namespace EU4_PCP_Frame
 		{
 			if (!CheckDupliMCB.State() || !selectedMod)
 			{
-				DupliTable.Rows.Clear();
+				PaintDupli();
 				return;
 			}
 			var colors = new int[provinces.Length];
@@ -565,16 +565,42 @@ namespace EU4_PCP_Frame
 			}
 
 			if (colors.Distinct().Count() == indexes.Length) return; // No duplicates
-			for (int prov = 0; prov < colors.Length; prov++)
+			for (int prov = 1; prov < colors.Length; prov++)
 			{
 				if (colors[prov] != colors[prov - 1]) continue;
+				if (!provinces[indexes[prov]].Show || !provinces[indexes[prov - 1]].Show) continue;
+				if (IgnoreRnwMCB.State() && (provinces[indexes[prov]].IsRNW(false) || provinces[indexes[prov - 1]].IsRNW(false))) continue;
+
 				duplicates.Add(new Dupli(provinces[indexes[prov]], provinces[indexes[prov - 1]]));
 			}
 
-			DupliTable.RowCount = duplicates.Count;
+			PaintDupli();
+		}
+
+		private void PaintDupli(bool forceClear = false)
+		{
 			for (int prov = 0; prov < duplicates.Count; prov++)
 			{
-				DupliTable.Rows[prov].SetValues(duplicates[prov].ToRow());
+				Color prov1Color, prov2Color;
+				if (!forceClear && CheckDupliMCB.State() && selectedMod)
+					prov1Color = Color.Maroon;
+				else if (duplicates[prov].Prov1.TableIndex % 2 == 0)
+					prov1Color = Colors.HeaderBackground;
+				else
+					prov1Color = Colors.GreyBackground;
+
+				if (CheckDupliMCB.State() && selectedMod)
+					prov2Color = Color.Maroon;
+				else if (duplicates[prov].Prov2.TableIndex % 2 == 0)
+					prov2Color = Colors.HeaderBackground;
+				else
+					prov2Color = Colors.GreyBackground;
+
+				for (int col = 1; col < 6; col++)
+				{
+					ProvTable[col, duplicates[prov].Prov1.TableIndex].Style.BackColor = prov1Color;
+					ProvTable[col, duplicates[prov].Prov2.TableIndex].Style.BackColor = prov2Color;
+				}
 			}
 		}
 
@@ -607,19 +633,7 @@ namespace EU4_PCP_Frame
 			var oldCount = ProvTable.RowCount;
 			ProvTable.RowCount = selProv.Length;
 
-			if (oldCount < ProvTable.RowCount)
-			{
-				for (int row = oldCount; row < selProv.Length; row++)
-				{
-					if (row % 2 == 0)
-					{
-						for (int col = 1; col < 6; col++)
-						{
-							ProvTable[col, row].Style.BackColor = Colors.HeaderBackground;
-						}
-					}
-				}
-			}
+			PaintTable(selProv.Length, oldCount);
 
 			for (int prov = 0; prov < selProv.Length; prov++)
 			{
@@ -633,6 +647,28 @@ namespace EU4_PCP_Frame
 				ProvTableSB.Visible = false;
 			else
 				ProvTableSB.Visible = true;
+		}
+
+		/// <summary>
+		/// Paints the new rows in ProvTable in alternate colors.
+		/// </summary>
+		/// <param name="newCount">New row count.</param>
+		/// <param name="oldCount">Row count before last change.</param>
+		private void PaintTable(int newCount, int oldCount)
+		{
+			if (oldCount < newCount)
+			{
+				for (int row = oldCount; row < newCount; row++)
+				{
+					if (row % 2 == 0)
+					{
+						for (int col = 1; col < 6; col++)
+						{
+							ProvTable[col, row].Style.BackColor = Colors.HeaderBackground;
+						}
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -1056,15 +1092,6 @@ namespace EU4_PCP_Frame
 			Critical(CriticalType.Finish, MainSequence());
 		}
 
-		private void DupliTable_DoubleClick(object sender, EventArgs e)
-		{
-			if (DupliTable.SelectedCells.Count != 1) return;
-
-			string val = DupliTable.SelectedCells[0].Value.ToString();
-			ProvTable.FirstDisplayedScrollingRowIndex =
-				duplicates.First(p => p.Prov1.ToString() == val || p.Prov2.ToString() == val).Prov1.TableIndex;
-		}
-
 		private void GameBookmarkCB_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			EnactBook(Scope.Game);
@@ -1196,11 +1223,19 @@ namespace EU4_PCP_Frame
 		private void CheckDupliMCB_Click(object sender, EventArgs e)
 		{
 			CheckDupliMCB.State(!CheckDupliMCB.State());
+			Settings.Default.ColorDupli = CheckDupliMCB.State();
+
+			if (ProvTable.Rows.Count == 0) return;
+			DupliPrep();
 		}
 
 		private void IgnoreRnwMCB_Click(object sender, EventArgs e)
 		{
-			IgnoreRnwMCB.State(IgnoreRnwMCB.State());
+			IgnoreRnwMCB.State(!IgnoreRnwMCB.State());
+			Settings.Default.IgnoreRNW = IgnoreRnwMCB.State();
+
+			if (ProvTable.Rows.Count == 0) return;
+			DupliPrep();
 		}
 
 		private void GameMaxProvTB_MouseHover(object sender, EventArgs e)
