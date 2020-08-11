@@ -219,11 +219,15 @@ namespace EU4_PCP_Frame
 		}
 	}
 
-	public class Country
+	public class ProvNameClass
+	{
+		public ProvName[] ProvNames;
+	}
+
+	public class Country : ProvNameClass
 	{
 		public string Code;
 		public Culture Culture;
-		public ProvName[] ProvNames;
 
 		public static implicit operator bool(Country obj)
 		{
@@ -236,11 +240,10 @@ namespace EU4_PCP_Frame
 		}
 	}
 
-	public class Culture
+	public class Culture : ProvNameClass
 	{
 		public string Name;
 		public Culture Group;
-		public ProvName[] ProvNames;
 
 		public static implicit operator bool(Culture obj)
 		{

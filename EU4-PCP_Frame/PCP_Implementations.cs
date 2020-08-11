@@ -155,32 +155,32 @@ namespace EU4_PCP_Frame
 		/// <param name="scope"><see cref="LocScope"/> enum.</param>
 		/// <returns><see cref="FileType"/> enum.</returns>
 		public static FileType FromLoc(LocScope scope) => scope switch
-        {
-            LocScope.Province => FileType.Province,
-            LocScope.Bookmark => FileType.Bookmark,
-            _ => throw new NotImplementedException()
-        };
+		{
+			LocScope.Province => FileType.Province,
+			LocScope.Bookmark => FileType.Bookmark,
+			_ => throw new NotImplementedException()
+		};
 
 		/// <summary>
 		/// Determines member scope by whether it contains the game path.
 		/// </summary>
 		/// <param name="member">The member of which to determine the scope.</param>
 		public static void MemberScope(this MembersCount member)
-        {
+		{
 			member.Scope = 
 				member.Path.Contains(Directory.GetParent(gamePath + locPath).FullName) ? 
 				Scope.Game : Scope.Mod;
 		}
 
-        #endregion
+		#endregion
 
-        /// <summary>
-        /// Creates the <see cref="Province"/> objects in the <see cref="provinces"/> array. <br />
-        /// Initializes with index, color, and name from definition file.
-        /// </summary>
-        /// <param name="path">Root folder to work on.</param>
-        /// <returns><see langword="false"/> if an exception occurs while trying to read from the definition file.</returns>
-        public static bool DefinSetup(string path)
+		/// <summary>
+		/// Creates the <see cref="Province"/> objects in the <see cref="provinces"/> array. <br />
+		/// Initializes with index, color, and name from definition file.
+		/// </summary>
+		/// <param name="path">Root folder to work on.</param>
+		/// <returns><see langword="false"/> if an exception occurs while trying to read from the definition file.</returns>
+		public static bool DefinSetup(string path)
 		{
 
 			string[] dFile;
@@ -588,12 +588,11 @@ namespace EU4_PCP_Frame
 
 				if (updateCountries)
 				{
-					try
-					{
-						countries.First(c => c.Code == code).Culture =
-						cultures.First(cul => cul.Name == priCul);
-					}
-					catch (Exception) { }
+					var tempCountry = countries.Where(c => c.Code == code);
+					var tempCulture = cultures.Where(cul => cul.Name == priCul);
+
+					if (tempCountry.Any() && tempCulture.Any())
+						tempCountry.First().Culture = tempCulture.First();
 				}
 				else
 				{
@@ -729,19 +728,16 @@ namespace EU4_PCP_Frame
 						Name = locNameRE.Match(split[1]).Value });
 				}
 
-				try
-				{
-					countries.First(cnt => cnt.Code == name).ProvNames = names.ToArray();
-				}
-				catch (Exception)
-				{
-					try
-					{
-						cultures.First(cul => cul.Name == name).ProvNames = names.ToArray();
-					}
-					catch (Exception) { }
-					// For when there's a province name file that doesn't match any culture or country.
-				}
+				// store country query in a parent class
+				IEnumerable<ProvNameClass> query = countries.Where(cnt => cnt.Code == name);
+				
+				// If no matching country was found, update the query with culture
+				if (!query.Any())
+					query = cultures.Where(cul => cul.Name == name);
+
+				// If the query contains a country or a culture (or a culture group)
+				if (query.Any())
+					query.First().ProvNames = names.ToArray();
 			});
 		}
 		/// <summary>
@@ -952,16 +948,11 @@ namespace EU4_PCP_Frame
 		/// <returns>Folders to replace as a <see cref="Replace"/> object.</returns>
 		private static Replace ReplacePrep(string rFile)
 		{
-			IEnumerable<string> vals;
-
-			try
-			{
-				vals = ((IEnumerable<Match>)modReplaceRE.Matches(rFile)).Select(m => m.Value);
-			}
-			catch (Exception)
-			{
-				return new Replace();
-			}
+			var vals = modReplaceRE.Matches(rFile)
+				.OfType<Match>()
+				.Select(m => m.Value);
+				
+			if (!vals.Any()) return new Replace();
 
 			return new Replace {
 				Cultures = vals.Contains(culturesRep),
@@ -1008,6 +999,17 @@ namespace EU4_PCP_Frame
 			bookmarks.Clear();
 			provFiles.Clear();
 			duplicates.Clear();
+		}
+
+		/// <summary>
+		/// Checks if the start date is greater than 01/01/0001, otherwise prompts.
+		/// </summary>
+		/// <returns><see langword="true"/> if the date is valid.</returns>
+		public static bool ValDate()
+		{
+			if (startDate > DateTime.MinValue) return true;
+			ErrorMsg(ErrorType.ValDate);
+			return false;
 		}
 
 		#region File Fetching

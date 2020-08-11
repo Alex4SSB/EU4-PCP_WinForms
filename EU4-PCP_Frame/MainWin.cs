@@ -27,35 +27,35 @@ namespace EU4_PCP_Frame
 
 			Critical(CriticalType.Begin);
 			SettingsInit();
-			bool Success = LaunchSequence();
-			if (!Success) ClearScreen();
-			Critical(CriticalType.Finish, Success);
+			bool success = LaunchSequence();
+			if (!success) ClearScreen();
+			Critical(CriticalType.Finish, success);
 		}
 
 		/// <summary>
 		/// Handles the beginning and finishing of (relatively) long-execution-time sections.
 		/// </summary>
-		/// <param name="Mode">Begin / Finish.</param>
-		/// <param name="Success"><see langword="true"/> to update FinishTiming.</param>
-		private void Critical(CriticalType Mode, bool Success) => Critical(Mode, CriticalScope.Game, Success);
+		/// <param name="mode">Begin / Finish.</param>
+		/// <param name="success"><see langword="true"/> to update FinishTiming.</param>
+		private void Critical(CriticalType mode, bool success) => Critical(mode, CriticalScope.Game, success);
 
 		/// <summary>
 		/// Handles the beginning and finishing of (relatively) long-execution-time sections.
 		/// </summary>
-		/// <param name="Mode">Begin / Finish.</param>
-		/// <param name="Scope">Game / Mod.</param>
-		/// <param name="Success"><see langword="true"/> to update FinishTiming.</param>
-		private void Critical(CriticalType Mode, CriticalScope Scope = CriticalScope.Game, bool Success = false)
+		/// <param name="mode">Begin / Finish.</param>
+		/// <param name="scope">Game / Mod.</param>
+		/// <param name="success"><see langword="true"/> to update FinishTiming.</param>
+		private void Critical(CriticalType mode, CriticalScope scope = CriticalScope.Game, bool success = false)
 		{
 			Text = $"{appName} {appVer}";
-			switch (Mode)
+			switch (mode)
 			{
 				case CriticalType.Begin:
 					beginTiming = DateTime.Now;
 					Cursor = Cursors.WaitCursor;
 
 					Text += " - Loading";
-					Text += Scope switch
+					Text += scope switch
 					{
 						CriticalScope.Game => "",
 						CriticalScope.Mod => " mod",
@@ -67,7 +67,7 @@ namespace EU4_PCP_Frame
 					break;
 				case CriticalType.Finish:
 					Cursor = Cursors.Default;
-					if (Success) finishTiming = DateTime.Now;
+					if (success) finishTiming = DateTime.Now;
 					lockdown = false;
 					break;
 				default:
@@ -127,7 +127,7 @@ namespace EU4_PCP_Frame
 			GameProvCountTB.Text = "";
 			GameProvShownTB.Text = "";
 			GameMaxProvTB.Text = "";
-			GameMaxProvTB.BackColor = Colors.GreyBackground;
+			GameMaxProvTB.BackColor = Colors.LightBackground;
 		}
 
 		/// <summary>
@@ -178,58 +178,58 @@ namespace EU4_PCP_Frame
 		/// <summary>
 		/// Handles all path validation for game and mod.
 		/// </summary>
-		/// <param name="Scope">Game / Mod.</param>
-		/// <param name="Mode">Read from settings or Write to settings.</param>
+		/// <param name="scope">Game / Mod.</param>
+		/// <param name="mode">Read from settings or Write to settings.</param>
 		/// <returns><see langword="true"/> if the validation was successful.</returns>
-		private bool PathHandler(Scope Scope, Mode Mode)
+		private bool PathHandler(Scope scope, Mode mode)
 		{
-			string Setting = "";
-			TextBox Box = null;
-			switch (Scope)
+			string setting = "";
+			TextBox box = null;
+			switch (scope)
 			{
 				case Scope.Game:
-					Setting = Settings.Default.GamePath;
-					Box = GamePathTB;
+					setting = Settings.Default.GamePath;
+					box = GamePathTB;
 					break;
 				case Scope.Mod:
-					Setting = Settings.Default.ModPath;
-					Box = ModPathTB;
+					setting = Settings.Default.ModPath;
+					box = ModPathTB;
 					break;
 				default:
 					break;
 			}
 
-			if (Setting.Contains('|'))
-				Setting = Setting.Split('|')[0];
+			if (setting.Contains('|'))
+				setting = setting.Split('|')[0];
 
-			switch (Mode)
+			switch (mode)
 			{
 				case Mode.Read:
-					switch (Scope)
+					switch (scope)
 					{
-						case Scope.Game when !File.Exists(Setting + gameFile):
+						case Scope.Game when !File.Exists(setting + gameFile):
 							ErrorMsg(ErrorType.GameExe);
-							SetWr(Scope, "");
+							SetWr(scope, "");
 							return false;
 						case Scope.Mod:
-							if (Setting.Length < 1)
+							if (setting.Length < 1)
 							{
 								if (Directory.Exists($@"{selectedDocsPath}\mod"))
 								{
 									paradoxModPath = $@"{selectedDocsPath}\mod";
-									Setting = paradoxModPath;
+									setting = paradoxModPath;
 								}
 								else return false;
 							}
-							else paradoxModPath = Setting;
+							else paradoxModPath = setting;
 							break;
 						default:
 							break;
 					}
-					Box.Text = Setting;
+					box.Text = setting;
 					break;
 				case Mode.Write:
-					SetWr(Scope, Box.Text);
+					SetWr(scope, box.Text);
 					break;
 				default:
 					break;
@@ -240,11 +240,11 @@ namespace EU4_PCP_Frame
 		/// <summary>
 		/// Writes to the game / mod path settings.
 		/// </summary>
-		/// <param name="Scope">Game / Mod.</param>
+		/// <param name="scope">Game / Mod.</param>
 		/// <param name="s">The string to store in the settings.</param>
-		private void SetWr(Scope Scope, string s)
+		private void SetWr(Scope scope, string s)
 		{
-			switch (Scope)
+			switch (scope)
 			{
 				case Scope.Game:
 					Settings.Default.GamePath = s;
@@ -350,8 +350,8 @@ namespace EU4_PCP_Frame
 		private bool DynamicSequence()
 		{
 			if (!enDyn) return true;
-			bool EnBooks = BookStatus(false);
-			bool Success = true;
+			bool enBooks = BookStatus(false);
+			bool success = true;
 
 			Parallel.Invoke(
 				() => CulturePrep(),
@@ -380,13 +380,13 @@ namespace EU4_PCP_Frame
 
 			Parallel.Invoke(
 				() => DefinesPrep(),
-				() => { if (EnBooks) FetchFiles(FileType.Bookmark); });
+				() => { if (enBooks) FetchFiles(FileType.Bookmark); });
 
 			Parallel.Invoke(
-				() => { if (EnBooks) BookPrep(); },
-				() => Success = FetchFiles(FileType.Province));
+				() => { if (enBooks) BookPrep(); },
+				() => success = FetchFiles(FileType.Province));
 
-			if (!Success)
+			if (!success)
 			{
 				ErrorMsg(ErrorType.HistoryProvFolder);
 				return false;
@@ -430,61 +430,49 @@ namespace EU4_PCP_Frame
 		private void RndPrep()
 		{
 			var rnd = new Random();
-			int R, G, B;
-			var TempColor = new Color();
+			int r, g, b;
+			var tempColor = new Color();
 
 			do
 			{
-				R = rnd.Next(0, 255);
-				G = rnd.Next(0, 255);
-				B = rnd.Next(0, 255);
-				TempColor = Color.FromArgb(R, G, B);
-			} while (provinces.Count(p => p && p.Color == TempColor) > 0);
+				r = rnd.Next(0, 255);
+				g = rnd.Next(0, 255);
+				b = rnd.Next(0, 255);
+				tempColor = Color.FromArgb(r, g, b);
+			} while (provinces.Count(p => p && p.Color == tempColor) > 0);
 
-			RedTB.Text = R.ToString();
-			GreenTB.Text = G.ToString();
-			BlueTB.Text = B.ToString();
-			GenColL.BackColor = TempColor;
+			RedTB.Text = r.ToString();
+			GreenTB.Text = g.ToString();
+			BlueTB.Text = b.ToString();
+			GenColL.BackColor = tempColor;
 			NextProvNumberTB.Text = provinces.Length.ToString();
-		}
-
-
-		/// <summary>
-		/// Checks if the start date is greater than 01/01/0001, otherwise prompts.
-		/// </summary>
-		/// <returns><see langword="true"/> if the date is valid.</returns>
-		private bool ValDate()
-		{
-			if (startDate > DateTime.MinValue) return true;
-			ErrorMsg(ErrorType.ValDate);
-			return false;
 		}
 
 		/// <summary>
 		/// Default file max provinces.
 		/// </summary>
-		/// <param name="Scope"></param>
+		/// <param name="scope"></param>
 		/// <returns><see langword="true"/> upon failure.</returns>
-		private bool MaxProvinces(Scope Scope)
+		private bool MaxProvinces(Scope scope)
 		{
-			var FilePath = gamePath;
-			if (Scope == Scope.Mod) FilePath = steamModPath;
+			var filePath = gamePath;
+			if (scope == Scope.Mod) filePath = steamModPath;
 
 			string d_file;
 			try
 			{
-				d_file = File.ReadAllText(FilePath + defMapPath, UTF8);
+				d_file = File.ReadAllText(filePath + defMapPath, UTF8);
 			}
 			catch (Exception)
 			{
 				ErrorMsg(ErrorType.DefMapRead);
 				return true;
 			}
-			var Match = maxProvRE.Match(d_file);
+			var match = maxProvRE.Match(d_file);
 
-			if (!Match.Success)
+			if (!match.Success)
 			{
-				switch (Scope)
+				switch (scope)
 				{
 					case Scope.Game:
 						GameMaxProvTB.Text = "";
@@ -500,13 +488,13 @@ namespace EU4_PCP_Frame
 				return true;
 			}
 
-			switch (Scope)
+			switch (scope)
 			{
 				case Scope.Game:
-					GameMaxProvTB.Text = Match.Value;
+					GameMaxProvTB.Text = match.Value;
 					break;
 				case Scope.Mod:
-					ModMaxProvTB.Text = Match.Value;
+					ModMaxProvTB.Text = match.Value;
 					break;
 				default:
 					break;
@@ -535,7 +523,7 @@ namespace EU4_PCP_Frame
 					? Color.DarkOliveGreen : Color.Maroon;
 
 				ModProvCountTB.BackColor = ModProvCountTB.Text.Gt(GameProvCountTB.Text)
-					? Colors.GreyBackground : Color.Maroon;
+					? Colors.LightBackground : Color.Maroon;
 			}
 		}
 
@@ -549,44 +537,44 @@ namespace EU4_PCP_Frame
 				DupliTable.Rows.Clear();
 				return;
 			}
-			var Colors = new int[provinces.Length];
-			var Indexes = new int[provinces.Length];
+			var colors = new int[provinces.Length];
+			var indexes = new int[provinces.Length];
 
-			for (int Prov = 0; Prov < provinces.Length; Prov++)
+			for (int prov = 0; prov < provinces.Length; prov++)
 			{
-				if (!provinces[Prov]) continue;
-				Colors[Prov] = provinces[Prov].Color;
-				Indexes[Prov] = provinces[Prov];
+				if (!provinces[prov]) continue;
+				colors[prov] = provinces[prov].Color;
+				indexes[prov] = provinces[prov];
 			}
 
-			Array.Sort(Colors, Indexes);
-			var empty = Colors.Count(c => c == 0);
-			if (Colors[0] == 0) // Shouldn't happen, but just in case
+			Array.Sort(colors, indexes);
+			var empty = colors.Count(c => c == 0);
+			if (colors[0] == 0) // Shouldn't happen, but just in case
 			{
-				Array.Reverse(Colors);
-				Array.Reverse(Indexes);
-				Array.Resize(ref Colors, Colors.Length - empty);
-				Array.Resize(ref Indexes, Indexes.Length - empty);
-				Array.Reverse(Colors);
-				Array.Reverse(Indexes);
+				Array.Reverse(colors);
+				Array.Reverse(indexes);
+				Array.Resize(ref colors, colors.Length - empty);
+				Array.Resize(ref indexes, indexes.Length - empty);
+				Array.Reverse(colors);
+				Array.Reverse(indexes);
 			}
 			else // Default case
 			{
-				Array.Resize(ref Colors, Colors.Length - empty);
-				Array.Resize(ref Indexes, Indexes.Length - empty);
+				Array.Resize(ref colors, colors.Length - empty);
+				Array.Resize(ref indexes, indexes.Length - empty);
 			}
 
-			if (Colors.Distinct().Count() == Indexes.Length) return; // No duplicates
-			for (int Prov = 0; Prov < Colors.Length; Prov++)
+			if (colors.Distinct().Count() == indexes.Length) return; // No duplicates
+			for (int prov = 0; prov < colors.Length; prov++)
 			{
-				if (Colors[Prov] != Colors[Prov - 1]) continue;
-				duplicates.Add(new Dupli(provinces[Indexes[Prov]], provinces[Indexes[Prov - 1]]));
+				if (colors[prov] != colors[prov - 1]) continue;
+				duplicates.Add(new Dupli(provinces[indexes[prov]], provinces[indexes[prov - 1]]));
 			}
 
 			DupliTable.RowCount = duplicates.Count;
-			for (int Prov = 0; Prov < duplicates.Count; Prov++)
+			for (int prov = 0; prov < duplicates.Count; prov++)
 			{
-				DupliTable.Rows[Prov].SetValues(duplicates[Prov].ToRow());
+				DupliTable.Rows[prov].SetValues(duplicates[prov].ToRow());
 			}
 		}
 
@@ -600,41 +588,44 @@ namespace EU4_PCP_Frame
 		/// Optionally combined with enabled bookmarks check, to disable some sequences
 		/// when the bookmarks are disabled.
 		/// </summary>
-		/// <param name="Enabled"><see langword="true"/> to ignore bookmarks being enabled or disabled 
+		/// <param name="enabled"><see langword="true"/> to ignore bookmarks being enabled or disabled 
 		/// (tied to dynamic enabled).</param>
 		/// <returns><see langword="true"/> if Bookmarks should be updated.</returns>
-		private bool BookStatus(bool Enabled)
+		private bool BookStatus(bool enabled)
 		{
-			return (Enabled || DynNamesMCB.State()) && !(
+			return (enabled || DynNamesMCB.State()) && !(
 				GameBookmarkCB.SelectedIndex > 0 || (
 				ModBookmarkCB.SelectedIndex > 0 && selectedMod));
 		}
 
+		/// <summary>
+		/// Writes all provinces to the ProvTable and paints it accordingly.
+		/// </summary>
 		private void PopulateTable()
 		{
-			Province[] SelProv = provinces.Where(Prov => Prov && Prov.Show).ToArray();
+			Province[] selProv = provinces.Where(prov => prov && prov.Show).ToArray();
 			var oldCount = ProvTable.RowCount;
-			ProvTable.RowCount = SelProv.Length;
+			ProvTable.RowCount = selProv.Length;
 
 			if (oldCount < ProvTable.RowCount)
 			{
-				for (int Row = oldCount; Row < SelProv.Length; Row++)
+				for (int row = oldCount; row < selProv.Length; row++)
 				{
-					if (Row % 2 == 0)
+					if (row % 2 == 0)
 					{
-						for (int Column = 1; Column < 6; Column++)
+						for (int col = 1; col < 6; col++)
 						{
-							ProvTable[Column, Row].Style.BackColor = Colors.HeaderBackground;
+							ProvTable[col, row].Style.BackColor = Colors.HeaderBackground;
 						}
 					}
 				}
 			}
 
-			for (int Prov = 0; Prov < SelProv.Length; Prov++)
+			for (int prov = 0; prov < selProv.Length; prov++)
 			{
-				ProvTable[0, Prov].Style.BackColor = SelProv[Prov].Color;
-				ProvTable.Rows[Prov].SetValues(SelProv[Prov].ToRow());
-				provinces[SelProv[Prov].Index].TableIndex = Prov;
+				ProvTable[0, prov].Style.BackColor = selProv[prov].Color;
+				ProvTable.Rows[prov].SetValues(selProv[prov].ToRow());
+				provinces[selProv[prov].Index].TableIndex = prov;
 			}
 			ProvTableSB.Maximum = ProvTable.RowCount - ProvTable.DisplayedRowCount(false) + 1;
 			ProvTable.ClearSelection();
@@ -647,22 +638,26 @@ namespace EU4_PCP_Frame
 		/// <summary>
 		/// Update the bookmark CBs with all relevant bookmarks.
 		/// </summary>
-		/// <param name="Scope">Game / Mod.</param>
-		private void PopulateBooks(Scope Scope)
+		/// <param name="scope">Game / Mod.</param>
+		private void PopulateBooks(Scope scope)
 		{
 			if (!BookStatus(false)) return;
 
-			if (!bookmarks.Where(b => b.Code != null).Any()) return;
+			if (!bookmarks.Where(b => b.Code != null).Any())
+			{
+				ModBookmarkCB.DataSource = null;
+				return;
+			}
 
-			var Books = new List<string>(bookmarks.Select(b => b.Name));
+			var books = new List<string>(bookmarks.Select(b => b.Name));
 
-			switch (Scope)
+			switch (scope)
 			{
 				case Scope.Game:
-					GameBookmarkCB.DataSource = Books;
+					GameBookmarkCB.DataSource = books;
 					break;
 				case Scope.Mod:
-					ModBookmarkCB.DataSource = Books;
+					ModBookmarkCB.DataSource = books;
 					ModBookmarkCB.SelectedIndex = 0;
 					break;
 				default:
@@ -673,12 +668,12 @@ namespace EU4_PCP_Frame
 		/// <summary>
 		///  Decides whether to enable / disable bookmark CBs.
 		/// </summary>
-		/// <param name="Scope">Game / Mod</param>
+		/// <param name="scope">Game / Mod</param>
 		/// <returns><see langword="true"/> if bookmark CBs should be enabled.</returns>
-		private bool PrepEnableBooks(Scope Scope)
+		private bool PrepEnableBooks(Scope scope)
 		{
 			if (!DynNamesMCB.State()) return false;
-			return Scope switch
+			return scope switch
 			{
 				Scope.Game => GameBookmarkCB.Items.Count > 0,
 				Scope.Mod => ModBookmarkCB.Items.Count > 0,
@@ -689,19 +684,19 @@ namespace EU4_PCP_Frame
 		/// <summary>
 		/// Enables / disables bookmark CBs.
 		/// </summary>
-		/// <param name="Scope">Game / Mod.</param>
-		private void EnableBooks(Scope Scope)
+		/// <param name="scope">Game / Mod.</param>
+		private void EnableBooks(Scope scope)
 		{
-			var En = PrepEnableBooks(Scope);
-			switch (Scope)
+			var enable = PrepEnableBooks(scope);
+			switch (scope)
 			{
 				case Scope.Game:
-					GameBookmarkCB.Enabled = En;
-					if (!En) GameBookmarkCB.DataSource = null;
+					GameBookmarkCB.Enabled = enable;
+					if (!enable) GameBookmarkCB.DataSource = null;
 					break;
 				case Scope.Mod:
-					ModBookmarkCB.Enabled = En;
-					if (!En) ModBookmarkCB.DataSource = null;
+					ModBookmarkCB.Enabled = enable;
+					if (!enable) ModBookmarkCB.DataSource = null;
 					break;
 				default:
 					break;
@@ -711,10 +706,10 @@ namespace EU4_PCP_Frame
 		/// <summary>
 		/// A smart count of overall provinces and shown provinces. <br />
 		/// </summary>
-		/// <param name="Scope"></param>
-		private void CountProv(Scope Scope)
+		/// <param name="scope"></param>
+		private void CountProv(Scope scope)
 		{
-			switch (Scope)
+			switch (scope)
 			{
 				case Scope.Game:
 					GameProvCountTB.Text = provinces.Count(p => p && p.ToString().Length > 0).ToString();
@@ -732,13 +727,13 @@ namespace EU4_PCP_Frame
 		/// <summary>
 		/// Combines the game and mod bookmark CB index changed handlers.
 		/// </summary>
-		/// <param name="Scope">Game / Mod.</param>
-		private void EnactBook(Scope Scope)
+		/// <param name="scope">Game / Mod.</param>
+		private void EnactBook(Scope scope)
 		{
 			if (lockdown) return;
 			Critical(CriticalType.Begin, CriticalScope.Bookmark);
 
-			switch (Scope)
+			switch (scope)
 			{
 				case Scope.Game:
 					startDate = bookmarks.First(book => book.Name == GameBookmarkCB.SelectedItem.ToString()).StartDate;
@@ -766,13 +761,13 @@ namespace EU4_PCP_Frame
 		/// <summary>
 		/// Handles the folder browser.
 		/// </summary>
-		/// <param name="Scope">Game / Mod.</param>
-		private void FolderBrowse(Scope Scope)
+		/// <param name="scope">Game / Mod.</param>
+		private void FolderBrowse(Scope scope)
 		{
 			if (BrowserFBD.ShowDialog() != DialogResult.OK) return;
 			Critical(CriticalType.Begin);
 
-			switch (Scope)
+			switch (scope)
 			{
 				case Scope.Game:
 					GamePathTB.Text = BrowserFBD.SelectedPath;
@@ -783,7 +778,7 @@ namespace EU4_PCP_Frame
 				default:
 					break;
 			}
-			PathHandler(Scope, Mode.Write);
+			PathHandler(scope, Mode.Write);
 
 			Critical(CriticalType.Finish, LaunchSequence());
 		}
@@ -828,8 +823,8 @@ namespace EU4_PCP_Frame
 				steamModPath = selectedMod.Path;
 			}
 
-			var Success = MainSequence();
-			if (!Success)
+			var success = MainSequence();
+			if (!success)
 			{
 				if (selectedMod)
 				{
@@ -841,7 +836,7 @@ namespace EU4_PCP_Frame
 			else
 				Settings.Default.LastSelMod = ModSelCB.SelectedItem.ToString();
 
-			Critical(CriticalType.Finish, Success);
+			Critical(CriticalType.Finish, success);
 		}
 
 		/// <summary>
@@ -898,20 +893,20 @@ namespace EU4_PCP_Frame
 			// Update TB colors
 			ProvCountColor();
 
-			string DefMap;
+			string defMap;
 			try
 			{
-				DefMap = File.ReadAllText(steamModPath + defMapPath);
+				defMap = File.ReadAllText(steamModPath + defMapPath);
 			}
 			catch (Exception)
 			{
 				ErrorMsg(ErrorType.DefMapRead);
 				return;
 			}
-			DefMap = defMapRE.Replace(DefMap, $"max_provinces = {ModMaxProvTB.Text}");
+			defMap = defMapRE.Replace(defMap, $"max_provinces = {ModMaxProvTB.Text}");
 			try
 			{
-				File.WriteAllText(steamModPath + defMapPath, DefMap, UTF8);
+				File.WriteAllText(steamModPath + defMapPath, defMap, UTF8);
 			}
 			catch (Exception)
 			{
@@ -1082,9 +1077,9 @@ namespace EU4_PCP_Frame
 
 		private void GameBookmarkCB_DropDown(object sender, EventArgs e)
 		{
-			foreach (var Item in GameBookmarkCB.Items)
+			foreach (var item in GameBookmarkCB.Items)
 			{
-				TempL.Text = Item.ToString();
+				TempL.Text = item.ToString();
 				if (TempL.Width + 5 > GameBookmarkCB.DropDownWidth)
 					GameBookmarkCB.DropDownWidth = TempL.Width + 5;
 			}
@@ -1094,9 +1089,9 @@ namespace EU4_PCP_Frame
 
 		private void ModBookmarkCB_DropDown(object sender, EventArgs e)
 		{
-			foreach (var Item in ModBookmarkCB.Items)
+			foreach (var item in ModBookmarkCB.Items)
 			{
-				TempL.Text = Item.ToString();
+				TempL.Text = item.ToString();
 				if (TempL.Width > ModBookmarkCB.DropDownWidth)
 					ModBookmarkCB.DropDownWidth = TempL.Width;
 			}
@@ -1188,9 +1183,9 @@ namespace EU4_PCP_Frame
 
 		private void ModSelCB_DropDown(object sender, EventArgs e)
 		{
-			foreach (var Item in ModSelCB.Items)
+			foreach (var item in ModSelCB.Items)
 			{
-				TempL.Text = Item.ToString();
+				TempL.Text = item.ToString();
 				if (TempL.Width + 5 > ModSelCB.DropDownWidth)
 					ModSelCB.DropDownWidth = TempL.Width + 5;
 			}
