@@ -528,7 +528,7 @@ namespace EU4_PCP_Frame
 		}
 
 		/// <summary>
-		/// Prepare the table of duplicate provinces.
+		/// Prepare the duplicate provinces for display.
 		/// </summary>
 		private void DupliPrep()
 		{
@@ -577,30 +577,80 @@ namespace EU4_PCP_Frame
 			PaintDupli();
 		}
 
+		/// <summary>
+		/// Paint rows of duplicate provinces in the table, and add markers
+		/// </summary>
+		/// <param name="forceClear"><see langword="true"/> to remove all duplicate coloring.</param>
 		private void PaintDupli(bool forceClear = false)
 		{
 			for (int prov = 0; prov < duplicates.Count; prov++)
 			{
 				Color prov1Color, prov2Color;
+				
 				if (!forceClear && CheckDupliMCB.State() && selectedMod)
-					prov1Color = Color.Maroon;
-				else if (duplicates[prov].Prov1.TableIndex % 2 == 0)
-					prov1Color = Colors.HeaderBackground;
-				else
-					prov1Color = Colors.GreyBackground;
-
-				if (CheckDupliMCB.State() && selectedMod)
+				{
+					UpdateMarkers(duplicates[prov], true);
+					prov1Color =
 					prov2Color = Color.Maroon;
-				else if (duplicates[prov].Prov2.TableIndex % 2 == 0)
-					prov2Color = Colors.HeaderBackground;
+				}
 				else
-					prov2Color = Colors.GreyBackground;
+				{
+					UpdateMarkers(duplicates[prov], false);
+
+					if (duplicates[prov].Prov1.TableIndex % 2 == 0)
+						prov1Color = Colors.HeaderBackground;
+					else
+						prov1Color = Colors.GreyBackground;
+
+					if (duplicates[prov].Prov2.TableIndex % 2 == 0)
+						prov2Color = Colors.HeaderBackground;
+					else
+						prov2Color = Colors.GreyBackground;
+				}
 
 				for (int col = 1; col < 6; col++)
 				{
 					ProvTable[col, duplicates[prov].Prov1.TableIndex].Style.BackColor = prov1Color;
 					ProvTable[col, duplicates[prov].Prov2.TableIndex].Style.BackColor = prov2Color;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Creates or destroys markers of the given duplicate provinces.
+		/// </summary>
+		/// <param name="dupli">The <see cref="Dupli"/> object to update from.</param>
+		/// <param name="create"><see langword="true"/> to create the markers, <see langword="false"/> to destroy them.</param>
+		public void UpdateMarkers(Dupli dupli, bool create)
+		{
+			if (create) // C-tor
+			{
+				dupli.DupliLabel1 = new Label();
+				dupli.DupliLabel2 = new Label();
+
+				dupli.DupliLabel1.BackColor =
+				dupli.DupliLabel2.BackColor = Color.Maroon;
+
+				dupli.DupliLabel1.Size =
+				dupli.DupliLabel2.Size = new Size(8, 5);
+
+				dupli.DupliLabel1.Location = new Point(393, (int)((((float)dupli.Prov1.TableIndex / (float)ProvTable.RowCount) * (ProvTableSB.Height - 32)) + ProvTableSB.Location.Y + 14));
+				dupli.DupliLabel2.Location = new Point(393, (int)((((float)dupli.Prov2.TableIndex / (float)ProvTable.RowCount) * (ProvTableSB.Height - 32)) + ProvTableSB.Location.Y + 14));
+
+				this.Controls.Add(dupli.DupliLabel1);
+				this.Controls.Add(dupli.DupliLabel2);
+
+				dupli.DupliLabel1.BringToFront();
+				dupli.DupliLabel2.BringToFront();
+			}
+			else // Destructor
+			{
+				this.Controls.Remove(dupli.DupliLabel1);
+				this.Controls.Remove(dupli.DupliLabel2);
+				dupli.DupliLabel1.Dispose();
+				dupli.DupliLabel2.Dispose();
+				dupli.DupliLabel1 = null;
+				dupli.DupliLabel2 = null;
 			}
 		}
 

@@ -429,6 +429,8 @@ namespace EU4_PCP_Frame
 	{
 		public Province Prov1;
 		public Province Prov2;
+		public Label DupliLabel1;
+		public Label DupliLabel2;
 
 		public static implicit operator bool(Dupli obj)
 		{
