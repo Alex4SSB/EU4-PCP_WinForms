@@ -1,4 +1,4 @@
-﻿namespace EU4_PCP_Frame
+﻿namespace EU4_PCP
 {
     public enum LocScope
     {

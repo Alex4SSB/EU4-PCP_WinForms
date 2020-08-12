@@ -1,4 +1,6 @@
-﻿using EU4_PCP.Properties;
+﻿using DarkUI.Config;
+using DarkUI.Forms;
+using EU4_PCP.Properties;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -6,13 +8,14 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DarkUI.Config;
-using DarkUI.Forms;
 using System.Windows.Forms;
-using static EU4_PCP_Frame.GlobVar;
-using static EU4_PCP_Frame.PCP_Implementations;
+using static EU4_PCP.PCP_Const;
+using static EU4_PCP.PCP_Data;
+using static EU4_PCP.PCP_Implementations;
+using static EU4_PCP.PCP_Paths;
+using static EU4_PCP.PCP_RegEx;
 
-namespace EU4_PCP_Frame
+namespace EU4_PCP
 {
 	public partial class MainWin : DarkForm
 	{
@@ -47,7 +50,7 @@ namespace EU4_PCP_Frame
 		/// <param name="success"><see langword="true"/> to update FinishTiming.</param>
 		private void Critical(CriticalType mode, CriticalScope scope = CriticalScope.Game, bool success = false)
 		{
-			Text = $"{appName} {appVer}";
+			Text = $"{APP_NAME} {APP_VER}";
 			switch (mode)
 			{
 				case CriticalType.Begin:
@@ -292,7 +295,7 @@ namespace EU4_PCP_Frame
 
 			if (selectedMod)
 			{
-				ModStartDateTB.Text = startDate.ToString(dateFormat);
+				ModStartDateTB.Text = startDate.ToString(DATE_FORMAT);
 				ModInfoGB.Text = $"Mod - {selectedMod.Ver}";
 				CountProv(Scope.Mod);
 				PopulateBooks(Scope.Mod);
@@ -300,7 +303,7 @@ namespace EU4_PCP_Frame
 			}
 			else
 			{
-				GameStartDateTB.Text = startDate.ToString(dateFormat);
+				GameStartDateTB.Text = startDate.ToString(DATE_FORMAT);
 				ModInfoGB.Text = "Mod";
 				CountProv(Scope.Game);
 				PopulateBooks(Scope.Game);
@@ -823,11 +826,11 @@ namespace EU4_PCP_Frame
 			{
 				case Scope.Game:
 					startDate = bookmarks.First(book => book.Name == GameBookmarkCB.SelectedItem.ToString()).StartDate;
-					GameStartDateTB.Text = startDate.ToString(dateFormat);
+					GameStartDateTB.Text = startDate.ToString(DATE_FORMAT);
 					break;
 				case Scope.Mod:
 					startDate = bookmarks.First(book => book.Name == ModBookmarkCB.SelectedItem.ToString()).StartDate;
-					ModStartDateTB.Text = startDate.ToString(dateFormat);
+					ModStartDateTB.Text = startDate.ToString(DATE_FORMAT);
 					break;
 				default:
 					break;
@@ -899,7 +902,7 @@ namespace EU4_PCP_Frame
 						{
 							GameBookmarkCB.Enabled = false;
 							startDate = bookmarks[GameBookmarkCB.SelectedIndex].StartDate;
-							GameStartDateTB.Text = startDate.ToString(dateFormat);
+							GameStartDateTB.Text = startDate.ToString(DATE_FORMAT);
 						}
 					}
 					ColorPickerGB.Enabled =
@@ -934,7 +937,7 @@ namespace EU4_PCP_Frame
 			try
 			{
 				// Read all lines from the mod definition file
-				defFile = File.ReadAllText(steamModPath + definPath, UTF7).Split(separators, StringSplitOptions.RemoveEmptyEntries);
+				defFile = File.ReadAllText(steamModPath + definPath, UTF7).Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
 			}
 			catch (Exception)
 			{
@@ -1161,7 +1164,7 @@ namespace EU4_PCP_Frame
 					GameBookmarkCB.DropDownWidth = TempL.Width + 5;
 			}
 			if (GameBookmarkCB.Items.Count > GameBookmarkCB.MaxDropDownItems)
-				GameBookmarkCB.DropDownWidth += widthSB;
+				GameBookmarkCB.DropDownWidth += WIDTH_SB;
 		}
 
 		private void ModBookmarkCB_DropDown(object sender, EventArgs e)
@@ -1173,7 +1176,7 @@ namespace EU4_PCP_Frame
 					ModBookmarkCB.DropDownWidth = TempL.Width;
 			}
 			if (ModBookmarkCB.Items.Count > ModBookmarkCB.MaxDropDownItems)
-				ModBookmarkCB.DropDownWidth += widthSB;
+				ModBookmarkCB.DropDownWidth += WIDTH_SB;
 		}
 
 		private void GamePathTB_MouseHover(object sender, EventArgs e)
@@ -1203,12 +1206,12 @@ namespace EU4_PCP_Frame
 
 		private void GameStartDateTB_MouseHover(object sender, EventArgs e)
 		{
-			TextBoxTT.SetToolTip(GameStartDateTB, dateFormat);
+			TextBoxTT.SetToolTip(GameStartDateTB, DATE_FORMAT);
 		}
 
 		private void ModStartDateTB_MouseHover(object sender, EventArgs e)
 		{
-			TextBoxTT.SetToolTip(ModStartDateTB, dateFormat);
+			TextBoxTT.SetToolTip(ModStartDateTB, DATE_FORMAT);
 		}
 
 		private void GlobSetM_DropDownOpening(object sender, EventArgs e)
@@ -1267,7 +1270,7 @@ namespace EU4_PCP_Frame
 					ModSelCB.DropDownWidth = TempL.Width + 5;
 			}
 			if (ModSelCB.Items.Count > ModSelCB.MaxDropDownItems)
-				ModSelCB.DropDownWidth += widthSB;
+				ModSelCB.DropDownWidth += WIDTH_SB;
 		}
 
 		private void CheckDupliMCB_Click(object sender, EventArgs e)

@@ -99,6 +99,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PCP_Const.cs" />
+    <Compile Include="PCP_Data.cs" />
+    <Compile Include="PCP_Paths.cs" />
+    <Compile Include="PCP_RegEx.cs" />
     <Compile Include="MainWin.cs">
       <SubType>Form</SubType>
     </Compile>
