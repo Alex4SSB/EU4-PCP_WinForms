@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows;
 using static EU4_PCP.PCP_Const;
 using static EU4_PCP.PCP_Data;
 using static EU4_PCP.PCP_Implementations;
@@ -415,6 +416,9 @@ namespace EU4_PCP
 		/// </summary>
 		private void ClearCP()
 		{
+			AddProvB.Text = "Add Province";
+			NextProvNameTB.BackColor = Colors.LightBackground;
+			NextProvNameTB.ReadOnly = false;
 			NextProvNameTB.Text = "";
 			if (!ColorPickerGB.Enabled)
 			{
@@ -448,7 +452,9 @@ namespace EU4_PCP
 			GreenTB.Text = g.ToString();
 			BlueTB.Text = b.ToString();
 			GenColL.BackColor = tempColor;
-			NextProvNumberTB.Text = provinces.Length.ToString();
+
+			if (!NextProvNameTB.ReadOnly)
+				NextProvNumberTB.Text = provinces.Length.ToString();
 		}
 
 		/// <summary>
@@ -552,20 +558,8 @@ namespace EU4_PCP
 
 			Array.Sort(colors, indexes);
 			var empty = colors.Count(c => c == 0);
-			if (colors[0] == 0) // Shouldn't happen, but just in case
-			{
-				Array.Reverse(colors);
-				Array.Reverse(indexes);
-				Array.Resize(ref colors, colors.Length - empty);
-				Array.Resize(ref indexes, indexes.Length - empty);
-				Array.Reverse(colors);
-				Array.Reverse(indexes);
-			}
-			else // Default case
-			{
-				Array.Resize(ref colors, colors.Length - empty);
-				Array.Resize(ref indexes, indexes.Length - empty);
-			}
+			Array.Resize(ref colors, colors.Length - empty);
+			Array.Resize(ref indexes, indexes.Length - empty);
 
 			if (colors.Distinct().Count() == indexes.Length) return; // No duplicates
 			for (int prov = 1; prov < colors.Length; prov++)
@@ -637,11 +631,12 @@ namespace EU4_PCP
 					Location = new Point(ProvTableSB.Location.X - 1,
 						(int)(ProvTableSB.Location.Y + MARKER_Y_OFFSET +
 						(((float)dupli.Prov.TableIndex /
-						(float)ProvTable.RowCount) * (ProvTableSB.Height - HEIGHT_OFFSET_SB))))
+						ProvTable.RowCount) * (ProvTableSB.Height - HEIGHT_OFFSET_SB))))
 				};
 
 				this.Controls.Add(dupli.DupliLabel);
 				dupli.DupliLabel.BringToFront();
+				dupli.DupliLabel.Click += new EventHandler(DupliLabel_Click);
 			}
 			else // Destructor
 			{
@@ -1319,6 +1314,31 @@ namespace EU4_PCP
 		private void ProvTableSB_ValueChanged(object sender, DarkUI.Controls.ScrollValueEventArgs e)
 		{
 			ProvTable.FirstDisplayedCell = ProvTable.Rows[e.Value].Cells[0];
+		}
+
+		private void ProvTable_MouseDown(object sender, MouseEventArgs e)
+		{
+			ProvTable.ClearSelection();
+			ProvTable.Rows[ProvTable.HitTest(e.X, e.Y).RowIndex].Selected = true;
+			ChangeColorSM.Visible =
+				ProvTable.SelectedRows[0].Cells[1].Style.BackColor == Color.Maroon;
+		}
+
+		private void DupliLabel_Click(object sender, EventArgs e)
+		{
+			var dupliLabel = sender as Label;
+			ProvTableSB.Value = (int)((float)(dupliLabel.Location.Y - ProvTableSB.Location.Y - MARKER_Y_OFFSET + 1) /
+				(ProvTableSB.Height - HEIGHT_OFFSET_SB) *
+				ProvTableSB.Maximum);
+		}
+
+        private void SelectInPickerMB_Click(object sender, EventArgs e)
+        {
+			NextProvNumberTB.Text = provinces[ProvTable.SelectedRows[0].Cells[1].Value.ToString().ToInt()].Index.ToString();
+			NextProvNameTB.Text = provinces[ProvTable.SelectedRows[0].Cells[1].Value.ToString().ToInt()].ToString();
+			NextProvNameTB.ReadOnly = true;
+			AddProvB.Text = "Update Province";
+			NextProvNameTB.BackColor = Colors.BlueBackground;
 		}
 
 		#endregion
