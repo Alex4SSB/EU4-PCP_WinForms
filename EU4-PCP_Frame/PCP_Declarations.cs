@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace EU4_PCP
 {
-    public class P_Color
+	public class P_Color
 	{
 		public byte R;
 		public byte G;
@@ -308,27 +308,41 @@ namespace EU4_PCP
 		}
 	}
 
-	public class Dupli
+	public class DupliProv
 	{
-		public Province Prov1;
-		public Province Prov2;
-		public Label DupliLabel1;
-		public Label DupliLabel2;
+		public Province Prov;
+		public Label DupliLabel;
 
-		public static implicit operator bool(Dupli obj)
+		public static implicit operator bool(DupliProv obj)
 		{
 			return obj is object;
 		}
 
-		public Dupli(Province prov1, Province prov2)
+		public DupliProv(Province prov)
 		{
-			Prov1 = prov1;
-			Prov2 = prov2;
+			Prov = prov;
 		}
 
 		public override string ToString()
 		{
-			return $"{Prov1} | {Prov2}";
+			return Prov.ToString();
+		}
+	}
+
+	public class Dupli
+	{
+		public DupliProv Dupli1;
+		public DupliProv Dupli2;
+
+		public Dupli(Province prov1, Province prov2)
+		{
+			Dupli1 = new DupliProv(prov1);
+			Dupli2 = new DupliProv(prov2);
+		}
+
+		public override string ToString()
+		{
+			return $"{Dupli1} | {Dupli2}";
 		}
 	}
 

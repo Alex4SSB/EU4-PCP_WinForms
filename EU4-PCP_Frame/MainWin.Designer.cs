@@ -108,7 +108,6 @@
             this.ModProvCountTB = new DarkUI.Controls.DarkTextBox();
             this.BrowserFBD = new System.Windows.Forms.FolderBrowserDialog();
             this.TextBoxTT = new System.Windows.Forms.ToolTip(this.components);
-            this.DupliMarker1 = new DarkUI.Controls.DarkLabel();
             this.MainMS.SuspendLayout();
             this.ColorPickerGB.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ProvTable)).BeginInit();
@@ -988,22 +987,11 @@
             this.ModProvCountTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.ModProvCountTB.MouseHover += new System.EventHandler(this.ModProvCountTB_MouseHover);
             // 
-            // DupliMarker1
-            // 
-            this.DupliMarker1.BackColor = System.Drawing.Color.Maroon;
-            this.DupliMarker1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.DupliMarker1.Location = new System.Drawing.Point(393, 313);
-            this.DupliMarker1.Name = "DupliMarker1";
-            this.DupliMarker1.Size = new System.Drawing.Size(8, 5);
-            this.DupliMarker1.TabIndex = 41;
-            this.DupliMarker1.Visible = false;
-            // 
             // MainWin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(651, 669);
-            this.Controls.Add(this.DupliMarker1);
             this.Controls.Add(this.ModInfoGB);
             this.Controls.Add(this.GameInfoGB);
             this.Controls.Add(this.ModSelL);
@@ -1108,7 +1096,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ProvRed;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProvGreen;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProvBlue;
-        private DarkUI.Controls.DarkLabel DupliMarker1;
         public System.Windows.Forms.ToolStripMenuItem DisableLoadMCB;
         public System.Windows.Forms.ToolStripMenuItem RemLoadMCB;
         public System.Windows.Forms.ToolStripMenuItem FullyLoadMCB;

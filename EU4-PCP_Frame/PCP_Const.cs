@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Drawing;
+using System.Text;
 
 namespace EU4_PCP
 {
@@ -16,6 +17,9 @@ namespace EU4_PCP
 		}; // EU Date Formats. The years 2 - 999 are interpreted falsely, and thus processed in the date parser
 
 		// SYSTEM VARS
+		public static readonly Size MARKER_SIZE = new Size(8, 5);
+		public static readonly int MARKER_Y_OFFSET = 15;
+		public static readonly int HEIGHT_OFFSET_SB = 34;
 		public static readonly int WIDTH_SB = System.Windows.Forms.SystemInformation.VerticalScrollBarWidth;
 		public static readonly Encoding UTF7 = Encoding.UTF7;
 		public static readonly Encoding UTF8 = new UTF8Encoding(false);

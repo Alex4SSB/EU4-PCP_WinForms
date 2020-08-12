@@ -592,20 +592,22 @@ namespace EU4_PCP
 				
 				if (!forceClear && CheckDupliMCB.State() && selectedMod)
 				{
-					UpdateMarkers(duplicates[prov], true);
+					UpdateMarkers(duplicates[prov].Dupli1, true);
+					UpdateMarkers(duplicates[prov].Dupli2, true);
 					prov1Color =
 					prov2Color = Color.Maroon;
 				}
 				else
 				{
-					UpdateMarkers(duplicates[prov], false);
+					UpdateMarkers(duplicates[prov].Dupli1, false);
+					UpdateMarkers(duplicates[prov].Dupli2, false);
 
-					if (duplicates[prov].Prov1.TableIndex % 2 == 0)
+					if (duplicates[prov].Dupli1.Prov.TableIndex % 2 == 0)
 						prov1Color = Colors.HeaderBackground;
 					else
 						prov1Color = Colors.GreyBackground;
 
-					if (duplicates[prov].Prov2.TableIndex % 2 == 0)
+					if (duplicates[prov].Dupli2.Prov.TableIndex % 2 == 0)
 						prov2Color = Colors.HeaderBackground;
 					else
 						prov2Color = Colors.GreyBackground;
@@ -613,8 +615,8 @@ namespace EU4_PCP
 
 				for (int col = 1; col < 6; col++)
 				{
-					ProvTable[col, duplicates[prov].Prov1.TableIndex].Style.BackColor = prov1Color;
-					ProvTable[col, duplicates[prov].Prov2.TableIndex].Style.BackColor = prov2Color;
+					ProvTable[col, duplicates[prov].Dupli1.Prov.TableIndex].Style.BackColor = prov1Color;
+					ProvTable[col, duplicates[prov].Dupli2.Prov.TableIndex].Style.BackColor = prov2Color;
 				}
 			}
 		}
@@ -624,36 +626,28 @@ namespace EU4_PCP
 		/// </summary>
 		/// <param name="dupli">The <see cref="Dupli"/> object to update from.</param>
 		/// <param name="create"><see langword="true"/> to create the markers, <see langword="false"/> to destroy them.</param>
-		public void UpdateMarkers(Dupli dupli, bool create)
+		public void UpdateMarkers(DupliProv dupli, bool create)
 		{
-			if (create) // C-tor
+			if (create) // Constructor
 			{
-				dupli.DupliLabel1 = new Label();
-				dupli.DupliLabel2 = new Label();
+				dupli.DupliLabel = new Label
+				{
+					BackColor = Color.Maroon,
+					Size = MARKER_SIZE,
+					Location = new Point(ProvTableSB.Location.X - 1,
+						(int)(ProvTableSB.Location.Y + MARKER_Y_OFFSET +
+						(((float)dupli.Prov.TableIndex /
+						(float)ProvTable.RowCount) * (ProvTableSB.Height - HEIGHT_OFFSET_SB))))
+				};
 
-				dupli.DupliLabel1.BackColor =
-				dupli.DupliLabel2.BackColor = Color.Maroon;
-
-				dupli.DupliLabel1.Size =
-				dupli.DupliLabel2.Size = new Size(8, 5);
-
-				dupli.DupliLabel1.Location = new Point(393, (int)((((float)dupli.Prov1.TableIndex / (float)ProvTable.RowCount) * (ProvTableSB.Height - 32)) + ProvTableSB.Location.Y + 14));
-				dupli.DupliLabel2.Location = new Point(393, (int)((((float)dupli.Prov2.TableIndex / (float)ProvTable.RowCount) * (ProvTableSB.Height - 32)) + ProvTableSB.Location.Y + 14));
-
-				this.Controls.Add(dupli.DupliLabel1);
-				this.Controls.Add(dupli.DupliLabel2);
-
-				dupli.DupliLabel1.BringToFront();
-				dupli.DupliLabel2.BringToFront();
+				this.Controls.Add(dupli.DupliLabel);
+				dupli.DupliLabel.BringToFront();
 			}
 			else // Destructor
 			{
-				this.Controls.Remove(dupli.DupliLabel1);
-				this.Controls.Remove(dupli.DupliLabel2);
-				dupli.DupliLabel1.Dispose();
-				dupli.DupliLabel2.Dispose();
-				dupli.DupliLabel1 = null;
-				dupli.DupliLabel2 = null;
+				this.Controls.Remove(dupli.DupliLabel);
+				dupli.DupliLabel.Dispose();
+				dupli.DupliLabel = null;
 			}
 		}
 

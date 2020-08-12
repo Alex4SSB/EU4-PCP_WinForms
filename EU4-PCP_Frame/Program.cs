@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace EU4_PCP_Frame
+namespace EU4_PCP
 {
     static class Program
     {
