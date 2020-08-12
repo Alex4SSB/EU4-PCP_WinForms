@@ -116,6 +116,9 @@ namespace EU4_PCP
 				IgnoreRnwMCB.State(Settings.Default.IgnoreRNW);
 			}
 			else IgnoreRnwMCB.State(true);
+
+			GamePathMB.Click += GamePathMB_Click;
+			ModPathMB.Click += ModPathMB_Click;
 		}
 
 		/// <summary>
@@ -151,7 +154,7 @@ namespace EU4_PCP
 			}
 			else ModSelCB.Enabled = false;
 
-			ModBrowseB.Enabled = true;
+			ModPathMB.Enabled = true;
 			if (FullyLoadMCB.State() &&
 				ModSelCB.Items.Contains(Settings.Default.LastSelMod))
 			{
@@ -173,7 +176,7 @@ namespace EU4_PCP
 			if (DisableLoadMCB.State() ||
 				Settings.Default.GamePath.Length == 0 ||
 				!PathHandler(Scope.Game, Mode.Read)) return true;
-			gamePath = GamePathTB.Text;
+			gamePath = GamePathMTB.Text;
 			DocsPrep();
 
 			return false;
@@ -188,16 +191,16 @@ namespace EU4_PCP
 		private bool PathHandler(Scope scope, Mode mode)
 		{
 			string setting = "";
-			TextBox box = null;
+			ToolStripTextBox box = null;
 			switch (scope)
 			{
 				case Scope.Game:
 					setting = Settings.Default.GamePath;
-					box = GamePathTB;
+					box = GamePathMTB;
 					break;
 				case Scope.Mod:
 					setting = Settings.Default.ModPath;
-					box = ModPathTB;
+					box = ModPathMTB;
 					break;
 				default:
 					break;
@@ -848,10 +851,10 @@ namespace EU4_PCP
 			switch (scope)
 			{
 				case Scope.Game:
-					GamePathTB.Text = BrowserFBD.SelectedPath;
+					GamePathMTB.Text = BrowserFBD.SelectedPath;
 					break;
 				case Scope.Mod:
-					ModPathTB.Text = BrowserFBD.SelectedPath;
+					ModPathMTB.Text = BrowserFBD.SelectedPath;
 					break;
 				default:
 					break;
@@ -1006,19 +1009,19 @@ namespace EU4_PCP
 
 		#region Control Handlers
 
-		private void GameBrowseB_Click(object sender, EventArgs e)
+		private void ModPathMB_Click(object sender, EventArgs e)
 		{
-			if (lockdown) return;
-			if (GamePathTB.Text != "") { BrowserFBD.SelectedPath = GamePathTB.Text; }
-			FolderBrowse(Scope.Game);
-		}
+            if (lockdown) return;
+            if (GamePathMTB.Text != "") { BrowserFBD.SelectedPath = GamePathMTB.Text; }
+            FolderBrowse(Scope.Game);
+        }
 
-		private void ModBrowseB_Click(object sender, EventArgs e)
+		private void GamePathMB_Click(object sender, EventArgs e)
 		{
-			if (lockdown) return;
-			if (ModPathTB.Text != "") { BrowserFBD.SelectedPath = ModPathTB.Text; }
-			FolderBrowse(Scope.Mod);
-		}
+            if (lockdown) return;
+            if (ModPathMTB.Text != "") { BrowserFBD.SelectedPath = ModPathMTB.Text; }
+            FolderBrowse(Scope.Mod);
+        }
 
 		private void NextProvNameTB_TextChanged(object sender, EventArgs e)
 		{
@@ -1166,16 +1169,6 @@ namespace EU4_PCP
 			}
 			if (ModBookmarkCB.Items.Count > ModBookmarkCB.MaxDropDownItems)
 				ModBookmarkCB.DropDownWidth += WIDTH_SB;
-		}
-
-		private void GamePathTB_MouseHover(object sender, EventArgs e)
-		{
-			TextBoxTT.SetToolTip(GamePathTB, GamePathTB.Text);
-		}
-
-		private void ModPathTB_MouseHover(object sender, EventArgs e)
-		{
-			TextBoxTT.SetToolTip(ModPathTB, ModPathTB.Text);
 		}
 
 		private void ModSelCB_MouseHover(object sender, EventArgs e)

@@ -35,6 +35,13 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.MainMS = new DarkUI.Controls.DarkMenuStrip();
+            this.DirectoriesM = new System.Windows.Forms.ToolStripMenuItem();
+            this.GamePathSM = new System.Windows.Forms.ToolStripMenuItem();
+            this.GamePathMTB = new System.Windows.Forms.ToolStripTextBox();
+            this.GamePathMB = new System.Windows.Forms.ToolStripMenuItem();
+            this.ModPathSM = new System.Windows.Forms.ToolStripMenuItem();
+            this.ModPathMTB = new System.Windows.Forms.ToolStripTextBox();
+            this.ModPathMB = new System.Windows.Forms.ToolStripMenuItem();
             this.GlobSetM = new System.Windows.Forms.ToolStripMenuItem();
             this.AutoLoadSM = new System.Windows.Forms.ToolStripMenuItem();
             this.DisableLoadMCB = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,9 +60,6 @@
             this.StatsM = new System.Windows.Forms.ToolStripMenuItem();
             this.LoadingTimeML = new System.Windows.Forms.ToolStripMenuItem();
             this.LoadingValueML = new System.Windows.Forms.ToolStripMenuItem();
-            this.GameBrowseB = new DarkUI.Controls.DarkButton();
-            this.GamePathTB = new DarkUI.Controls.DarkTextBox();
-            this.GamePathL = new DarkUI.Controls.DarkLabel();
             this.ColorPickerGB = new DarkUI.Controls.DarkGroupBox();
             this.AddProvB = new DarkUI.Controls.DarkButton();
             this.TempL = new System.Windows.Forms.Label();
@@ -82,9 +86,6 @@
             this.ChangeColorSM = new System.Windows.Forms.ToolStripMenuItem();
             this.SelectInPickerMB = new System.Windows.Forms.ToolStripMenuItem();
             this.ProvTableSB = new DarkUI.Controls.DarkScrollBar();
-            this.ModPathL = new DarkUI.Controls.DarkLabel();
-            this.ModPathTB = new DarkUI.Controls.DarkTextBox();
-            this.ModBrowseB = new DarkUI.Controls.DarkButton();
             this.ModSelCB = new DarkUI.Controls.DarkComboBox();
             this.ModSelL = new DarkUI.Controls.DarkLabel();
             this.GameInfoGB = new DarkUI.Controls.DarkGroupBox();
@@ -124,6 +125,7 @@
             this.MainMS.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.MainMS.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.MainMS.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.DirectoriesM,
             this.GlobSetM,
             this.ModSetM,
             this.StatsM});
@@ -133,6 +135,73 @@
             this.MainMS.Size = new System.Drawing.Size(651, 24);
             this.MainMS.TabIndex = 0;
             this.MainMS.Text = "darkMenuStrip1";
+            // 
+            // DirectoriesM
+            // 
+            this.DirectoriesM.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.DirectoriesM.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.GamePathSM,
+            this.ModPathSM});
+            this.DirectoriesM.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.DirectoriesM.Name = "DirectoriesM";
+            this.DirectoriesM.Size = new System.Drawing.Size(123, 20);
+            this.DirectoriesM.Text = "Working Directories";
+            // 
+            // GamePathSM
+            // 
+            this.GamePathSM.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.GamePathSM.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.GamePathMTB,
+            this.GamePathMB});
+            this.GamePathSM.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.GamePathSM.Name = "GamePathSM";
+            this.GamePathSM.Size = new System.Drawing.Size(105, 22);
+            this.GamePathSM.Text = "Game";
+            // 
+            // GamePathMTB
+            // 
+            this.GamePathMTB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.GamePathMTB.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.GamePathMTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.GamePathMTB.Name = "GamePathMTB";
+            this.GamePathMTB.ReadOnly = true;
+            this.GamePathMTB.Size = new System.Drawing.Size(180, 23);
+            // 
+            // GamePathMB
+            // 
+            this.GamePathMB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.GamePathMB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.GamePathMB.Name = "GamePathMB";
+            this.GamePathMB.Size = new System.Drawing.Size(240, 22);
+            this.GamePathMB.Text = "Browse";
+            // 
+            // ModPathSM
+            // 
+            this.ModPathSM.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.ModPathSM.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ModPathMTB,
+            this.ModPathMB});
+            this.ModPathSM.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.ModPathSM.Name = "ModPathSM";
+            this.ModPathSM.Size = new System.Drawing.Size(105, 22);
+            this.ModPathSM.Text = "Mod";
+            // 
+            // ModPathMTB
+            // 
+            this.ModPathMTB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.ModPathMTB.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.ModPathMTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.ModPathMTB.Name = "ModPathMTB";
+            this.ModPathMTB.ReadOnly = true;
+            this.ModPathMTB.Size = new System.Drawing.Size(180, 23);
+            // 
+            // ModPathMB
+            // 
+            this.ModPathMB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.ModPathMB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.ModPathMB.Name = "ModPathMB";
+            this.ModPathMB.Size = new System.Drawing.Size(240, 22);
+            this.ModPathMB.Text = "Browse";
             // 
             // GlobSetM
             // 
@@ -326,39 +395,6 @@
             this.LoadingValueML.Size = new System.Drawing.Size(147, 22);
             this.LoadingValueML.Text = "xxxx mSec";
             // 
-            // GameBrowseB
-            // 
-            this.GameBrowseB.ForeColor = System.Drawing.Color.Gainsboro;
-            this.GameBrowseB.Location = new System.Drawing.Point(134, 45);
-            this.GameBrowseB.Name = "GameBrowseB";
-            this.GameBrowseB.Padding = new System.Windows.Forms.Padding(6);
-            this.GameBrowseB.Size = new System.Drawing.Size(61, 25);
-            this.GameBrowseB.TabIndex = 1;
-            this.GameBrowseB.Text = "Browse";
-            this.GameBrowseB.Click += new System.EventHandler(this.GameBrowseB_Click);
-            // 
-            // GamePathTB
-            // 
-            this.GamePathTB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.GamePathTB.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.GamePathTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.GamePathTB.Location = new System.Drawing.Point(12, 46);
-            this.GamePathTB.Name = "GamePathTB";
-            this.GamePathTB.ReadOnly = true;
-            this.GamePathTB.Size = new System.Drawing.Size(116, 23);
-            this.GamePathTB.TabIndex = 2;
-            this.GamePathTB.MouseHover += new System.EventHandler(this.GamePathTB_MouseHover);
-            // 
-            // GamePathL
-            // 
-            this.GamePathL.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.GamePathL.Location = new System.Drawing.Point(12, 28);
-            this.GamePathL.Name = "GamePathL";
-            this.GamePathL.Size = new System.Drawing.Size(116, 15);
-            this.GamePathL.TabIndex = 3;
-            this.GamePathL.Text = "Game Path";
-            this.GamePathL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // ColorPickerGB
             // 
             this.ColorPickerGB.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
@@ -377,7 +413,7 @@
             this.ColorPickerGB.Controls.Add(this.NextProvNumberTB);
             this.ColorPickerGB.Controls.Add(this.RandomizeB);
             this.ColorPickerGB.Enabled = false;
-            this.ColorPickerGB.Location = new System.Drawing.Point(418, 27);
+            this.ColorPickerGB.Location = new System.Drawing.Point(418, 316);
             this.ColorPickerGB.Name = "ColorPickerGB";
             this.ColorPickerGB.Size = new System.Drawing.Size(221, 214);
             this.ColorPickerGB.TabIndex = 4;
@@ -577,7 +613,7 @@
             this.ProvTable.DefaultCellStyle = dataGridViewCellStyle3;
             this.ProvTable.EnableHeadersVisualStyles = false;
             this.ProvTable.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.ProvTable.Location = new System.Drawing.Point(12, 154);
+            this.ProvTable.Location = new System.Drawing.Point(12, 27);
             this.ProvTable.MultiSelect = false;
             this.ProvTable.Name = "ProvTable";
             this.ProvTable.ReadOnly = true;
@@ -688,7 +724,7 @@
             // 
             // ProvTableSB
             // 
-            this.ProvTableSB.Location = new System.Drawing.Point(394, 154);
+            this.ProvTableSB.Location = new System.Drawing.Point(394, 27);
             this.ProvTableSB.Maximum = 78;
             this.ProvTableSB.Name = "ProvTableSB";
             this.ProvTableSB.Size = new System.Drawing.Size(18, 503);
@@ -699,44 +735,10 @@
             this.ProvTableSB.ValueChanged += new System.EventHandler<DarkUI.Controls.ScrollValueEventArgs>(this.ProvTableSB_ValueChanged);
             this.ProvTableSB.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ProvTableSB_MouseMove);
             // 
-            // ModPathL
-            // 
-            this.ModPathL.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.ModPathL.Location = new System.Drawing.Point(12, 91);
-            this.ModPathL.Name = "ModPathL";
-            this.ModPathL.Size = new System.Drawing.Size(116, 15);
-            this.ModPathL.TabIndex = 35;
-            this.ModPathL.Text = "Mod Path";
-            this.ModPathL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // ModPathTB
-            // 
-            this.ModPathTB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.ModPathTB.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ModPathTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.ModPathTB.Location = new System.Drawing.Point(12, 109);
-            this.ModPathTB.Name = "ModPathTB";
-            this.ModPathTB.ReadOnly = true;
-            this.ModPathTB.Size = new System.Drawing.Size(116, 23);
-            this.ModPathTB.TabIndex = 34;
-            this.ModPathTB.MouseHover += new System.EventHandler(this.ModPathTB_MouseHover);
-            // 
-            // ModBrowseB
-            // 
-            this.ModBrowseB.ForeColor = System.Drawing.Color.Gainsboro;
-            this.ModBrowseB.Location = new System.Drawing.Point(134, 108);
-            this.ModBrowseB.Name = "ModBrowseB";
-            this.ModBrowseB.Padding = new System.Windows.Forms.Padding(6);
-            this.ModBrowseB.Size = new System.Drawing.Size(61, 25);
-            this.ModBrowseB.TabIndex = 33;
-            this.ModBrowseB.Text = "Browse";
-            this.ModBrowseB.Click += new System.EventHandler(this.ModBrowseB_Click);
-            // 
             // ModSelCB
             // 
             this.ModSelCB.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.ModSelCB.FormattingEnabled = true;
-            this.ModSelCB.Location = new System.Drawing.Point(226, 109);
+            this.ModSelCB.Location = new System.Drawing.Point(454, 166);
             this.ModSelCB.Name = "ModSelCB";
             this.ModSelCB.Size = new System.Drawing.Size(161, 24);
             this.ModSelCB.TabIndex = 36;
@@ -747,7 +749,7 @@
             // ModSelL
             // 
             this.ModSelL.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.ModSelL.Location = new System.Drawing.Point(226, 91);
+            this.ModSelL.Location = new System.Drawing.Point(454, 148);
             this.ModSelL.Name = "ModSelL";
             this.ModSelL.Size = new System.Drawing.Size(161, 15);
             this.ModSelL.TabIndex = 37;
@@ -767,7 +769,7 @@
             this.GameInfoGB.Controls.Add(this.GameProvShownTB);
             this.GameInfoGB.Controls.Add(this.GameProvCountL);
             this.GameInfoGB.Controls.Add(this.GameProvCountTB);
-            this.GameInfoGB.Location = new System.Drawing.Point(418, 247);
+            this.GameInfoGB.Location = new System.Drawing.Point(418, 27);
             this.GameInfoGB.Name = "GameInfoGB";
             this.GameInfoGB.Size = new System.Drawing.Size(221, 113);
             this.GameInfoGB.TabIndex = 38;
@@ -900,7 +902,7 @@
             this.ModInfoGB.Controls.Add(this.ModProvShownTB);
             this.ModInfoGB.Controls.Add(this.ModProvCountL);
             this.ModInfoGB.Controls.Add(this.ModProvCountTB);
-            this.ModInfoGB.Location = new System.Drawing.Point(418, 366);
+            this.ModInfoGB.Location = new System.Drawing.Point(418, 197);
             this.ModInfoGB.Name = "ModInfoGB";
             this.ModInfoGB.Size = new System.Drawing.Size(221, 113);
             this.ModInfoGB.TabIndex = 39;
@@ -1026,20 +1028,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(651, 669);
+            this.ClientSize = new System.Drawing.Size(651, 542);
             this.Controls.Add(this.ModInfoGB);
             this.Controls.Add(this.GameInfoGB);
             this.Controls.Add(this.ModSelL);
             this.Controls.Add(this.ModSelCB);
-            this.Controls.Add(this.ModPathL);
-            this.Controls.Add(this.ModPathTB);
-            this.Controls.Add(this.ModBrowseB);
             this.Controls.Add(this.ProvTableSB);
             this.Controls.Add(this.ProvTable);
             this.Controls.Add(this.ColorPickerGB);
-            this.Controls.Add(this.GamePathL);
-            this.Controls.Add(this.GamePathTB);
-            this.Controls.Add(this.GameBrowseB);
             this.Controls.Add(this.MainMS);
             this.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -1065,6 +1061,8 @@
 
         }
 
+        
+
         #endregion
 
         private DarkUI.Controls.DarkMenuStrip MainMS;
@@ -1077,15 +1075,9 @@
         private System.Windows.Forms.ToolStripSeparator ProvNamesMS1;
         private System.Windows.Forms.ToolStripMenuItem LoadingTimeML;
         private System.Windows.Forms.ToolStripMenuItem LoadingValueML;
-        private DarkUI.Controls.DarkButton GameBrowseB;
-        private DarkUI.Controls.DarkTextBox GamePathTB;
-        private DarkUI.Controls.DarkLabel GamePathL;
         private DarkUI.Controls.DarkGroupBox ColorPickerGB;
         internal System.Windows.Forms.DataGridView ProvTable;
         private DarkUI.Controls.DarkScrollBar ProvTableSB;
-        private DarkUI.Controls.DarkLabel ModPathL;
-        private DarkUI.Controls.DarkTextBox ModPathTB;
-        private DarkUI.Controls.DarkButton ModBrowseB;
         private DarkUI.Controls.DarkComboBox ModSelCB;
         private DarkUI.Controls.DarkLabel ModSelL;
         private DarkUI.Controls.DarkGroupBox GameInfoGB;
@@ -1144,6 +1136,13 @@
         private System.Windows.Forms.ToolStripMenuItem ChangeColorSM;
         private System.Windows.Forms.ToolStripMenuItem SelectInPickerMB;
         private DarkUI.Controls.DarkButton AddProvB;
+        private System.Windows.Forms.ToolStripMenuItem DirectoriesM;
+        private System.Windows.Forms.ToolStripMenuItem GamePathSM;
+        private System.Windows.Forms.ToolStripTextBox GamePathMTB;
+        private System.Windows.Forms.ToolStripMenuItem GamePathMB;
+        private System.Windows.Forms.ToolStripMenuItem ModPathSM;
+        private System.Windows.Forms.ToolStripTextBox ModPathMTB;
+        private System.Windows.Forms.ToolStripMenuItem ModPathMB;
     }
 }
 
