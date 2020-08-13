@@ -86,6 +86,7 @@
     <Reference Include="DarkUI, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DarkUI.2.0.2\lib\DarkUI.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -99,6 +100,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PCP_Const.cs" />
+    <Compile Include="PCP_Data.cs" />
+    <Compile Include="PCP_Paths.cs" />
+    <Compile Include="PCP_RegEx.cs" />
     <Compile Include="MainWin.cs">
       <SubType>Form</SubType>
     </Compile>

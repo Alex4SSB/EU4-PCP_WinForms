@@ -1,4 +1,6 @@
-﻿using EU4_PCP.Properties;
+﻿using DarkUI.Config;
+using DarkUI.Forms;
+using EU4_PCP.Properties;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -6,13 +8,16 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DarkUI.Config;
-using DarkUI.Forms;
 using System.Windows.Forms;
-using static EU4_PCP_Frame.GlobVar;
-using static EU4_PCP_Frame.PCP_Implementations;
+using System.Windows;
+using static EU4_PCP.PCP_Const;
+using static EU4_PCP.PCP_Data;
+using static EU4_PCP.PCP_Implementations;
+using static EU4_PCP.PCP_Paths;
+using static EU4_PCP.PCP_RegEx;
+using System.Text;
 
-namespace EU4_PCP_Frame
+namespace EU4_PCP
 {
 	public partial class MainWin : DarkForm
 	{
@@ -47,7 +52,7 @@ namespace EU4_PCP_Frame
 		/// <param name="success"><see langword="true"/> to update FinishTiming.</param>
 		private void Critical(CriticalType mode, CriticalScope scope = CriticalScope.Game, bool success = false)
 		{
-			Text = $"{appName} {appVer}";
+			Text = $"{APP_NAME} {APP_VER}";
 			switch (mode)
 			{
 				case CriticalType.Begin:
@@ -112,6 +117,9 @@ namespace EU4_PCP_Frame
 				IgnoreRnwMCB.State(Settings.Default.IgnoreRNW);
 			}
 			else IgnoreRnwMCB.State(true);
+
+			GamePathMB.Click += GamePathMB_Click;
+			ModPathMB.Click += ModPathMB_Click;
 		}
 
 		/// <summary>
@@ -147,7 +155,7 @@ namespace EU4_PCP_Frame
 			}
 			else ModSelCB.Enabled = false;
 
-			ModBrowseB.Enabled = true;
+			ModPathMB.Enabled = true;
 			if (FullyLoadMCB.State() &&
 				ModSelCB.Items.Contains(Settings.Default.LastSelMod))
 			{
@@ -169,7 +177,7 @@ namespace EU4_PCP_Frame
 			if (DisableLoadMCB.State() ||
 				Settings.Default.GamePath.Length == 0 ||
 				!PathHandler(Scope.Game, Mode.Read)) return true;
-			gamePath = GamePathTB.Text;
+			gamePath = GamePathMTB.Text;
 			DocsPrep();
 
 			return false;
@@ -184,16 +192,16 @@ namespace EU4_PCP_Frame
 		private bool PathHandler(Scope scope, Mode mode)
 		{
 			string setting = "";
-			TextBox box = null;
+			ToolStripTextBox box = null;
 			switch (scope)
 			{
 				case Scope.Game:
 					setting = Settings.Default.GamePath;
-					box = GamePathTB;
+					box = GamePathMTB;
 					break;
 				case Scope.Mod:
 					setting = Settings.Default.ModPath;
-					box = ModPathTB;
+					box = ModPathMTB;
 					break;
 				default:
 					break;
@@ -267,6 +275,9 @@ namespace EU4_PCP_Frame
 			enDyn = DynNamesMCB.State();
 			showRnw = ShowAllProvsMCB.State();
 			updateCountries = false;
+
+			// Repaint duplicate rows before clearing the list
+			PaintDupli(true);
 			ClearArrays();
 
 			if (BookStatus(true) && !DefinSetup(DecidePath()))
@@ -289,7 +300,7 @@ namespace EU4_PCP_Frame
 
 			if (selectedMod)
 			{
-				ModStartDateTB.Text = startDate.ToString(dateFormat);
+				ModStartDateTB.Text = startDate.ToString(DATE_FORMAT);
 				ModInfoGB.Text = $"Mod - {selectedMod.Ver}";
 				CountProv(Scope.Mod);
 				PopulateBooks(Scope.Mod);
@@ -297,7 +308,7 @@ namespace EU4_PCP_Frame
 			}
 			else
 			{
-				GameStartDateTB.Text = startDate.ToString(dateFormat);
+				GameStartDateTB.Text = startDate.ToString(DATE_FORMAT);
 				ModInfoGB.Text = "Mod";
 				CountProv(Scope.Game);
 				PopulateBooks(Scope.Game);
@@ -313,9 +324,6 @@ namespace EU4_PCP_Frame
 			ClearCP(); // Clear the color picker, and call the randomizer
 
 			DupliPrep();
-			if (DupliTable.Rows.Count > 0)
-				ColorDupliGB.Visible = true;
-			else ColorDupliGB.Visible = false;
 
 			return true;
 		}
@@ -412,6 +420,9 @@ namespace EU4_PCP_Frame
 		/// </summary>
 		private void ClearCP()
 		{
+			AddProvB.Text = "Add Province";
+			NextProvNameTB.BackColor = Colors.LightBackground;
+			NextProvNameTB.ReadOnly = false;
 			NextProvNameTB.Text = "";
 			if (!ColorPickerGB.Enabled)
 			{
@@ -445,7 +456,9 @@ namespace EU4_PCP_Frame
 			GreenTB.Text = g.ToString();
 			BlueTB.Text = b.ToString();
 			GenColL.BackColor = tempColor;
-			NextProvNumberTB.Text = provinces.Length.ToString();
+
+			if (!NextProvNameTB.ReadOnly)
+				NextProvNumberTB.Text = provinces.Length.ToString();
 		}
 
 		/// <summary>
@@ -528,13 +541,13 @@ namespace EU4_PCP_Frame
 		}
 
 		/// <summary>
-		/// Prepare the table of duplicate provinces.
+		/// Prepare the duplicate provinces for display.
 		/// </summary>
 		private void DupliPrep()
 		{
 			if (!CheckDupliMCB.State() || !selectedMod)
 			{
-				DupliTable.Rows.Clear();
+				PaintDupli(true);
 				return;
 			}
 			var colors = new int[provinces.Length];
@@ -549,32 +562,94 @@ namespace EU4_PCP_Frame
 
 			Array.Sort(colors, indexes);
 			var empty = colors.Count(c => c == 0);
-			if (colors[0] == 0) // Shouldn't happen, but just in case
-			{
-				Array.Reverse(colors);
-				Array.Reverse(indexes);
-				Array.Resize(ref colors, colors.Length - empty);
-				Array.Resize(ref indexes, indexes.Length - empty);
-				Array.Reverse(colors);
-				Array.Reverse(indexes);
-			}
-			else // Default case
-			{
-				Array.Resize(ref colors, colors.Length - empty);
-				Array.Resize(ref indexes, indexes.Length - empty);
-			}
+			Array.Resize(ref colors, colors.Length - empty);
+			Array.Resize(ref indexes, indexes.Length - empty);
 
 			if (colors.Distinct().Count() == indexes.Length) return; // No duplicates
-			for (int prov = 0; prov < colors.Length; prov++)
+			for (int prov = 1; prov < colors.Length; prov++)
 			{
 				if (colors[prov] != colors[prov - 1]) continue;
+				if (!provinces[indexes[prov]].Show || !provinces[indexes[prov - 1]].Show) continue;
+				if (IgnoreRnwMCB.State() && (provinces[indexes[prov]].IsRNW(false) || provinces[indexes[prov - 1]].IsRNW(false))) continue;
+
 				duplicates.Add(new Dupli(provinces[indexes[prov]], provinces[indexes[prov - 1]]));
 			}
 
-			DupliTable.RowCount = duplicates.Count;
+			PaintDupli();
+		}
+
+		/// <summary>
+		/// Paint rows of duplicate provinces in the table, and add markers
+		/// </summary>
+		/// <param name="forceClear"><see langword="true"/> to remove all duplicate coloring.</param>
+		private void PaintDupli(bool forceClear = false)
+		{
 			for (int prov = 0; prov < duplicates.Count; prov++)
 			{
-				DupliTable.Rows[prov].SetValues(duplicates[prov].ToRow());
+				Color prov1Color, prov2Color;
+				
+				if (!forceClear && CheckDupliMCB.State() && selectedMod)
+				{
+					UpdateMarkers(duplicates[prov].Dupli1, true);
+					UpdateMarkers(duplicates[prov].Dupli2, true);
+					prov1Color =
+					prov2Color = Color.Maroon;
+				}
+				else
+				{
+					UpdateMarkers(duplicates[prov].Dupli1, false);
+					UpdateMarkers(duplicates[prov].Dupli2, false);
+
+					if (duplicates[prov].Dupli1.Prov.TableIndex % 2 == 0)
+						prov1Color = Colors.HeaderBackground;
+					else
+						prov1Color = Colors.GreyBackground;
+
+					if (duplicates[prov].Dupli2.Prov.TableIndex % 2 == 0)
+						prov2Color = Colors.HeaderBackground;
+					else
+						prov2Color = Colors.GreyBackground;
+				}
+
+				for (int col = 1; col < 6; col++)
+				{
+					ProvTable[col, duplicates[prov].Dupli1.Prov.TableIndex].Style.BackColor = prov1Color;
+					ProvTable[col, duplicates[prov].Dupli2.Prov.TableIndex].Style.BackColor = prov2Color;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Creates or destroys markers of the given duplicate provinces.
+		/// </summary>
+		/// <param name="dupli">The <see cref="Dupli"/> object to update from.</param>
+		/// <param name="create"><see langword="true"/> to create the markers, <see langword="false"/> to destroy them.</param>
+		public void UpdateMarkers(DupliProv dupli, bool create)
+		{
+			if (create) // Constructor
+			{
+				if (dupli.DupliLabel == null)
+				{
+					dupli.DupliLabel = new Label
+					{
+						BackColor = Color.Maroon,
+						Size = MARKER_SIZE
+					};
+
+					this.Controls.Add(dupli.DupliLabel);
+					dupli.DupliLabel.BringToFront();
+					dupli.DupliLabel.Click += new EventHandler(DupliLabel_Click);
+				}
+				dupli.DupliLabel.Location = new Point(ProvTableSB.Location.X - 1,
+						(int)(ProvTableSB.Location.Y + MARKER_Y_OFFSET +
+						(((float)dupli.Prov.TableIndex /
+						ProvTable.RowCount) * (ProvTableSB.Height - HEIGHT_OFFSET_SB))));
+			}
+			else // Destructor
+			{
+				this.Controls.Remove(dupli.DupliLabel);
+				dupli.DupliLabel.Dispose();
+				dupli.DupliLabel = null;
 			}
 		}
 
@@ -607,19 +682,7 @@ namespace EU4_PCP_Frame
 			var oldCount = ProvTable.RowCount;
 			ProvTable.RowCount = selProv.Length;
 
-			if (oldCount < ProvTable.RowCount)
-			{
-				for (int row = oldCount; row < selProv.Length; row++)
-				{
-					if (row % 2 == 0)
-					{
-						for (int col = 1; col < 6; col++)
-						{
-							ProvTable[col, row].Style.BackColor = Colors.HeaderBackground;
-						}
-					}
-				}
-			}
+			PaintTable(selProv.Length, oldCount);
 
 			for (int prov = 0; prov < selProv.Length; prov++)
 			{
@@ -633,6 +696,28 @@ namespace EU4_PCP_Frame
 				ProvTableSB.Visible = false;
 			else
 				ProvTableSB.Visible = true;
+		}
+
+		/// <summary>
+		/// Paints the new rows in ProvTable in alternate colors.
+		/// </summary>
+		/// <param name="newCount">New row count.</param>
+		/// <param name="oldCount">Row count before last change.</param>
+		private void PaintTable(int newCount, int oldCount)
+		{
+			if (oldCount < newCount)
+			{
+				for (int row = oldCount; row < newCount; row++)
+				{
+					if (row % 2 == 0)
+					{
+						for (int col = 1; col < 6; col++)
+						{
+							ProvTable[col, row].Style.BackColor = Colors.HeaderBackground;
+						}
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -737,11 +822,11 @@ namespace EU4_PCP_Frame
 			{
 				case Scope.Game:
 					startDate = bookmarks.First(book => book.Name == GameBookmarkCB.SelectedItem.ToString()).StartDate;
-					GameStartDateTB.Text = startDate.ToString(dateFormat);
+					GameStartDateTB.Text = startDate.ToString(DATE_FORMAT);
 					break;
 				case Scope.Mod:
 					startDate = bookmarks.First(book => book.Name == ModBookmarkCB.SelectedItem.ToString()).StartDate;
-					ModStartDateTB.Text = startDate.ToString(dateFormat);
+					ModStartDateTB.Text = startDate.ToString(DATE_FORMAT);
 					break;
 				default:
 					break;
@@ -770,10 +855,10 @@ namespace EU4_PCP_Frame
 			switch (scope)
 			{
 				case Scope.Game:
-					GamePathTB.Text = BrowserFBD.SelectedPath;
+					GamePathMTB.Text = BrowserFBD.SelectedPath;
 					break;
 				case Scope.Mod:
-					ModPathTB.Text = BrowserFBD.SelectedPath;
+					ModPathMTB.Text = BrowserFBD.SelectedPath;
 					break;
 				default:
 					break;
@@ -813,7 +898,7 @@ namespace EU4_PCP_Frame
 						{
 							GameBookmarkCB.Enabled = false;
 							startDate = bookmarks[GameBookmarkCB.SelectedIndex].StartDate;
-							GameStartDateTB.Text = startDate.ToString(dateFormat);
+							GameStartDateTB.Text = startDate.ToString(DATE_FORMAT);
 						}
 					}
 					ColorPickerGB.Enabled =
@@ -844,11 +929,13 @@ namespace EU4_PCP_Frame
 		/// </summary>
 		private void NewProv()
 		{
-			string[] defFile;
+			byte[] byteStream;
+			string textStream;
+
 			try
 			{
-				// Read all lines from the mod definition file
-				defFile = File.ReadAllText(steamModPath + definPath, UTF7).Split(separators, StringSplitOptions.RemoveEmptyEntries);
+				byteStream = File.ReadAllBytes(steamModPath + definPath);
+				textStream = File.ReadAllText(steamModPath + definPath, UTF7);
 			}
 			catch (Exception)
 			{
@@ -856,61 +943,100 @@ namespace EU4_PCP_Frame
 				return;
 			}
 
-			// A new line to be added when writing back to the file, in case there is no new line at the end of the file
+			var defFile = textStream.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
 			var newLine = newLineRE.Match(defFile[defFile.Length - 1]).Success ? "" : "\r\n";
 
-			// Create an object of the new province
-			var newProv = new Province {
-				Index = NextProvNumberTB.Text.ToInt(),
-				DefName = NextProvNameTB.Text,
-				Color = new P_Color(RedTB.Text, GreenTB.Text, BlueTB.Text)
-			};
-
-			// Add the new province to the provinces array
-			Array.Resize(ref provinces, provinces.Length + 1);
-			provinces[newProv] = newProv;
-
-			try
+			if (NextProvNameTB.ReadOnly) // Update duplicate province
 			{
-				// Add the new province to the definition file
-				File.AppendAllText(steamModPath + definPath, newLine + newProv.ToCsv() + "\r\n");
+				var oldColor = provinces[NextProvNumberTB.Text.ToInt()].Color.ToCsv();
+				var streamIndex = textStream.IndexOf(provinces[NextProvNumberTB.Text.ToInt()].Index.ToString());
+
+				provinces[NextProvNumberTB.Text.ToInt()].Color = new P_Color(RedTB.Text, GreenTB.Text, BlueTB.Text);
+				var newColor = provinces[NextProvNumberTB.Text.ToInt()].Color.ToCsv();
+
+				var colorIndex = streamIndex + NextProvNumberTB.Text.Length + 1;
+				if (oldColor.Length != newColor.Length)
+				{
+					
+					var endIndex = colorIndex + oldColor.Length;
+					var endStream = new byte[byteStream.Length - endIndex];
+					
+					Array.Copy(byteStream, endIndex, endStream, 0, endStream.Length);
+					Array.Resize(ref byteStream, byteStream.Length + (newColor.Length - oldColor.Length));
+					Array.Copy(endStream, 0, byteStream, colorIndex + newColor.Length, endStream.Length);
+				}
+				Array.Copy(newColor.ToCharArray().Select(c => (byte)c).ToArray(), 0, byteStream, colorIndex, newColor.Length);
+
+				try
+				{
+					File.WriteAllBytes(steamModPath + definPath, byteStream);
+					File.AppendAllText(steamModPath + definPath, newLine);
+				}
+				catch (Exception)
+				{
+					ErrorMsg(ErrorType.DefinWrite);
+					return;
+				}
 			}
-			catch (Exception)
+			else // Add province
 			{
-				ErrorMsg(ErrorType.DefinWrite);
-				return;
+				var newProv = new Province
+				{
+					Index = NextProvNumberTB.Text.ToInt(),
+					DefName = NextProvNameTB.Text,
+					Color = new P_Color(RedTB.Text, GreenTB.Text, BlueTB.Text)
+				};
+
+				Array.Resize(ref provinces, provinces.Length + 1);
+				provinces[newProv] = newProv;
+
+				ModMaxProvTB.Text = Inc(ModMaxProvTB.Text, 1);
+				provinces[NextProvNumberTB.Text.ToInt()].IsRNW();
+
+				try
+				{
+					File.AppendAllText(steamModPath + definPath, newLine + provinces[NextProvNumberTB.Text.ToInt()].ToCsv() + "\r\n");
+				}
+				catch (Exception)
+				{
+					ErrorMsg(ErrorType.DefinWrite);
+					return;
+				}
+
+				string defMap;
+				try
+				{
+					defMap = File.ReadAllText(steamModPath + defMapPath);
+				}
+				catch (Exception)
+				{
+					ErrorMsg(ErrorType.DefMapRead);
+					return;
+				}
+				defMap = defMapRE.Replace(defMap, $"max_provinces = {ModMaxProvTB.Text}");
+				try
+				{
+					File.WriteAllText(steamModPath + defMapPath, defMap, UTF8);
+				}
+				catch (Exception)
+				{
+					ErrorMsg(ErrorType.DefMapWrite);
+				}
 			}
 			
-			// Update prov counters
-			ModProvCountTB.Text = Inc(ModProvCountTB.Text, 1);
-			ModProvShownTB.Text = Inc(ModProvShownTB.Text, 1);
-			ModMaxProvTB.Text = Inc(ModMaxProvTB.Text, 1);
-
-			// In case the user gave the new province a strange name
-			newProv.IsRNW();
-			// Update ProvTable with the new province
 			PopulateTable();
-			// Update TB colors
-			ProvCountColor();
 
-			string defMap;
-			try
+			if (NextProvNameTB.ReadOnly)
 			{
-				defMap = File.ReadAllText(steamModPath + defMapPath);
+				PaintDupli(true);
+				duplicates.Clear();
+				DupliPrep();
 			}
-			catch (Exception)
+			else
 			{
-				ErrorMsg(ErrorType.DefMapRead);
-				return;
-			}
-			defMap = defMapRE.Replace(defMap, $"max_provinces = {ModMaxProvTB.Text}");
-			try
-			{
-				File.WriteAllText(steamModPath + defMapPath, defMap, UTF8);
-			}
-			catch (Exception)
-			{
-				ErrorMsg(ErrorType.DefMapWrite);
+				CountProv(Scope.Mod);
+				ProvCountColor();
+				PaintDupli();
 			}
 		}
 
@@ -928,17 +1054,17 @@ namespace EU4_PCP_Frame
 
 		#region Control Handlers
 
-		private void GameBrowseB_Click(object sender, EventArgs e)
+		private void ModPathMB_Click(object sender, EventArgs e)
 		{
 			if (lockdown) return;
-			if (GamePathTB.Text != "") { BrowserFBD.SelectedPath = GamePathTB.Text; }
+			if (GamePathMTB.Text != "") { BrowserFBD.SelectedPath = GamePathMTB.Text; }
 			FolderBrowse(Scope.Game);
 		}
 
-		private void ModBrowseB_Click(object sender, EventArgs e)
+		private void GamePathMB_Click(object sender, EventArgs e)
 		{
 			if (lockdown) return;
-			if (ModPathTB.Text != "") { BrowserFBD.SelectedPath = ModPathTB.Text; }
+			if (ModPathMTB.Text != "") { BrowserFBD.SelectedPath = ModPathMTB.Text; }
 			FolderBrowse(Scope.Mod);
 		}
 
@@ -1056,15 +1182,6 @@ namespace EU4_PCP_Frame
 			Critical(CriticalType.Finish, MainSequence());
 		}
 
-		private void DupliTable_DoubleClick(object sender, EventArgs e)
-		{
-			if (DupliTable.SelectedCells.Count != 1) return;
-
-			string val = DupliTable.SelectedCells[0].Value.ToString();
-			ProvTable.FirstDisplayedScrollingRowIndex =
-				duplicates.First(p => p.Prov1.ToString() == val || p.Prov2.ToString() == val).Prov1.TableIndex;
-		}
-
 		private void GameBookmarkCB_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			EnactBook(Scope.Game);
@@ -1084,7 +1201,7 @@ namespace EU4_PCP_Frame
 					GameBookmarkCB.DropDownWidth = TempL.Width + 5;
 			}
 			if (GameBookmarkCB.Items.Count > GameBookmarkCB.MaxDropDownItems)
-				GameBookmarkCB.DropDownWidth += widthSB;
+				GameBookmarkCB.DropDownWidth += WIDTH_SB;
 		}
 
 		private void ModBookmarkCB_DropDown(object sender, EventArgs e)
@@ -1096,17 +1213,7 @@ namespace EU4_PCP_Frame
 					ModBookmarkCB.DropDownWidth = TempL.Width;
 			}
 			if (ModBookmarkCB.Items.Count > ModBookmarkCB.MaxDropDownItems)
-				ModBookmarkCB.DropDownWidth += widthSB;
-		}
-
-		private void GamePathTB_MouseHover(object sender, EventArgs e)
-		{
-			TextBoxTT.SetToolTip(GamePathTB, GamePathTB.Text);
-		}
-
-		private void ModPathTB_MouseHover(object sender, EventArgs e)
-		{
-			TextBoxTT.SetToolTip(ModPathTB, ModPathTB.Text);
+				ModBookmarkCB.DropDownWidth += WIDTH_SB;
 		}
 
 		private void ModSelCB_MouseHover(object sender, EventArgs e)
@@ -1126,12 +1233,12 @@ namespace EU4_PCP_Frame
 
 		private void GameStartDateTB_MouseHover(object sender, EventArgs e)
 		{
-			TextBoxTT.SetToolTip(GameStartDateTB, dateFormat);
+			TextBoxTT.SetToolTip(GameStartDateTB, DATE_FORMAT);
 		}
 
 		private void ModStartDateTB_MouseHover(object sender, EventArgs e)
 		{
-			TextBoxTT.SetToolTip(ModStartDateTB, dateFormat);
+			TextBoxTT.SetToolTip(ModStartDateTB, DATE_FORMAT);
 		}
 
 		private void GlobSetM_DropDownOpening(object sender, EventArgs e)
@@ -1190,17 +1297,25 @@ namespace EU4_PCP_Frame
 					ModSelCB.DropDownWidth = TempL.Width + 5;
 			}
 			if (ModSelCB.Items.Count > ModSelCB.MaxDropDownItems)
-				ModSelCB.DropDownWidth += widthSB;
+				ModSelCB.DropDownWidth += WIDTH_SB;
 		}
 
 		private void CheckDupliMCB_Click(object sender, EventArgs e)
 		{
 			CheckDupliMCB.State(!CheckDupliMCB.State());
+			Settings.Default.ColorDupli = CheckDupliMCB.State();
+
+			if (ProvTable.Rows.Count == 0) return;
+			DupliPrep();
 		}
 
 		private void IgnoreRnwMCB_Click(object sender, EventArgs e)
 		{
-			IgnoreRnwMCB.State(IgnoreRnwMCB.State());
+			IgnoreRnwMCB.State(!IgnoreRnwMCB.State());
+			Settings.Default.IgnoreRNW = IgnoreRnwMCB.State();
+
+			if (ProvTable.Rows.Count == 0) return;
+			DupliPrep();
 		}
 
 		private void GameMaxProvTB_MouseHover(object sender, EventArgs e)
@@ -1237,6 +1352,31 @@ namespace EU4_PCP_Frame
 		private void ProvTableSB_ValueChanged(object sender, DarkUI.Controls.ScrollValueEventArgs e)
 		{
 			ProvTable.FirstDisplayedCell = ProvTable.Rows[e.Value].Cells[0];
+		}
+
+		private void ProvTable_MouseDown(object sender, MouseEventArgs e)
+		{
+			ProvTable.ClearSelection();
+			ProvTable.Rows[ProvTable.HitTest(e.X, e.Y).RowIndex].Selected = true;
+			ChangeColorSM.Visible =
+				ProvTable.SelectedRows[0].Cells[1].Style.BackColor == Color.Maroon;
+		}
+
+		private void DupliLabel_Click(object sender, EventArgs e)
+		{
+			var dupliLabel = sender as Label;
+			ProvTableSB.Value = (int)((float)(dupliLabel.Location.Y - ProvTableSB.Location.Y - MARKER_Y_OFFSET + 1) /
+				(ProvTableSB.Height - HEIGHT_OFFSET_SB) *
+				ProvTableSB.Maximum);
+		}
+
+		private void SelectInPickerMB_Click(object sender, EventArgs e)
+		{
+			NextProvNumberTB.Text = provinces[ProvTable.SelectedRows[0].Cells[1].Value.ToString().ToInt()].Index.ToString();
+			NextProvNameTB.Text = provinces[ProvTable.SelectedRows[0].Cells[1].Value.ToString().ToInt()].ToString();
+			NextProvNameTB.ReadOnly = true;
+			AddProvB.Text = "Update Province";
+			NextProvNameTB.BackColor = Colors.BlueBackground;
 		}
 
 		#endregion

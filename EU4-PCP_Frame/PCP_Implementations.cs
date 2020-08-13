@@ -8,9 +8,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static EU4_PCP_Frame.GlobVar;
+using static EU4_PCP.PCP_Const;
+using static EU4_PCP.PCP_Data;
+using static EU4_PCP.PCP_Paths;
+using static EU4_PCP.PCP_RegEx;
 
-namespace EU4_PCP_Frame
+namespace EU4_PCP
 {
 	public static class PCP_Implementations
 	{
@@ -187,7 +190,7 @@ namespace EU4_PCP_Frame
 			try
 			{
 				dFile = File.ReadAllText(path + definPath, UTF7).Split(
-					separators, StringSplitOptions.RemoveEmptyEntries);
+					SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
 			}
 			catch (Exception)
 			{ return false; }
@@ -417,8 +420,8 @@ namespace EU4_PCP_Frame
 					
 					lines = scope switch
 					{
-						LocScope.Province => Settings.Default.ProvLocFiles.Split(separators, StringSplitOptions.RemoveEmptyEntries),
-						LocScope.Bookmark => Settings.Default.BookLocFiles.Split(separators, StringSplitOptions.RemoveEmptyEntries),
+						LocScope.Province => Settings.Default.ProvLocFiles.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries),
+						LocScope.Bookmark => Settings.Default.BookLocFiles.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries),
 						_ => throw new NotImplementedException()
 					};
 
@@ -646,7 +649,7 @@ namespace EU4_PCP_Frame
 				if (eIndex > -1 && brackets.Range(1, 2))
 				{
 					string temp = line.Substring(0, eIndex).Trim();
-					if (!notCulture.Contains(temp))
+					if (!NOT_CUL.Contains(temp))
 					{
 						var culture = new Culture(temp);
 						switch (brackets)

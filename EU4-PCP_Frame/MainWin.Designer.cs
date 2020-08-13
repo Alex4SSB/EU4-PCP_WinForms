@@ -1,4 +1,4 @@
-﻿namespace EU4_PCP_Frame
+﻿namespace EU4_PCP
 {
     partial class MainWin
     {
@@ -30,14 +30,18 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWin));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.MainMS = new DarkUI.Controls.DarkMenuStrip();
+            this.DirectoriesM = new System.Windows.Forms.ToolStripMenuItem();
+            this.GamePathSM = new System.Windows.Forms.ToolStripMenuItem();
+            this.GamePathMTB = new System.Windows.Forms.ToolStripTextBox();
+            this.GamePathMB = new System.Windows.Forms.ToolStripMenuItem();
+            this.ModPathSM = new System.Windows.Forms.ToolStripMenuItem();
+            this.ModPathMTB = new System.Windows.Forms.ToolStripTextBox();
+            this.ModPathMB = new System.Windows.Forms.ToolStripMenuItem();
             this.GlobSetM = new System.Windows.Forms.ToolStripMenuItem();
             this.AutoLoadSM = new System.Windows.Forms.ToolStripMenuItem();
             this.DisableLoadMCB = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,13 +60,10 @@
             this.StatsM = new System.Windows.Forms.ToolStripMenuItem();
             this.LoadingTimeML = new System.Windows.Forms.ToolStripMenuItem();
             this.LoadingValueML = new System.Windows.Forms.ToolStripMenuItem();
-            this.GameBrowseB = new DarkUI.Controls.DarkButton();
-            this.GamePathTB = new DarkUI.Controls.DarkTextBox();
-            this.GamePathL = new DarkUI.Controls.DarkLabel();
             this.ColorPickerGB = new DarkUI.Controls.DarkGroupBox();
+            this.AddProvB = new DarkUI.Controls.DarkButton();
             this.TempL = new System.Windows.Forms.Label();
             this.GenColL = new DarkUI.Controls.DarkLabel();
-            this.AddProvB = new DarkUI.Controls.DarkButton();
             this.NextProvNameL = new DarkUI.Controls.DarkLabel();
             this.NextProvNameTB = new DarkUI.Controls.DarkTextBox();
             this.BlueL = new DarkUI.Controls.DarkLabel();
@@ -81,10 +82,10 @@
             this.ProvRed = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ProvGreen = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ProvBlue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ProvCM = new DarkUI.Controls.DarkContextMenu();
+            this.ChangeColorSM = new System.Windows.Forms.ToolStripMenuItem();
+            this.SelectInPickerMB = new System.Windows.Forms.ToolStripMenuItem();
             this.ProvTableSB = new DarkUI.Controls.DarkScrollBar();
-            this.ModPathL = new DarkUI.Controls.DarkLabel();
-            this.ModPathTB = new DarkUI.Controls.DarkTextBox();
-            this.ModBrowseB = new DarkUI.Controls.DarkButton();
             this.ModSelCB = new DarkUI.Controls.DarkComboBox();
             this.ModSelL = new DarkUI.Controls.DarkLabel();
             this.GameInfoGB = new DarkUI.Controls.DarkGroupBox();
@@ -109,21 +110,14 @@
             this.ModProvShownTB = new DarkUI.Controls.DarkTextBox();
             this.ModProvCountL = new DarkUI.Controls.DarkLabel();
             this.ModProvCountTB = new DarkUI.Controls.DarkTextBox();
-            this.ColorDupliGB = new DarkUI.Controls.DarkGroupBox();
-            this.DupliTableSB = new DarkUI.Controls.DarkScrollBar();
-            this.DupliTable = new System.Windows.Forms.DataGridView();
-            this.Province1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Province2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BrowserFBD = new System.Windows.Forms.FolderBrowserDialog();
             this.TextBoxTT = new System.Windows.Forms.ToolTip(this.components);
-            this.DupliMarker1 = new DarkUI.Controls.DarkLabel();
             this.MainMS.SuspendLayout();
             this.ColorPickerGB.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ProvTable)).BeginInit();
+            this.ProvCM.SuspendLayout();
             this.GameInfoGB.SuspendLayout();
             this.ModInfoGB.SuspendLayout();
-            this.ColorDupliGB.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.DupliTable)).BeginInit();
             this.SuspendLayout();
             // 
             // MainMS
@@ -131,6 +125,7 @@
             this.MainMS.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.MainMS.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.MainMS.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.DirectoriesM,
             this.GlobSetM,
             this.ModSetM,
             this.StatsM});
@@ -140,6 +135,73 @@
             this.MainMS.Size = new System.Drawing.Size(651, 24);
             this.MainMS.TabIndex = 0;
             this.MainMS.Text = "darkMenuStrip1";
+            // 
+            // DirectoriesM
+            // 
+            this.DirectoriesM.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.DirectoriesM.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.GamePathSM,
+            this.ModPathSM});
+            this.DirectoriesM.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.DirectoriesM.Name = "DirectoriesM";
+            this.DirectoriesM.Size = new System.Drawing.Size(123, 20);
+            this.DirectoriesM.Text = "Working Directories";
+            // 
+            // GamePathSM
+            // 
+            this.GamePathSM.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.GamePathSM.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.GamePathMTB,
+            this.GamePathMB});
+            this.GamePathSM.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.GamePathSM.Name = "GamePathSM";
+            this.GamePathSM.Size = new System.Drawing.Size(105, 22);
+            this.GamePathSM.Text = "Game";
+            // 
+            // GamePathMTB
+            // 
+            this.GamePathMTB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.GamePathMTB.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.GamePathMTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.GamePathMTB.Name = "GamePathMTB";
+            this.GamePathMTB.ReadOnly = true;
+            this.GamePathMTB.Size = new System.Drawing.Size(180, 23);
+            // 
+            // GamePathMB
+            // 
+            this.GamePathMB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.GamePathMB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.GamePathMB.Name = "GamePathMB";
+            this.GamePathMB.Size = new System.Drawing.Size(240, 22);
+            this.GamePathMB.Text = "Browse";
+            // 
+            // ModPathSM
+            // 
+            this.ModPathSM.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.ModPathSM.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ModPathMTB,
+            this.ModPathMB});
+            this.ModPathSM.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.ModPathSM.Name = "ModPathSM";
+            this.ModPathSM.Size = new System.Drawing.Size(105, 22);
+            this.ModPathSM.Text = "Mod";
+            // 
+            // ModPathMTB
+            // 
+            this.ModPathMTB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.ModPathMTB.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.ModPathMTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.ModPathMTB.Name = "ModPathMTB";
+            this.ModPathMTB.ReadOnly = true;
+            this.ModPathMTB.Size = new System.Drawing.Size(180, 23);
+            // 
+            // ModPathMB
+            // 
+            this.ModPathMB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.ModPathMB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.ModPathMB.Name = "ModPathMB";
+            this.ModPathMB.Size = new System.Drawing.Size(240, 22);
+            this.ModPathMB.Text = "Browse";
             // 
             // GlobSetM
             // 
@@ -333,45 +395,12 @@
             this.LoadingValueML.Size = new System.Drawing.Size(147, 22);
             this.LoadingValueML.Text = "xxxx mSec";
             // 
-            // GameBrowseB
-            // 
-            this.GameBrowseB.ForeColor = System.Drawing.Color.Gainsboro;
-            this.GameBrowseB.Location = new System.Drawing.Point(134, 45);
-            this.GameBrowseB.Name = "GameBrowseB";
-            this.GameBrowseB.Padding = new System.Windows.Forms.Padding(6);
-            this.GameBrowseB.Size = new System.Drawing.Size(61, 25);
-            this.GameBrowseB.TabIndex = 1;
-            this.GameBrowseB.Text = "Browse";
-            this.GameBrowseB.Click += new System.EventHandler(this.GameBrowseB_Click);
-            // 
-            // GamePathTB
-            // 
-            this.GamePathTB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.GamePathTB.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.GamePathTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.GamePathTB.Location = new System.Drawing.Point(12, 46);
-            this.GamePathTB.Name = "GamePathTB";
-            this.GamePathTB.ReadOnly = true;
-            this.GamePathTB.Size = new System.Drawing.Size(116, 23);
-            this.GamePathTB.TabIndex = 2;
-            this.GamePathTB.MouseHover += new System.EventHandler(this.GamePathTB_MouseHover);
-            // 
-            // GamePathL
-            // 
-            this.GamePathL.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.GamePathL.Location = new System.Drawing.Point(12, 28);
-            this.GamePathL.Name = "GamePathL";
-            this.GamePathL.Size = new System.Drawing.Size(116, 15);
-            this.GamePathL.TabIndex = 3;
-            this.GamePathL.Text = "Game Path";
-            this.GamePathL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // ColorPickerGB
             // 
             this.ColorPickerGB.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+            this.ColorPickerGB.Controls.Add(this.AddProvB);
             this.ColorPickerGB.Controls.Add(this.TempL);
             this.ColorPickerGB.Controls.Add(this.GenColL);
-            this.ColorPickerGB.Controls.Add(this.AddProvB);
             this.ColorPickerGB.Controls.Add(this.NextProvNameL);
             this.ColorPickerGB.Controls.Add(this.NextProvNameTB);
             this.ColorPickerGB.Controls.Add(this.BlueL);
@@ -384,12 +413,25 @@
             this.ColorPickerGB.Controls.Add(this.NextProvNumberTB);
             this.ColorPickerGB.Controls.Add(this.RandomizeB);
             this.ColorPickerGB.Enabled = false;
-            this.ColorPickerGB.Location = new System.Drawing.Point(418, 27);
+            this.ColorPickerGB.Location = new System.Drawing.Point(418, 316);
             this.ColorPickerGB.Name = "ColorPickerGB";
             this.ColorPickerGB.Size = new System.Drawing.Size(221, 214);
             this.ColorPickerGB.TabIndex = 4;
             this.ColorPickerGB.TabStop = false;
             this.ColorPickerGB.Text = "Color Picker";
+            // 
+            // AddProvB
+            // 
+            this.AddProvB.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.AddProvB.Enabled = false;
+            this.AddProvB.ForeColor = System.Drawing.Color.Gainsboro;
+            this.AddProvB.Location = new System.Drawing.Point(56, 175);
+            this.AddProvB.Name = "AddProvB";
+            this.AddProvB.Padding = new System.Windows.Forms.Padding(6);
+            this.AddProvB.Size = new System.Drawing.Size(109, 25);
+            this.AddProvB.TabIndex = 17;
+            this.AddProvB.Text = "Add Province";
+            this.AddProvB.Click += new System.EventHandler(this.AddProvB_Click);
             // 
             // TempL
             // 
@@ -410,18 +452,6 @@
             this.GenColL.Size = new System.Drawing.Size(65, 23);
             this.GenColL.TabIndex = 18;
             this.GenColL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // AddProvB
-            // 
-            this.AddProvB.Enabled = false;
-            this.AddProvB.ForeColor = System.Drawing.Color.Gainsboro;
-            this.AddProvB.Location = new System.Drawing.Point(66, 172);
-            this.AddProvB.Name = "AddProvB";
-            this.AddProvB.Padding = new System.Windows.Forms.Padding(6);
-            this.AddProvB.Size = new System.Drawing.Size(91, 25);
-            this.AddProvB.TabIndex = 17;
-            this.AddProvB.Text = "Add Province";
-            this.AddProvB.Click += new System.EventHandler(this.AddProvB_Click);
             // 
             // NextProvNameL
             // 
@@ -556,14 +586,14 @@
             this.ProvTable.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.ProvTable.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.ProvTable.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.Gainsboro;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.Transparent;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.ProvTable.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Gainsboro;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Gainsboro;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.ProvTable.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.ProvTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ProvTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ProvColor,
@@ -572,29 +602,30 @@
             this.ProvRed,
             this.ProvGreen,
             this.ProvBlue});
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle10.ForeColor = System.Drawing.Color.Gainsboro;
-            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
-            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.ProvTable.DefaultCellStyle = dataGridViewCellStyle10;
+            this.ProvTable.ContextMenuStrip = this.ProvCM;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Gainsboro;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Gainsboro;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.ProvTable.DefaultCellStyle = dataGridViewCellStyle3;
             this.ProvTable.EnableHeadersVisualStyles = false;
             this.ProvTable.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.ProvTable.Location = new System.Drawing.Point(12, 154);
+            this.ProvTable.Location = new System.Drawing.Point(12, 27);
             this.ProvTable.MultiSelect = false;
             this.ProvTable.Name = "ProvTable";
             this.ProvTable.ReadOnly = true;
             this.ProvTable.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.MenuBar;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.ProvTable.RowHeadersDefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.MenuBar;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.ProvTable.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.ProvTable.RowHeadersVisible = false;
             this.ProvTable.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.ProvTable.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -604,12 +635,13 @@
             this.ProvTable.Size = new System.Drawing.Size(400, 503);
             this.ProvTable.TabIndex = 31;
             this.ProvTable.Scroll += new System.Windows.Forms.ScrollEventHandler(this.ProvTable_Scroll);
+            this.ProvTable.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ProvTable_MouseDown);
             // 
             // ProvColor
             // 
-            dataGridViewCellStyle9.BackColor = System.Drawing.Color.Lime;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.Transparent;
-            this.ProvColor.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Lime;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Transparent;
+            this.ProvColor.DefaultCellStyle = dataGridViewCellStyle2;
             this.ProvColor.HeaderText = "";
             this.ProvColor.Name = "ProvColor";
             this.ProvColor.ReadOnly = true;
@@ -662,9 +694,37 @@
             this.ProvBlue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.ProvBlue.Width = 45;
             // 
+            // ProvCM
+            // 
+            this.ProvCM.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.ProvCM.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.ProvCM.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ChangeColorSM});
+            this.ProvCM.Name = "ProvCM";
+            this.ProvCM.Size = new System.Drawing.Size(146, 26);
+            // 
+            // ChangeColorSM
+            // 
+            this.ChangeColorSM.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.ChangeColorSM.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.SelectInPickerMB});
+            this.ChangeColorSM.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.ChangeColorSM.Name = "ChangeColorSM";
+            this.ChangeColorSM.Size = new System.Drawing.Size(145, 22);
+            this.ChangeColorSM.Text = "Change color";
+            // 
+            // SelectInPickerMB
+            // 
+            this.SelectInPickerMB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.SelectInPickerMB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.SelectInPickerMB.Name = "SelectInPickerMB";
+            this.SelectInPickerMB.Size = new System.Drawing.Size(205, 22);
+            this.SelectInPickerMB.Text = "Select in the Color Picker";
+            this.SelectInPickerMB.Click += new System.EventHandler(this.SelectInPickerMB_Click);
+            // 
             // ProvTableSB
             // 
-            this.ProvTableSB.Location = new System.Drawing.Point(394, 154);
+            this.ProvTableSB.Location = new System.Drawing.Point(394, 27);
             this.ProvTableSB.Maximum = 78;
             this.ProvTableSB.Name = "ProvTableSB";
             this.ProvTableSB.Size = new System.Drawing.Size(18, 503);
@@ -675,44 +735,10 @@
             this.ProvTableSB.ValueChanged += new System.EventHandler<DarkUI.Controls.ScrollValueEventArgs>(this.ProvTableSB_ValueChanged);
             this.ProvTableSB.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ProvTableSB_MouseMove);
             // 
-            // ModPathL
-            // 
-            this.ModPathL.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.ModPathL.Location = new System.Drawing.Point(12, 91);
-            this.ModPathL.Name = "ModPathL";
-            this.ModPathL.Size = new System.Drawing.Size(116, 15);
-            this.ModPathL.TabIndex = 35;
-            this.ModPathL.Text = "Mod Path";
-            this.ModPathL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // ModPathTB
-            // 
-            this.ModPathTB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.ModPathTB.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ModPathTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.ModPathTB.Location = new System.Drawing.Point(12, 109);
-            this.ModPathTB.Name = "ModPathTB";
-            this.ModPathTB.ReadOnly = true;
-            this.ModPathTB.Size = new System.Drawing.Size(116, 23);
-            this.ModPathTB.TabIndex = 34;
-            this.ModPathTB.MouseHover += new System.EventHandler(this.ModPathTB_MouseHover);
-            // 
-            // ModBrowseB
-            // 
-            this.ModBrowseB.ForeColor = System.Drawing.Color.Gainsboro;
-            this.ModBrowseB.Location = new System.Drawing.Point(134, 108);
-            this.ModBrowseB.Name = "ModBrowseB";
-            this.ModBrowseB.Padding = new System.Windows.Forms.Padding(6);
-            this.ModBrowseB.Size = new System.Drawing.Size(61, 25);
-            this.ModBrowseB.TabIndex = 33;
-            this.ModBrowseB.Text = "Browse";
-            this.ModBrowseB.Click += new System.EventHandler(this.ModBrowseB_Click);
-            // 
             // ModSelCB
             // 
             this.ModSelCB.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.ModSelCB.FormattingEnabled = true;
-            this.ModSelCB.Location = new System.Drawing.Point(226, 109);
+            this.ModSelCB.Location = new System.Drawing.Point(454, 166);
             this.ModSelCB.Name = "ModSelCB";
             this.ModSelCB.Size = new System.Drawing.Size(161, 24);
             this.ModSelCB.TabIndex = 36;
@@ -723,7 +749,7 @@
             // ModSelL
             // 
             this.ModSelL.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.ModSelL.Location = new System.Drawing.Point(226, 91);
+            this.ModSelL.Location = new System.Drawing.Point(454, 148);
             this.ModSelL.Name = "ModSelL";
             this.ModSelL.Size = new System.Drawing.Size(161, 15);
             this.ModSelL.TabIndex = 37;
@@ -743,7 +769,7 @@
             this.GameInfoGB.Controls.Add(this.GameProvShownTB);
             this.GameInfoGB.Controls.Add(this.GameProvCountL);
             this.GameInfoGB.Controls.Add(this.GameProvCountTB);
-            this.GameInfoGB.Location = new System.Drawing.Point(418, 247);
+            this.GameInfoGB.Location = new System.Drawing.Point(418, 27);
             this.GameInfoGB.Name = "GameInfoGB";
             this.GameInfoGB.Size = new System.Drawing.Size(221, 113);
             this.GameInfoGB.TabIndex = 38;
@@ -876,7 +902,7 @@
             this.ModInfoGB.Controls.Add(this.ModProvShownTB);
             this.ModInfoGB.Controls.Add(this.ModProvCountL);
             this.ModInfoGB.Controls.Add(this.ModProvCountTB);
-            this.ModInfoGB.Location = new System.Drawing.Point(418, 366);
+            this.ModInfoGB.Location = new System.Drawing.Point(418, 197);
             this.ModInfoGB.Name = "ModInfoGB";
             this.ModInfoGB.Size = new System.Drawing.Size(221, 113);
             this.ModInfoGB.TabIndex = 39;
@@ -998,131 +1024,18 @@
             this.ModProvCountTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.ModProvCountTB.MouseHover += new System.EventHandler(this.ModProvCountTB_MouseHover);
             // 
-            // ColorDupliGB
-            // 
-            this.ColorDupliGB.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-            this.ColorDupliGB.Controls.Add(this.DupliTableSB);
-            this.ColorDupliGB.Controls.Add(this.DupliTable);
-            this.ColorDupliGB.Location = new System.Drawing.Point(418, 485);
-            this.ColorDupliGB.Name = "ColorDupliGB";
-            this.ColorDupliGB.Size = new System.Drawing.Size(221, 172);
-            this.ColorDupliGB.TabIndex = 40;
-            this.ColorDupliGB.TabStop = false;
-            this.ColorDupliGB.Text = "Color Duplicates";
-            this.ColorDupliGB.Visible = false;
-            // 
-            // DupliTableSB
-            // 
-            this.DupliTableSB.Location = new System.Drawing.Point(197, 22);
-            this.DupliTableSB.Maximum = 10;
-            this.DupliTableSB.Name = "DupliTableSB";
-            this.DupliTableSB.Size = new System.Drawing.Size(18, 144);
-            this.DupliTableSB.TabIndex = 33;
-            this.DupliTableSB.Text = "darkScrollBar2";
-            this.DupliTableSB.ViewSize = 1;
-            // 
-            // DupliTable
-            // 
-            this.DupliTable.AllowUserToAddRows = false;
-            this.DupliTable.AllowUserToDeleteRows = false;
-            this.DupliTable.AllowUserToResizeColumns = false;
-            this.DupliTable.AllowUserToResizeRows = false;
-            this.DupliTable.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.DupliTable.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.DupliTable.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle12.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.Gainsboro;
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DupliTable.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle12;
-            this.DupliTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.DupliTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Province1,
-            this.Province2});
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle13.ForeColor = System.Drawing.Color.Gainsboro;
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.DupliTable.DefaultCellStyle = dataGridViewCellStyle13;
-            this.DupliTable.EnableHeadersVisualStyles = false;
-            this.DupliTable.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.DupliTable.Location = new System.Drawing.Point(6, 22);
-            this.DupliTable.MultiSelect = false;
-            this.DupliTable.Name = "DupliTable";
-            this.DupliTable.ReadOnly = true;
-            this.DupliTable.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.MenuBar;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DupliTable.RowHeadersDefaultCellStyle = dataGridViewCellStyle14;
-            this.DupliTable.RowHeadersVisible = false;
-            this.DupliTable.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.DupliTable.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.DupliTable.RowTemplate.DefaultCellStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.DupliTable.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.DupliTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.DupliTable.Size = new System.Drawing.Size(209, 144);
-            this.DupliTable.TabIndex = 32;
-            this.DupliTable.DoubleClick += new System.EventHandler(this.DupliTable_DoubleClick);
-            // 
-            // Province1
-            // 
-            this.Province1.HeaderText = "Province 1";
-            this.Province1.Name = "Province1";
-            this.Province1.ReadOnly = true;
-            this.Province1.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Province1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Province1.Width = 94;
-            // 
-            // Province2
-            // 
-            this.Province2.HeaderText = "Province 2";
-            this.Province2.Name = "Province2";
-            this.Province2.ReadOnly = true;
-            this.Province2.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Province2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Province2.Width = 94;
-            // 
-            // DupliMarker1
-            // 
-            this.DupliMarker1.BackColor = System.Drawing.Color.Maroon;
-            this.DupliMarker1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.DupliMarker1.Location = new System.Drawing.Point(393, 313);
-            this.DupliMarker1.Name = "DupliMarker1";
-            this.DupliMarker1.Size = new System.Drawing.Size(8, 5);
-            this.DupliMarker1.TabIndex = 41;
-            this.DupliMarker1.Visible = false;
-            // 
             // MainWin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(651, 669);
-            this.Controls.Add(this.DupliMarker1);
-            this.Controls.Add(this.ColorDupliGB);
+            this.ClientSize = new System.Drawing.Size(651, 542);
             this.Controls.Add(this.ModInfoGB);
             this.Controls.Add(this.GameInfoGB);
             this.Controls.Add(this.ModSelL);
             this.Controls.Add(this.ModSelCB);
-            this.Controls.Add(this.ModPathL);
-            this.Controls.Add(this.ModPathTB);
-            this.Controls.Add(this.ModBrowseB);
             this.Controls.Add(this.ProvTableSB);
             this.Controls.Add(this.ProvTable);
             this.Controls.Add(this.ColorPickerGB);
-            this.Controls.Add(this.GamePathL);
-            this.Controls.Add(this.GamePathTB);
-            this.Controls.Add(this.GameBrowseB);
             this.Controls.Add(this.MainMS);
             this.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -1138,16 +1051,17 @@
             this.ColorPickerGB.ResumeLayout(false);
             this.ColorPickerGB.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ProvTable)).EndInit();
+            this.ProvCM.ResumeLayout(false);
             this.GameInfoGB.ResumeLayout(false);
             this.GameInfoGB.PerformLayout();
             this.ModInfoGB.ResumeLayout(false);
             this.ModInfoGB.PerformLayout();
-            this.ColorDupliGB.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.DupliTable)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
+
+        
 
         #endregion
 
@@ -1161,15 +1075,9 @@
         private System.Windows.Forms.ToolStripSeparator ProvNamesMS1;
         private System.Windows.Forms.ToolStripMenuItem LoadingTimeML;
         private System.Windows.Forms.ToolStripMenuItem LoadingValueML;
-        private DarkUI.Controls.DarkButton GameBrowseB;
-        private DarkUI.Controls.DarkTextBox GamePathTB;
-        private DarkUI.Controls.DarkLabel GamePathL;
         private DarkUI.Controls.DarkGroupBox ColorPickerGB;
         internal System.Windows.Forms.DataGridView ProvTable;
         private DarkUI.Controls.DarkScrollBar ProvTableSB;
-        private DarkUI.Controls.DarkLabel ModPathL;
-        private DarkUI.Controls.DarkTextBox ModPathTB;
-        private DarkUI.Controls.DarkButton ModBrowseB;
         private DarkUI.Controls.DarkComboBox ModSelCB;
         private DarkUI.Controls.DarkLabel ModSelL;
         private DarkUI.Controls.DarkGroupBox GameInfoGB;
@@ -1184,7 +1092,6 @@
         private DarkUI.Controls.DarkLabel GameProvCountL;
         private DarkUI.Controls.DarkTextBox GameProvCountTB;
         private DarkUI.Controls.DarkGroupBox ModInfoGB;
-        private DarkUI.Controls.DarkScrollBar DupliTableSB;
         private DarkUI.Controls.DarkLabel ModBookmarkL;
         private DarkUI.Controls.DarkComboBox ModBookmarkCB;
         private DarkUI.Controls.DarkLabel ModStartDateL;
@@ -1195,10 +1102,7 @@
         private DarkUI.Controls.DarkTextBox ModProvShownTB;
         private DarkUI.Controls.DarkLabel ModProvCountL;
         private DarkUI.Controls.DarkTextBox ModProvCountTB;
-        private DarkUI.Controls.DarkGroupBox ColorDupliGB;
-        internal System.Windows.Forms.DataGridView DupliTable;
         private DarkUI.Controls.DarkLabel GenColL;
-        private DarkUI.Controls.DarkButton AddProvB;
         private DarkUI.Controls.DarkLabel NextProvNameL;
         private DarkUI.Controls.DarkTextBox NextProvNameTB;
         private DarkUI.Controls.DarkLabel BlueL;
@@ -1212,8 +1116,6 @@
         private DarkUI.Controls.DarkButton RandomizeB;
         private System.Windows.Forms.FolderBrowserDialog BrowserFBD;
         private System.Windows.Forms.ToolTip TextBoxTT;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Province1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Province2;
         private System.Windows.Forms.Label TempL;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProvColor;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProvNumber;
@@ -1221,7 +1123,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ProvRed;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProvGreen;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProvBlue;
-        private DarkUI.Controls.DarkLabel DupliMarker1;
         public System.Windows.Forms.ToolStripMenuItem DisableLoadMCB;
         public System.Windows.Forms.ToolStripMenuItem RemLoadMCB;
         public System.Windows.Forms.ToolStripMenuItem FullyLoadMCB;
@@ -1231,6 +1132,17 @@
         public System.Windows.Forms.ToolStripMenuItem ShowAllProvsMCB;
         public System.Windows.Forms.ToolStripMenuItem CheckDupliMCB;
         public System.Windows.Forms.ToolStripMenuItem IgnoreRnwMCB;
+        private DarkUI.Controls.DarkContextMenu ProvCM;
+        private System.Windows.Forms.ToolStripMenuItem ChangeColorSM;
+        private System.Windows.Forms.ToolStripMenuItem SelectInPickerMB;
+        private DarkUI.Controls.DarkButton AddProvB;
+        private System.Windows.Forms.ToolStripMenuItem DirectoriesM;
+        private System.Windows.Forms.ToolStripMenuItem GamePathSM;
+        private System.Windows.Forms.ToolStripTextBox GamePathMTB;
+        private System.Windows.Forms.ToolStripMenuItem GamePathMB;
+        private System.Windows.Forms.ToolStripMenuItem ModPathSM;
+        private System.Windows.Forms.ToolStripTextBox ModPathMTB;
+        private System.Windows.Forms.ToolStripMenuItem ModPathMB;
     }
 }
 
