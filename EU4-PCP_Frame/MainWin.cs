@@ -1057,15 +1057,15 @@ namespace EU4_PCP
 		private void ModPathMB_Click(object sender, EventArgs e)
 		{
 			if (lockdown) return;
-			if (GamePathMTB.Text != "") { BrowserFBD.SelectedPath = GamePathMTB.Text; }
-			FolderBrowse(Scope.Game);
+			if (ModPathMTB.Text != "") { BrowserFBD.SelectedPath = ModPathMTB.Text; }
+			FolderBrowse(Scope.Mod);
 		}
 
 		private void GamePathMB_Click(object sender, EventArgs e)
 		{
 			if (lockdown) return;
-			if (ModPathMTB.Text != "") { BrowserFBD.SelectedPath = ModPathMTB.Text; }
-			FolderBrowse(Scope.Mod);
+			if (GamePathMTB.Text != "") { BrowserFBD.SelectedPath = GamePathMTB.Text; }
+			FolderBrowse(Scope.Game);
 		}
 
 		private void NextProvNameTB_TextChanged(object sender, EventArgs e)
