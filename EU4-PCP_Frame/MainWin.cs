@@ -943,6 +943,9 @@ namespace EU4_PCP
 				return;
 			}
 
+			var defFile = textStream.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
+			var newLine = newLineRE.Match(defFile[defFile.Length - 1]).Success ? "" : "\r\n";
+
 			if (NextProvNameTB.ReadOnly) // Update duplicate province
 			{
 				var oldColor = provinces[NextProvNumberTB.Text.ToInt()].Color.ToCsv();
@@ -956,17 +959,18 @@ namespace EU4_PCP
 				{
 					
 					var endIndex = colorIndex + oldColor.Length;
-					var endStream = new byte[endIndex];
+					var endStream = new byte[byteStream.Length - endIndex];
 					
-					Array.Copy(byteStream, endIndex, endStream, 0, byteStream.Length - endIndex);
+					Array.Copy(byteStream, endIndex, endStream, 0, endStream.Length);
 					Array.Resize(ref byteStream, byteStream.Length + (newColor.Length - oldColor.Length));
 					Array.Copy(endStream, 0, byteStream, colorIndex + newColor.Length, endStream.Length);
 				}
-				Array.Copy(newColor.ToCharArray(), 0, byteStream, colorIndex, newColor.Length);
+				Array.Copy(newColor.ToCharArray().Select(c => (byte)c).ToArray(), 0, byteStream, colorIndex, newColor.Length);
 
 				try
 				{
 					File.WriteAllBytes(steamModPath + definPath, byteStream);
+					File.AppendAllText(steamModPath + definPath, newLine);
 				}
 				catch (Exception)
 				{
@@ -976,8 +980,6 @@ namespace EU4_PCP
 			}
 			else // Add province
 			{
-				var defFile = textStream.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
-				var newLine = newLineRE.Match(defFile[defFile.Length - 1]).Success ? "" : "\r\n";
 				var newProv = new Province
 				{
 					Index = NextProvNumberTB.Text.ToInt(),
