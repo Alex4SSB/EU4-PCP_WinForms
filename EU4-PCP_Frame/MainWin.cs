@@ -15,6 +15,7 @@ using static EU4_PCP.PCP_Data;
 using static EU4_PCP.PCP_Implementations;
 using static EU4_PCP.PCP_Paths;
 using static EU4_PCP.PCP_RegEx;
+using System.Text;
 
 namespace EU4_PCP
 {
@@ -546,7 +547,7 @@ namespace EU4_PCP
 		{
 			if (!CheckDupliMCB.State() || !selectedMod)
 			{
-				PaintDupli();
+				PaintDupli(true);
 				return;
 			}
 			var colors = new int[provinces.Length];
@@ -627,19 +628,22 @@ namespace EU4_PCP
 		{
 			if (create) // Constructor
 			{
-				dupli.DupliLabel = new Label
+				if (dupli.DupliLabel == null)
 				{
-					BackColor = Color.Maroon,
-					Size = MARKER_SIZE,
-					Location = new Point(ProvTableSB.Location.X - 1,
+					dupli.DupliLabel = new Label
+					{
+						BackColor = Color.Maroon,
+						Size = MARKER_SIZE
+					};
+
+					this.Controls.Add(dupli.DupliLabel);
+					dupli.DupliLabel.BringToFront();
+					dupli.DupliLabel.Click += new EventHandler(DupliLabel_Click);
+				}
+				dupli.DupliLabel.Location = new Point(ProvTableSB.Location.X - 1,
 						(int)(ProvTableSB.Location.Y + MARKER_Y_OFFSET +
 						(((float)dupli.Prov.TableIndex /
-						ProvTable.RowCount) * (ProvTableSB.Height - HEIGHT_OFFSET_SB))))
-				};
-
-				this.Controls.Add(dupli.DupliLabel);
-				dupli.DupliLabel.BringToFront();
-				dupli.DupliLabel.Click += new EventHandler(DupliLabel_Click);
+						ProvTable.RowCount) * (ProvTableSB.Height - HEIGHT_OFFSET_SB))));
 			}
 			else // Destructor
 			{
@@ -925,11 +929,13 @@ namespace EU4_PCP
 		/// </summary>
 		private void NewProv()
 		{
-			string[] defFile;
+			byte[] byteStream;
+			string textStream;
+
 			try
 			{
-				// Read all lines from the mod definition file
-				defFile = File.ReadAllText(steamModPath + definPath, UTF7).Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
+				byteStream = File.ReadAllBytes(steamModPath + definPath);
+				textStream = File.ReadAllText(steamModPath + definPath, UTF7);
 			}
 			catch (Exception)
 			{
@@ -937,61 +943,98 @@ namespace EU4_PCP
 				return;
 			}
 
-			// A new line to be added when writing back to the file, in case there is no new line at the end of the file
-			var newLine = newLineRE.Match(defFile[defFile.Length - 1]).Success ? "" : "\r\n";
-
-			// Create an object of the new province
-			var newProv = new Province {
-				Index = NextProvNumberTB.Text.ToInt(),
-				DefName = NextProvNameTB.Text,
-				Color = new P_Color(RedTB.Text, GreenTB.Text, BlueTB.Text)
-			};
-
-			// Add the new province to the provinces array
-			Array.Resize(ref provinces, provinces.Length + 1);
-			provinces[newProv] = newProv;
-
-			try
+			if (NextProvNameTB.ReadOnly) // Update duplicate province
 			{
-				// Add the new province to the definition file
-				File.AppendAllText(steamModPath + definPath, newLine + newProv.ToCsv() + "\r\n");
+				var oldColor = provinces[NextProvNumberTB.Text.ToInt()].Color.ToCsv();
+				var streamIndex = textStream.IndexOf(provinces[NextProvNumberTB.Text.ToInt()].Index.ToString());
+
+				provinces[NextProvNumberTB.Text.ToInt()].Color = new P_Color(RedTB.Text, GreenTB.Text, BlueTB.Text);
+				var newColor = provinces[NextProvNumberTB.Text.ToInt()].Color.ToCsv();
+
+				var colorIndex = streamIndex + NextProvNumberTB.Text.Length + 1;
+				if (oldColor.Length != newColor.Length)
+				{
+					
+					var endIndex = colorIndex + oldColor.Length;
+					var endStream = new byte[endIndex];
+					
+					Array.Copy(byteStream, endIndex, endStream, 0, byteStream.Length - endIndex);
+					Array.Resize(ref byteStream, byteStream.Length + (newColor.Length - oldColor.Length));
+					Array.Copy(endStream, 0, byteStream, colorIndex + newColor.Length, endStream.Length);
+				}
+				Array.Copy(newColor.ToCharArray(), 0, byteStream, colorIndex, newColor.Length);
+
+				try
+				{
+					File.WriteAllBytes(steamModPath + definPath, byteStream);
+				}
+				catch (Exception)
+				{
+					ErrorMsg(ErrorType.DefinWrite);
+					return;
+				}
 			}
-			catch (Exception)
+			else // Add province
 			{
-				ErrorMsg(ErrorType.DefinWrite);
-				return;
+				var defFile = textStream.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
+				var newLine = newLineRE.Match(defFile[defFile.Length - 1]).Success ? "" : "\r\n";
+				var newProv = new Province
+				{
+					Index = NextProvNumberTB.Text.ToInt(),
+					DefName = NextProvNameTB.Text,
+					Color = new P_Color(RedTB.Text, GreenTB.Text, BlueTB.Text)
+				};
+
+				Array.Resize(ref provinces, provinces.Length + 1);
+				provinces[newProv] = newProv;
+
+				ModMaxProvTB.Text = Inc(ModMaxProvTB.Text, 1);
+				provinces[NextProvNumberTB.Text.ToInt()].IsRNW();
+
+				try
+				{
+					File.AppendAllText(steamModPath + definPath, newLine + provinces[NextProvNumberTB.Text.ToInt()].ToCsv() + "\r\n");
+				}
+				catch (Exception)
+				{
+					ErrorMsg(ErrorType.DefinWrite);
+					return;
+				}
+
+				string defMap;
+				try
+				{
+					defMap = File.ReadAllText(steamModPath + defMapPath);
+				}
+				catch (Exception)
+				{
+					ErrorMsg(ErrorType.DefMapRead);
+					return;
+				}
+				defMap = defMapRE.Replace(defMap, $"max_provinces = {ModMaxProvTB.Text}");
+				try
+				{
+					File.WriteAllText(steamModPath + defMapPath, defMap, UTF8);
+				}
+				catch (Exception)
+				{
+					ErrorMsg(ErrorType.DefMapWrite);
+				}
 			}
 			
-			// Update prov counters
-			ModProvCountTB.Text = Inc(ModProvCountTB.Text, 1);
-			ModProvShownTB.Text = Inc(ModProvShownTB.Text, 1);
-			ModMaxProvTB.Text = Inc(ModMaxProvTB.Text, 1);
-
-			// In case the user gave the new province a strange name
-			newProv.IsRNW();
-			// Update ProvTable with the new province
 			PopulateTable();
-			// Update TB colors
-			ProvCountColor();
 
-			string defMap;
-			try
+			if (NextProvNameTB.ReadOnly)
 			{
-				defMap = File.ReadAllText(steamModPath + defMapPath);
+				PaintDupli(true);
+				duplicates.Clear();
+				DupliPrep();
 			}
-			catch (Exception)
+			else
 			{
-				ErrorMsg(ErrorType.DefMapRead);
-				return;
-			}
-			defMap = defMapRE.Replace(defMap, $"max_provinces = {ModMaxProvTB.Text}");
-			try
-			{
-				File.WriteAllText(steamModPath + defMapPath, defMap, UTF8);
-			}
-			catch (Exception)
-			{
-				ErrorMsg(ErrorType.DefMapWrite);
+				CountProv(Scope.Mod);
+				ProvCountColor();
+				PaintDupli();
 			}
 		}
 
@@ -1011,17 +1054,17 @@ namespace EU4_PCP
 
 		private void ModPathMB_Click(object sender, EventArgs e)
 		{
-            if (lockdown) return;
-            if (GamePathMTB.Text != "") { BrowserFBD.SelectedPath = GamePathMTB.Text; }
-            FolderBrowse(Scope.Game);
-        }
+			if (lockdown) return;
+			if (GamePathMTB.Text != "") { BrowserFBD.SelectedPath = GamePathMTB.Text; }
+			FolderBrowse(Scope.Game);
+		}
 
 		private void GamePathMB_Click(object sender, EventArgs e)
 		{
-            if (lockdown) return;
-            if (ModPathMTB.Text != "") { BrowserFBD.SelectedPath = ModPathMTB.Text; }
-            FolderBrowse(Scope.Mod);
-        }
+			if (lockdown) return;
+			if (ModPathMTB.Text != "") { BrowserFBD.SelectedPath = ModPathMTB.Text; }
+			FolderBrowse(Scope.Mod);
+		}
 
 		private void NextProvNameTB_TextChanged(object sender, EventArgs e)
 		{
@@ -1325,8 +1368,8 @@ namespace EU4_PCP
 				ProvTableSB.Maximum);
 		}
 
-        private void SelectInPickerMB_Click(object sender, EventArgs e)
-        {
+		private void SelectInPickerMB_Click(object sender, EventArgs e)
+		{
 			NextProvNumberTB.Text = provinces[ProvTable.SelectedRows[0].Cells[1].Value.ToString().ToInt()].Index.ToString();
 			NextProvNameTB.Text = provinces[ProvTable.SelectedRows[0].Cells[1].Value.ToString().ToInt()].ToString();
 			NextProvNameTB.ReadOnly = true;

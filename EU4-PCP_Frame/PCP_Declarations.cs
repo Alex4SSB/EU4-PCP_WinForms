@@ -30,6 +30,11 @@ namespace EU4_PCP
 			Color = Color.FromArgb(R, G, B);
 		}
 
+		public string ToCsv()
+		{
+			return $"{R};{G};{B}";
+		}
+
 		public static implicit operator Color(P_Color c) => c.Color;
 
 		public static implicit operator int(P_Color c) => c.Color.ToArgb();
@@ -76,7 +81,7 @@ namespace EU4_PCP
 
 		public string ToCsv()
 		{
-			return $"{Index};{Color.R};{Color.G};{Color.B};{DefName};x";
+			return $"{Index};{Color.ToCsv()};{DefName};x";
 		}
 
 		public bool IsRNW(bool updateShow = true)
