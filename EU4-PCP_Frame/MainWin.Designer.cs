@@ -213,7 +213,7 @@
             this.GlobSetM.Name = "GlobSetM";
             this.GlobSetM.Size = new System.Drawing.Size(98, 20);
             this.GlobSetM.Text = "Global Settings";
-            this.GlobSetM.DropDownOpening += new System.EventHandler(this.GlobSetM_DropDownOpening);
+            this.GlobSetM.DropDownOpening += new System.EventHandler(this.Menu_DropDownOpening);
             // 
             // AutoLoadSM
             // 
@@ -330,7 +330,7 @@
             this.ModSetM.Name = "ModSetM";
             this.ModSetM.Size = new System.Drawing.Size(89, 20);
             this.ModSetM.Text = "Mod Settings";
-            this.ModSetM.DropDownOpening += new System.EventHandler(this.ModSetM_DropDownOpening);
+            this.ModSetM.DropDownOpening += new System.EventHandler(this.Menu_DropDownOpening);
             // 
             // DuplicatesSM
             // 
@@ -744,7 +744,7 @@
             this.ModSelCB.TabIndex = 36;
             this.ModSelCB.DropDown += new System.EventHandler(this.ModSelCB_DropDown);
             this.ModSelCB.SelectedIndexChanged += new System.EventHandler(this.ModSelCB_SelectedIndexChanged);
-            this.ModSelCB.MouseHover += new System.EventHandler(this.ModSelCB_MouseHover);
+            this.ModSelCB.MouseHover += new System.EventHandler(this.CB_MouseHover);
             // 
             // ModSelL
             // 
@@ -795,9 +795,9 @@
             this.GameBookmarkCB.Name = "GameBookmarkCB";
             this.GameBookmarkCB.Size = new System.Drawing.Size(122, 24);
             this.GameBookmarkCB.TabIndex = 37;
-            this.GameBookmarkCB.DropDown += new System.EventHandler(this.GameBookmarkCB_DropDown);
+            this.GameBookmarkCB.DropDown += new System.EventHandler(this.BookmarkCB_DropDown);
             this.GameBookmarkCB.SelectedIndexChanged += new System.EventHandler(this.GameBookmarkCB_SelectedIndexChanged);
-            this.GameBookmarkCB.MouseHover += new System.EventHandler(this.GameBookmarkCB_MouseHover);
+            this.GameBookmarkCB.MouseHover += new System.EventHandler(this.CB_MouseHover);
             // 
             // GameStartDateL
             // 
@@ -820,7 +820,7 @@
             this.GameStartDateTB.Size = new System.Drawing.Size(81, 23);
             this.GameStartDateTB.TabIndex = 9;
             this.GameStartDateTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.GameStartDateTB.MouseHover += new System.EventHandler(this.GameStartDateTB_MouseHover);
+            this.GameStartDateTB.MouseHover += new System.EventHandler(this.StartDateTB_MouseHover);
             // 
             // GameMaxProvL
             // 
@@ -843,7 +843,7 @@
             this.GameMaxProvTB.Size = new System.Drawing.Size(65, 23);
             this.GameMaxProvTB.TabIndex = 7;
             this.GameMaxProvTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.GameMaxProvTB.MouseHover += new System.EventHandler(this.GameMaxProvTB_MouseHover);
+            this.GameMaxProvTB.MouseHover += new System.EventHandler(this.MaxProvTB_MouseHover);
             // 
             // GameProvShownL
             // 
@@ -929,9 +929,9 @@
             this.ModBookmarkCB.Name = "ModBookmarkCB";
             this.ModBookmarkCB.Size = new System.Drawing.Size(122, 24);
             this.ModBookmarkCB.TabIndex = 37;
-            this.ModBookmarkCB.DropDown += new System.EventHandler(this.ModBookmarkCB_DropDown);
+            this.ModBookmarkCB.DropDown += new System.EventHandler(this.BookmarkCB_DropDown);
             this.ModBookmarkCB.SelectedIndexChanged += new System.EventHandler(this.ModBookmarkCB_SelectedIndexChanged);
-            this.ModBookmarkCB.MouseHover += new System.EventHandler(this.ModBookmarkCB_MouseHover);
+            this.ModBookmarkCB.MouseHover += new System.EventHandler(this.CB_MouseHover);
             // 
             // ModStartDateL
             // 
@@ -954,7 +954,7 @@
             this.ModStartDateTB.Size = new System.Drawing.Size(81, 23);
             this.ModStartDateTB.TabIndex = 9;
             this.ModStartDateTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.ModStartDateTB.MouseHover += new System.EventHandler(this.ModStartDateTB_MouseHover);
+            this.ModStartDateTB.MouseHover += new System.EventHandler(this.StartDateTB_MouseHover);
             // 
             // ModMaxPRovL
             // 
@@ -977,7 +977,7 @@
             this.ModMaxProvTB.Size = new System.Drawing.Size(65, 23);
             this.ModMaxProvTB.TabIndex = 7;
             this.ModMaxProvTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.ModMaxProvTB.MouseHover += new System.EventHandler(this.ModMaxProvTB_MouseHover);
+            this.ModMaxProvTB.MouseHover += new System.EventHandler(this.MaxProvTB_MouseHover);
             // 
             // ModProvShownL
             // 

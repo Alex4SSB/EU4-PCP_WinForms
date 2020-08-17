@@ -1192,64 +1192,42 @@ namespace EU4_PCP
 			EnactBook(Scope.Mod);
 		}
 
-		private void GameBookmarkCB_DropDown(object sender, EventArgs e)
+		private void BookmarkCB_DropDown(object sender, EventArgs e)
 		{
-			foreach (var item in GameBookmarkCB.Items)
+			var cb = sender as ComboBox;
+
+			foreach (var item in cb.Items)
 			{
 				TempL.Text = item.ToString();
-				if (TempL.Width + 5 > GameBookmarkCB.DropDownWidth)
-					GameBookmarkCB.DropDownWidth = TempL.Width + 5;
+				if (TempL.Width + 5 > cb.DropDownWidth)
+					cb.DropDownWidth = TempL.Width + 5;
 			}
-			if (GameBookmarkCB.Items.Count > GameBookmarkCB.MaxDropDownItems)
-				GameBookmarkCB.DropDownWidth += WIDTH_SB;
+			if (cb.Items.Count > cb.MaxDropDownItems)
+				cb.DropDownWidth += WIDTH_SB;
 		}
 
-		private void ModBookmarkCB_DropDown(object sender, EventArgs e)
+		private void CB_MouseHover(object sender, EventArgs e)
 		{
-			foreach (var item in ModBookmarkCB.Items)
-			{
-				TempL.Text = item.ToString();
-				if (TempL.Width > ModBookmarkCB.DropDownWidth)
-					ModBookmarkCB.DropDownWidth = TempL.Width;
-			}
-			if (ModBookmarkCB.Items.Count > ModBookmarkCB.MaxDropDownItems)
-				ModBookmarkCB.DropDownWidth += WIDTH_SB;
+			var cb = sender as ComboBox;
+
+			TextBoxTT.SetToolTip(cb, cb.Text);
 		}
 
-		private void ModSelCB_MouseHover(object sender, EventArgs e)
+		private void StartDateTB_MouseHover(object sender, EventArgs e)
 		{
-			TextBoxTT.SetToolTip(ModSelCB, ModSelCB.Text);
+			var tb = sender as TextBox;
+
+			TextBoxTT.SetToolTip(tb, DATE_FORMAT);
 		}
 
-		private void GameBookmarkCB_MouseHover(object sender, EventArgs e)
+		private void Menu_DropDownOpening(object sender, EventArgs e)
 		{
-			TextBoxTT.SetToolTip(GameBookmarkCB, GameBookmarkCB.Text);
-		}
+			var menu = sender as ToolStripMenuItem;
 
-		private void ModBookmarkCB_MouseHover(object sender, EventArgs e)
-		{
-			TextBoxTT.SetToolTip(ModBookmarkCB, ModBookmarkCB.Text);
-		}
-
-		private void GameStartDateTB_MouseHover(object sender, EventArgs e)
-		{
-			TextBoxTT.SetToolTip(GameStartDateTB, DATE_FORMAT);
-		}
-
-		private void ModStartDateTB_MouseHover(object sender, EventArgs e)
-		{
-			TextBoxTT.SetToolTip(ModStartDateTB, DATE_FORMAT);
-		}
-
-		private void GlobSetM_DropDownOpening(object sender, EventArgs e)
-		{
-			AutoLoadSM.Enabled =
-			ProvNamesSM.Enabled = !lockdown;
-		}
-
-		private void ModSetM_DropDownOpening(object sender, EventArgs e)
-		{
-			DuplicatesSM.Enabled = !lockdown;
+            foreach (ToolStripItem item in menu.DropDownItems)
+            {
+				item.Enabled = !lockdown;
+            }
 		}
 
 		private void ProvNamesSM_DropDownOpening(object sender, EventArgs e)
@@ -1318,26 +1296,17 @@ namespace EU4_PCP
 			DupliPrep();
 		}
 
-		private void GameMaxProvTB_MouseHover(object sender, EventArgs e)
+		private void MaxProvTB_MouseHover(object sender, EventArgs e)
 		{
+			var tb = sender as TextBox;
+
 			string text;
-			if (GameMaxProvTB.BackColor == Color.Maroon)
+			if (tb.BackColor == Color.Maroon)
 				text = "Amount of provinces exceeds the limit.";
 			else
 				text = "Amount of provinces is within the limit.";
 
-			TextBoxTT.SetToolTip(GameMaxProvTB, text);
-		}
-
-		private void ModMaxProvTB_MouseHover(object sender, EventArgs e)
-		{
-			string text;
-			if (ModMaxProvTB.BackColor == Color.Maroon)
-				text = "Amount of provinces exceeds the limit.";
-			else
-				text = "Amount of provinces is within the limit.";
-
-			TextBoxTT.SetToolTip(ModMaxProvTB, text);
+			TextBoxTT.SetToolTip(tb, text);
 		}
 
 		private void ModProvCountTB_MouseHover(object sender, EventArgs e)
