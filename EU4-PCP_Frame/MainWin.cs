@@ -1070,7 +1070,8 @@ namespace EU4_PCP
 
 		private void NextProvNameTB_TextChanged(object sender, EventArgs e)
 		{
-			AddProvB.Enabled = NextProvNameTB.Text.Count(c => c == ' ') < NextProvNameTB.Text.Length;
+			AddProvB.Enabled = NextProvNameTB.Text.Count(c => c == ' ') < NextProvNameTB.Text.Length &&
+				asciiRE.Matches(NextProvNameTB.Text).Count == NextProvNameTB.Text.Length;
 		}
 
 		private void AddProvB_Click(object sender, EventArgs e)

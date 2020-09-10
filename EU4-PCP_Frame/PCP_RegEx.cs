@@ -31,6 +31,7 @@ namespace EU4_PCP
 		public static readonly Regex modPathRE = new Regex(@"(?<=^path *= *"")[\w /:]+(?="")", RegexOptions.Multiline);
 		public static readonly Regex rnwRE = new Regex(@"(Unused(Land){0,1}\d+|RNW)");
 		public static readonly Regex newLineRE = new Regex("[\r\n]+");
+		public static readonly Regex asciiRE = new Regex("[\x00-\x7F]");
 	}
 
 }
