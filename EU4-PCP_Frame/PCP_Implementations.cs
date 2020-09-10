@@ -175,6 +175,20 @@ namespace EU4_PCP
 				Scope.Game : Scope.Mod;
 		}
 
+		/// <summary>
+		/// Adds a <see cref="Province"/> to an array, resizing it when needed. <br /> <br />
+		/// MUST BE LOCKED WHEN CALLING FROM PARALLEL LOOP
+		/// </summary>
+		/// <param name="provArr">The array of provinces to be appended.</param>
+		/// <param name="prov">The <see cref="Province"/> to add.</param>
+		public static void Add(ref Province[] provArr, Province prov)
+		{
+			if (provArr.Length <= prov.Index)
+				Array.Resize(ref provArr, prov.Index + 1);
+
+			provArr[prov.Index] = prov;
+		}
+
 		#endregion
 
 		/// <summary>
@@ -185,7 +199,7 @@ namespace EU4_PCP
 		/// <returns><see langword="false"/> if an exception occurs while trying to read from the definition file.</returns>
 		public static bool DefinSetup(string path)
 		{
-
+			var definLock = new object();
 			string[] dFile;
 			try
 			{
@@ -215,9 +229,12 @@ namespace EU4_PCP
 					LocName = "",
 					DynName = ""
 				};
-
-				provinces[i] = prov;
-			});
+				
+                lock (definLock)
+                {
+					Add(ref provinces, prov);
+				}
+            });
 
 			return true;
 		}
