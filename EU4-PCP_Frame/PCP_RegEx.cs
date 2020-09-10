@@ -30,7 +30,6 @@ namespace EU4_PCP
 		public static readonly Regex modVerRE = new Regex(@"(?<=^supported_version *= *"")\d+(\.\d+)*", RegexOptions.Multiline);
 		public static readonly Regex modPathRE = new Regex(@"(?<=^path *= *"")[\w /:]+(?="")", RegexOptions.Multiline);
 		public static readonly Regex rnwRE = new Regex(@"(Unused(Land){0,1}\d+|RNW)");
-		public static readonly Regex remoteModRE = new Regex("remote_file_id", RegexOptions.Multiline);
 		public static readonly Regex newLineRE = new Regex("[\r\n]+");
 	}
 

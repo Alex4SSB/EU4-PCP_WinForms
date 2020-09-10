@@ -942,19 +942,20 @@ namespace EU4_PCP
 
 			Parallel.ForEach(files, modFile =>
 			{
-				string mFile = File.ReadAllText(modFile);
+                string mFile = File.ReadAllText(modFile);
 				var nameMatch = modNameRE.Match(mFile);
 				var pathMatch = modPathRE.Match(mFile);
 				var verMatch = modVerRE.Match(mFile);
-				var remoteMatch = remoteModRE.Match(mFile).Success;
 
 				if (!(nameMatch.Success && pathMatch.Success && verMatch.Success)) return;
 
 				var modPath = pathMatch.Value;
-				if (!remoteMatch)
-				{
-					if (Directory.Exists(Directory.GetParent(paradoxModPath).FullName + @"\" + modPath.TrimStart('/', '\\')))
-						modPath = Directory.GetParent(paradoxModPath).FullName + @"\" + modPath.TrimStart('/', '\\');
+
+				if (!Directory.Exists(modPath))
+                {
+					var tempPath = $@"{Directory.GetParent(paradoxModPath).FullName}\{modPath.TrimStart('/', '\\')}";
+					if (Directory.Exists(tempPath))
+						modPath = tempPath;
 					else return;
 				}
 
