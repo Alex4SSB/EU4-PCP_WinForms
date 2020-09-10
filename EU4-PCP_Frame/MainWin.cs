@@ -944,7 +944,7 @@ namespace EU4_PCP
 			}
 
 			var defFile = textStream.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
-			var newLine = newLineRE.Match(defFile[defFile.Length - 1]).Success ? "" : "\r\n";
+			var newLine = newLineRE.Match(textStream.Substring(textStream.Length - 2)).Success ? "" : "\r\n";
 
 			if (NextProvNameTB.ReadOnly) // Update duplicate province
 			{
