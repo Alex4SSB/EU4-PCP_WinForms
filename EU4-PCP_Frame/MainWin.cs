@@ -1149,7 +1149,11 @@ namespace EU4_PCP
 
 			if (ProvTable.Rows.Count == 0) return;
 			Critical(CriticalType.Begin);
-			Critical(CriticalType.Finish, MainSequence());
+			var success = MainSequence();
+			Critical(CriticalType.Finish, success);
+
+			if (!success)
+				DefinNamesMCB_Click(this, e);
 		}
 
 		private void DynNamesMCB_Click(object sender, EventArgs e)
@@ -1161,7 +1165,11 @@ namespace EU4_PCP
 
 			if (ProvTable.Rows.Count == 0) return;
 			Critical(CriticalType.Begin);
-			Critical(CriticalType.Finish, MainSequence());
+			var success = MainSequence();
+			Critical(CriticalType.Finish, success);
+
+			if (!success)
+				LocNamesMCB_Click(this, e);
 		}
 
 		private void ShowAllProvsMCB_Click(object sender, EventArgs e)
