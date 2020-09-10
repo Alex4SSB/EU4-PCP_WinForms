@@ -27,7 +27,7 @@ namespace EU4_PCP
 		/// <param name="item">The item to be added.</param>
 		public static void Add(ref string[] arr, string item)
 		{
-			if (arr[arr.Length - 1].Length > 0)
+			if (!string.IsNullOrEmpty(arr[arr.Length - 1]))
 				Array.Resize(ref arr, arr.Length + 1);
 			arr[arr.Length - 1] = item;
 		}
