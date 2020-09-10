@@ -1111,11 +1111,6 @@ namespace EU4_PCP
 			Settings.Default.AutoLoad = 2;
 		}
 
-		private void RandomizeB_Click(object sender, EventArgs e)
-		{
-			if (!lockdown) RndPrep();
-		}
-
 		private void CheckDupliMCB_CheckedChanged(object sender, EventArgs e)
 		{
 			if (ShowAllProvsMCB.State())
@@ -1354,6 +1349,11 @@ namespace EU4_PCP
 			NextProvNameTB.ReadOnly = true;
 			AddProvB.Text = "Update Province";
 			NextProvNameTB.BackColor = Colors.BlueBackground;
+		}
+
+        private void NewColorMB_Click(object sender, EventArgs e)
+        {
+			if (!lockdown) RndPrep();
 		}
 
 		#endregion

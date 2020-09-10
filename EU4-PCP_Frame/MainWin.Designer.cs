@@ -64,6 +64,8 @@
             this.AddProvB = new DarkUI.Controls.DarkButton();
             this.TempL = new System.Windows.Forms.Label();
             this.GenColL = new DarkUI.Controls.DarkLabel();
+            this.GenCM = new DarkUI.Controls.DarkContextMenu();
+            this.NewColorMB = new System.Windows.Forms.ToolStripMenuItem();
             this.NextProvNameL = new DarkUI.Controls.DarkLabel();
             this.NextProvNameTB = new DarkUI.Controls.DarkTextBox();
             this.BlueL = new DarkUI.Controls.DarkLabel();
@@ -74,7 +76,6 @@
             this.RedTB = new DarkUI.Controls.DarkTextBox();
             this.NextProvNumberL = new DarkUI.Controls.DarkLabel();
             this.NextProvNumberTB = new DarkUI.Controls.DarkTextBox();
-            this.RandomizeB = new DarkUI.Controls.DarkButton();
             this.ProvTable = new System.Windows.Forms.DataGridView();
             this.ProvColor = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ProvNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -114,6 +115,7 @@
             this.TextBoxTT = new System.Windows.Forms.ToolTip(this.components);
             this.MainMS.SuspendLayout();
             this.ColorPickerGB.SuspendLayout();
+            this.GenCM.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ProvTable)).BeginInit();
             this.ProvCM.SuspendLayout();
             this.GameInfoGB.SuspendLayout();
@@ -411,7 +413,6 @@
             this.ColorPickerGB.Controls.Add(this.RedTB);
             this.ColorPickerGB.Controls.Add(this.NextProvNumberL);
             this.ColorPickerGB.Controls.Add(this.NextProvNumberTB);
-            this.ColorPickerGB.Controls.Add(this.RandomizeB);
             this.ColorPickerGB.Enabled = false;
             this.ColorPickerGB.Location = new System.Drawing.Point(418, 316);
             this.ColorPickerGB.Name = "ColorPickerGB";
@@ -446,12 +447,31 @@
             // 
             this.GenColL.BackColor = System.Drawing.Color.Black;
             this.GenColL.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.GenColL.ContextMenuStrip = this.GenCM;
             this.GenColL.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.GenColL.Location = new System.Drawing.Point(150, 84);
             this.GenColL.Name = "GenColL";
             this.GenColL.Size = new System.Drawing.Size(65, 23);
             this.GenColL.TabIndex = 18;
             this.GenColL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // GenCM
+            // 
+            this.GenCM.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.GenCM.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.GenCM.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.NewColorMB});
+            this.GenCM.Name = "darkContextMenu1";
+            this.GenCM.Size = new System.Drawing.Size(131, 26);
+            // 
+            // NewColorMB
+            // 
+            this.NewColorMB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.NewColorMB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.NewColorMB.Name = "NewColorMB";
+            this.NewColorMB.Size = new System.Drawing.Size(130, 22);
+            this.NewColorMB.Text = "New Color";
+            this.NewColorMB.Click += new System.EventHandler(this.NewColorMB_Click);
             // 
             // NextProvNameL
             // 
@@ -547,9 +567,9 @@
             // NextProvNumberL
             // 
             this.NextProvNumberL.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.NextProvNumberL.Location = new System.Drawing.Point(9, 19);
+            this.NextProvNumberL.Location = new System.Drawing.Point(73, 19);
             this.NextProvNumberL.Name = "NextProvNumberL";
-            this.NextProvNumberL.Size = new System.Drawing.Size(110, 15);
+            this.NextProvNumberL.Size = new System.Drawing.Size(75, 15);
             this.NextProvNumberL.TabIndex = 6;
             this.NextProvNumberL.Text = "Province ID";
             this.NextProvNumberL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -559,23 +579,12 @@
             this.NextProvNumberTB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.NextProvNumberTB.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.NextProvNumberTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.NextProvNumberTB.Location = new System.Drawing.Point(6, 37);
+            this.NextProvNumberTB.Location = new System.Drawing.Point(73, 37);
             this.NextProvNumberTB.Name = "NextProvNumberTB";
             this.NextProvNumberTB.ReadOnly = true;
-            this.NextProvNumberTB.Size = new System.Drawing.Size(113, 23);
+            this.NextProvNumberTB.Size = new System.Drawing.Size(75, 23);
             this.NextProvNumberTB.TabIndex = 5;
             this.NextProvNumberTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // RandomizeB
-            // 
-            this.RandomizeB.ForeColor = System.Drawing.Color.Gainsboro;
-            this.RandomizeB.Location = new System.Drawing.Point(125, 36);
-            this.RandomizeB.Name = "RandomizeB";
-            this.RandomizeB.Padding = new System.Windows.Forms.Padding(6);
-            this.RandomizeB.Size = new System.Drawing.Size(90, 25);
-            this.RandomizeB.TabIndex = 4;
-            this.RandomizeB.Text = "Randomize";
-            this.RandomizeB.Click += new System.EventHandler(this.RandomizeB_Click);
             // 
             // ProvTable
             // 
@@ -1051,6 +1060,7 @@
             this.MainMS.PerformLayout();
             this.ColorPickerGB.ResumeLayout(false);
             this.ColorPickerGB.PerformLayout();
+            this.GenCM.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ProvTable)).EndInit();
             this.ProvCM.ResumeLayout(false);
             this.GameInfoGB.ResumeLayout(false);
@@ -1114,7 +1124,6 @@
         private DarkUI.Controls.DarkTextBox RedTB;
         private DarkUI.Controls.DarkLabel NextProvNumberL;
         private DarkUI.Controls.DarkTextBox NextProvNumberTB;
-        private DarkUI.Controls.DarkButton RandomizeB;
         private System.Windows.Forms.FolderBrowserDialog BrowserFBD;
         private System.Windows.Forms.ToolTip TextBoxTT;
         private System.Windows.Forms.Label TempL;
@@ -1144,6 +1153,8 @@
         private System.Windows.Forms.ToolStripMenuItem ModPathSM;
         private System.Windows.Forms.ToolStripTextBox ModPathMTB;
         private System.Windows.Forms.ToolStripMenuItem ModPathMB;
+        private DarkUI.Controls.DarkContextMenu GenCM;
+        private System.Windows.Forms.ToolStripMenuItem NewColorMB;
     }
 }
 
