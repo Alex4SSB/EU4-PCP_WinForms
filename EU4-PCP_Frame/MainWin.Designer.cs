@@ -739,6 +739,7 @@
             // 
             this.ModSelCB.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
             this.ModSelCB.Location = new System.Drawing.Point(454, 166);
+            this.ModSelCB.MaxDropDownItems = 15;
             this.ModSelCB.Name = "ModSelCB";
             this.ModSelCB.Size = new System.Drawing.Size(161, 24);
             this.ModSelCB.TabIndex = 36;
