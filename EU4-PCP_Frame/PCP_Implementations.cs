@@ -90,7 +90,7 @@ namespace EU4_PCP
 		}
 
 		/// <summary>
-		/// Compares two numeric string using > (greater than) operator
+		/// Compares two numeric strings using > (greater than) operator
 		/// </summary>
 		/// <param name="s">The left hand string.</param>
 		/// <param name="other">The right hand string.</param>
@@ -99,6 +99,17 @@ namespace EU4_PCP
 		{
 			return s.ToInt() > other.ToInt();
 		}
+
+		/// <summary>
+		/// Compares two numeric strings using >= (greater than or equal to) operator
+		/// </summary>
+		/// <param name="s">The left hand string.</param>
+		/// <param name="other">The right hand string.</param>
+		/// <returns></returns>
+		public static bool Ge(this string s, string other)
+        {
+			return s.ToInt() >= other.ToInt();
+        }
 
 		/// <summary>
 		/// Increments the numeric value of a <see cref="string"/> by a given value.

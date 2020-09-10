@@ -535,7 +535,7 @@ namespace EU4_PCP
 				ModMaxProvTB.BackColor = ModMaxProvTB.Text.Gt(ModProvCountTB.Text)
 					? Color.DarkOliveGreen : Color.Maroon;
 
-				ModProvCountTB.BackColor = ModProvCountTB.Text.Gt(GameProvCountTB.Text)
+				ModProvCountTB.BackColor = ModProvCountTB.Text.Ge(GameProvCountTB.Text)
 					? Colors.LightBackground : Color.Maroon;
 			}
 		}
