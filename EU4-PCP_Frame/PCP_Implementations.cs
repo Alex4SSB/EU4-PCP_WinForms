@@ -1075,7 +1075,14 @@ namespace EU4_PCP
 				addFiles = ApplyRegEx(scope, Directory.GetFiles(
 					steamModPath + SelectFolder(scope), "*", SearchOption.AllDirectories));
 			}
-			catch (Exception) { return false; }
+			catch (Exception)
+			{
+				// If no mod files were found - just use the game files (except bookmarks)
+				if (scope != FileType.Bookmark)
+					filesList.AddRange(baseFiles.Select(f => new FileObj(f, scope)));
+
+				return false;
+			}
 
 			filesList.AddRange(addFiles.Select(f => new FileObj(f, scope)));
 
