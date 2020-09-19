@@ -63,10 +63,10 @@ namespace EU4_PCP
 		/// <param name="res">The output <see cref="byte"/> array that will receive the result of the conversion.</param>
 		/// <param name="startIndex">Starting index in the array</param>
 		/// <returns><see langword="true"/> if the conversion was successful.</returns>
-		public static bool ToByte(this string[] s, out byte[] res, int startIndex = 0)
+		public static bool ToByte(this string[] s, out byte[] res, int startIndex = 0, int length = 3)
 		{
 			res = new byte[s.Length];
-			for (int i = startIndex; i < 3 + startIndex; i++)
+			for (int i = startIndex; i < length + startIndex; i++)
 			{
 				if (!byte.TryParse(s[i], out res[i - startIndex]))
 					return false;
@@ -111,25 +111,13 @@ namespace EU4_PCP
 			return s.ToInt() >= other.ToInt();
         }
 
-		/// <summary>
-		/// Increments the numeric value of a <see cref="string"/> by a given value.
-		/// </summary>
-		/// <param name="s">The <see cref="string"/> to increment.</param>
-		/// <param name="val">The value by which to increment.</param>
-		public static void Inc(ref string s, int val)
-		{
-			int temp = s.ToInt();
-			temp += val;
-			s = temp.ToString();
-		}
-
-		/// <summary>
-		/// Increments the numeric value of a <see cref="string"/> by a given value.
-		/// </summary>
-		/// <param name="s">The <see cref="string"/> to increment.</param>
-		/// <param name="val">The value by which to increment.</param>
-		/// <returns>The incremented <see cref="string"/>.</returns>
-		public static string Inc(string s, int val)
+        /// <summary>
+        /// Increments the numeric value of a <see cref="string"/> by a given value.
+        /// </summary>
+        /// <param name="s">The <see cref="string"/> to increment.</param>
+        /// <param name="val">The value by which to increment.</param>
+        /// <returns>The incremented <see cref="string"/>.</returns>
+        public static string Inc(string s, int val)
 		{
 			int temp = s.ToInt();
 			temp += val;
