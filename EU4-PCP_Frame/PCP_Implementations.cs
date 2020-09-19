@@ -567,13 +567,23 @@ namespace EU4_PCP
 		/// <returns>The parsed date as a <see cref="DateTime"/> object in case of successful conversion; <see cref="DateTime.MinValue"/> upon failure.</returns>
 		public static DateTime DateParser(string str)
 		{
-			var pDate = DateTime.MinValue;
-			DateTime.TryParseExact($"{str.Split('.')[0].ToInt() + 1000}{str.Substring(str.IndexOf('.'))}",
-				EUDF, CultureInfo.InvariantCulture, DateTimeStyles.None, out pDate);
+			if (!DateTime.TryParseExact(DateBooster(str),
+				EUDF, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime pDate))
+				return DateTime.MinValue;
 
+			if (pDate < DateTime.MinValue.AddYears(1000)) pDate = DateTime.MinValue;
 			if (pDate != DateTime.MinValue) pDate = pDate.AddYears(-1000);
 			return pDate;
 		}
+
+		private static string DateBooster(string str)
+        {
+			var arr = str.Split('.');
+			if (arr.Length != 3) return "";
+
+			if (!int.TryParse(arr[0], out int year)) return "";
+			return $"{year + 1000}.{arr[1]}.{arr[2]}";
+        }
 
 		/// <summary>
 		/// Creates the pattern for the multi-bookmark search <see cref="Regex"/>.

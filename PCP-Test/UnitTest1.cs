@@ -1,8 +1,7 @@
-﻿using EU4_PCP;
-using static EU4_PCP.PCP_Implementations;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
+using static EU4_PCP.PCP_Implementations;
 
 namespace EU4_PCP.Tests
 {
@@ -129,33 +128,33 @@ namespace EU4_PCP.Tests
                 "4825;110;137;45;Badain Jaran",
                 "4826;10;167;55;Nayon",
                 "4138;219;23;134;x;RNW" };
-            var names = new string[defin.Length];
+            string[] names = {
+                "Stockholm",
+                "Badain Jaran",
+                "Nayon",
+                "RNW"
+            };
 
             for (int i = 0; i < defin.Length; i++)
             {
-                names[i] = DefinProvName(defin[i].Split(';'));
+                Assert.AreEqual(names[i], DefinProvName(defin[i].Split(';')));
             }
-
-            Assert.AreEqual("Stockholm", names[0]);
-            Assert.AreEqual("Badain Jaran", names[1]);
-            Assert.AreEqual("Nayon", names[2]);
-            Assert.AreEqual("RNW", names[3]);
         }
 
         [TestMethod()]
         public void DefinProvNameTestNegative()
         {
-            string[] defin = { 
-                "4843;30;47;75;;", 
-                "4844;150;77;85;", 
-                "4845;70;107;95;", 
-                "4846;190;137;105;", 
-                "4847;110;167;115;", 
-                "4848;;197;125", 
-                "4849;;;135", 
-                "4850;;;145", 
-                "4851;;", 
-                "4852;", 
+            string[] defin = {
+                "4843;30;47;75;;",
+                "4844;150;77;85;",
+                "4845;70;107;95;",
+                "4846;190;137;105;",
+                "4847;110;167;115;",
+                "4848;;197;125",
+                "4849;;;135",
+                "4850;;;145",
+                "4851;;",
+                "4852;",
                 "4853" };
             var names = new string[defin.Length];
 
@@ -211,6 +210,48 @@ namespace EU4_PCP.Tests
             for (int i = 0; i < lines.Length; i++)
             {
                 Assert.IsTrue(NextLine(lines[i]));
+            }
+        }
+
+        [TestMethod]
+        public void DateParserTestPositive()
+        {
+            string[] dates =
+            {
+                "1444.11.11",
+                "2.12.31",
+                "790.4.20",
+                "70.11.3"
+            };
+            DateTime[] original = {
+                new DateTime(1444, 11, 11),
+                new DateTime(2, 12, 31),
+                new DateTime(790, 4, 20),
+                new DateTime(70, 11, 3)
+            };
+
+            for (int i = 0; i < dates.Length; i++)
+            {
+                Assert.AreEqual(original[i], DateParser(dates[i]));
+            }
+        }
+
+        [TestMethod]
+        public void DateParserTestNegative()
+        {
+            string[] dates =
+            {
+                "2000.2.31",
+                "",
+                "4.5",
+                "-1",
+                "0",
+                "not_a_date"
+            };
+
+            for (int i = 0; i < dates.Length; i++)
+            {
+                Assert.AreEqual(DateTime.MinValue, DateParser(dates[i]));
             }
         }
     }
