@@ -166,5 +166,52 @@ namespace EU4_PCP.Tests
 
             Assert.IsTrue(names.Count(s => string.IsNullOrEmpty(s)) == defin.Length);
         }
+
+        [TestMethod()]
+        public void NextLineTestPositive()
+        {
+            string[] lines =
+            {
+                "  owner = SWE",
+                "owner = SWE#",
+                "\towner = SWE",
+                "\t \t owner = SWE"
+            };
+            string[] lines2 =
+            {
+                "no assignment",
+                "}",
+                "{"
+            };
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                Assert.IsFalse(NextLine(lines[i]));
+
+                if (lines2.Length > i)
+                    Assert.IsFalse(NextLine(lines2[i], true));
+            }
+        }
+
+        [TestMethod]
+        public void NextLineTestNegative()
+        {
+            string[] lines =
+            {
+                "#  owner = SWE",
+                "\t",
+                "\t\t",
+                "  ",
+                "  #owner = SWE",
+                "\t#owner = SWE",
+                "\t \t #owner = SWE",
+                "no assignment"
+            };
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                Assert.IsTrue(NextLine(lines[i]));
+            }
+        }
     }
 }

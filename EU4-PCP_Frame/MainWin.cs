@@ -145,12 +145,14 @@ namespace EU4_PCP
 		private bool LaunchSequence()
 		{
 			if (ValGame()) return false;
+
+			ModSelCB.Items.Clear();
+			ModSelCB.Items.Add("[Vanilla - no mod]");
+
 			if (PathHandler(Scope.Mod, Mode.Read))
 			{
 				ModPrep();
 				ModSelCB.Enabled = true;
-				ModSelCB.Items.Clear();
-				ModSelCB.Items.Add("[Vanilla - no mod]");
 				ModSelCB.Items.AddRange(mods.Select(m => m.Name).ToArray());
 			}
 			else ModSelCB.Enabled = false;

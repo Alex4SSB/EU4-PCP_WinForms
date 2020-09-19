@@ -311,7 +311,7 @@ namespace EU4_PCP
 			{
 				LocScope.Province => locProvRE,
 
-				// bookRE is a dynamic RegEx and thus isn't defined in PCP_Declarations.
+				// bookRE is a dynamic RegEx so it is local.
 				LocScope.Bookmark => new Regex($@"^ *({BookPattern()}):\d* *"".+""", RegexOptions.Multiline),
 				_ => throw new NotImplementedException()
 			};
@@ -510,9 +510,10 @@ namespace EU4_PCP
 		/// <returns><see langword="true"/> if the line should be skipped.</returns>
 		public static bool NextLine(string line, bool eq = false)
 		{
-			line.Trim();
-			if (line == "" || line[0] == '#') return true;
-			return !eq && line.IndexOf('=') == -1;
+			// validLineRE is a dynamic RegEx so it is local.
+			var validLineRE = new Regex(@$"^(?!#|[\s]+#)({(eq ? "" : ".+=")}[^#]+)");
+
+			return !validLineRE.IsMatch(line);
 		}
 
 		/// <summary>
