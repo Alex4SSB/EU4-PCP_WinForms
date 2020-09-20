@@ -376,6 +376,8 @@ namespace EU4_PCP
 				return false;
 			}
 
+			DefinesPrep();
+
 			Parallel.Invoke(
 				() => CountryCulSetup(),
 				() => FetchDefines());
@@ -386,9 +388,7 @@ namespace EU4_PCP
 				return false;
 			}
 
-			Parallel.Invoke(
-				() => DefinesPrep(),
-				() => { if (enBooks) FetchFiles(FileType.Bookmark); });
+			if (enBooks) FetchFiles(FileType.Bookmark);
 
 			Parallel.Invoke(
 				() => { if (enBooks) BookPrep(); },
