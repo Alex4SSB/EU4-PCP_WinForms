@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PCP_Test.Properties;
 using System;
+using System.IO;
 using System.Linq;
 using static EU4_PCP.PCP_Implementations;
 
@@ -255,6 +257,25 @@ namespace EU4_PCP.Tests
             {
                 Assert.AreEqual(DateTime.MinValue, DateParser(dates[i], true));
                 Assert.AreEqual(DateTime.MinValue, DateParser(dates[i]));
+            }
+        }
+
+        [TestMethod]
+        public void LastEventTest()
+        {
+            DateTime[] dates = {
+                new DateTime(500, 1, 1),
+                new DateTime(1500, 1, 1)
+            };
+
+            string[] owners = {
+                "BYZ",
+                "TUR"
+            };
+
+            for (int i = 0; i < dates.Length; i++)
+            {
+                Assert.AreEqual(owners[i], LastEvent(Resources.Prov_151, EventType.Province, dates[i]));
             }
         }
     }

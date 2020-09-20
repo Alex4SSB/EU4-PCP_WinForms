@@ -485,7 +485,7 @@ namespace EU4_PCP
 				if (!updateOwner && provinces[i].Owner) return;
 
 				string provFile = File.ReadAllText(p_file.Path);
-				var currentOwner = LastEvent(provFile, EventType.Province);
+				var currentOwner = LastEvent(provFile, EventType.Province, startDate);
 
 				// Order is inverted to make handling of no result from LastEvent easier.
 				// On the other hand, a successful LastEvent result removes the need for the ProvOwnerRE search.
@@ -523,7 +523,7 @@ namespace EU4_PCP
 		/// <param name="eFile">The file to be searched.</param>
 		/// <param name="scope">Province or Country.</param>
 		/// <returns>Last owner or last culture.</returns>
-		private static string LastEvent(string eFile, EventType scope)
+		public static string LastEvent(string eFile, EventType scope, DateTime selectedStartDate)
 		{
 			var lastDate = DateTime.MinValue;
 			DateTime currentDate;
@@ -540,9 +540,9 @@ namespace EU4_PCP
 
 			foreach (Match evnt in eventMatch)
 			{
-				currentDate = DateParser(evnt.Value.Split('=')[0].Trim());
+				currentDate = DateParser(evnt.Value.Split('=')[0].Trim(), true);
 				if (currentDate < lastDate) continue;
-				if (currentDate > startDate) break;
+				if (currentDate > selectedStartDate) break;
 
 				match = scope switch
 				{
@@ -578,6 +578,13 @@ namespace EU4_PCP
 			return pDate;
 		}
 
+		/// <summary>
+		/// Adds 1000 years to a date <see cref="string"/>, after performing a simple check.
+		/// </summary>
+		/// <param name="str">A <see cref="string"/> representing a date.</param>
+		/// <returns>The original date + 1000 years if the <see cref="string"/> is in a valid format and the year is a valid <see cref="int"/>.<br />
+		/// Otherwise - an empty <see cref="string"/>.
+		/// </returns>
 		private static string DateBooster(string str)
         {
 			var arr = str.Split('.');
@@ -619,7 +626,7 @@ namespace EU4_PCP
 				if (!match.Success) return;
 
 				// Order is inverted to make handling of no result from LastEvent easier
-				priCul = LastEvent(countryFile, EventType.Country);
+				priCul = LastEvent(countryFile, EventType.Country, startDate);
 				if (priCul == "") { priCul = match.Value; }
 
 				if (updateCountries)
@@ -845,7 +852,7 @@ namespace EU4_PCP
 				var dateMatch = bookmarkDateRE.Match(bFile);
 				if (!codeMatch.Success || !dateMatch.Success) { continue; }
 
-				DateTime tempDate = DateParser(dateMatch.Value);
+				DateTime tempDate = DateParser(dateMatch.Value, startDate.Year < 1000);
 				if (tempDate == DateTime.MinValue) { continue; }
 				bookmarks.Add(new Bookmark {
 					Code = codeMatch.Value,
@@ -932,7 +939,7 @@ namespace EU4_PCP
 			try
 			{
 				match = definesDateRE.Match(File.ReadAllText(path));
-				startDate = DateParser(match.Value);
+				startDate = DateParser(match.Value, true);
 			}
 			catch (Exception) { return; }
 		}
