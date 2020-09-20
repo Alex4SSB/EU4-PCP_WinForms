@@ -232,8 +232,10 @@ namespace EU4_PCP.Tests
 
             for (int i = 0; i < dates.Length; i++)
             {
-                Assert.AreEqual(original[i], DateParser(dates[i]));
+                Assert.AreEqual(original[i], DateParser(dates[i], true));
             }
+
+            Assert.AreEqual(original[0], DateParser(dates[0]));
         }
 
         [TestMethod]
@@ -251,6 +253,7 @@ namespace EU4_PCP.Tests
 
             for (int i = 0; i < dates.Length; i++)
             {
+                Assert.AreEqual(DateTime.MinValue, DateParser(dates[i], true));
                 Assert.AreEqual(DateTime.MinValue, DateParser(dates[i]));
             }
         }

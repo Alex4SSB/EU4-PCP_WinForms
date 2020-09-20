@@ -565,11 +565,13 @@ namespace EU4_PCP
 		/// </summary>
 		/// <param name="str">The string to be parsed.</param>
 		/// <returns>The parsed date as a <see cref="DateTime"/> object in case of successful conversion; <see cref="DateTime.MinValue"/> upon failure.</returns>
-		public static DateTime DateParser(string str)
+		public static DateTime DateParser(string str, bool extended = false)
 		{
-			if (!DateTime.TryParseExact(DateBooster(str),
+			if (!DateTime.TryParseExact(extended ? DateBooster(str) : str,
 				EUDF, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime pDate))
 				return DateTime.MinValue;
+			else if (!extended)
+				return pDate;
 
 			if (pDate < DateTime.MinValue.AddYears(1000)) pDate = DateTime.MinValue;
 			if (pDate != DateTime.MinValue) pDate = pDate.AddYears(-1000);

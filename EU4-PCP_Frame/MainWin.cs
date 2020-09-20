@@ -9,17 +9,15 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows;
 using static EU4_PCP.PCP_Const;
 using static EU4_PCP.PCP_Data;
 using static EU4_PCP.PCP_Implementations;
 using static EU4_PCP.PCP_Paths;
 using static EU4_PCP.PCP_RegEx;
-using System.Text;
 
 namespace EU4_PCP
 {
-	public partial class MainWin : DarkForm
+    public partial class MainWin : DarkForm
 	{
 		public MainWin()
 		{
