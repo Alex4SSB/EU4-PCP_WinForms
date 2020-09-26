@@ -78,6 +78,8 @@ namespace EU4_PCP
 			}
 		}
 
+		
+
 		/// <summary>
 		/// Implement all settings in the app.
 		/// </summary>
@@ -87,12 +89,7 @@ namespace EU4_PCP
 			ProvNamesSM.Tag = "CheckBox";
 			DuplicatesSM.Tag = "CheckBox";
 
-			if (Settings.Default.AutoLoad == 0)
-				DisableLoadMCB.State(true);
-			if (Settings.Default.AutoLoad == 1)
-				RemLoadMCB.State(true);
-			if (Settings.Default.AutoLoad == 2)
-				FullyLoadMCB.State(true);
+			AutoLoadSM.CheckRadio(Settings.Default.AutoLoad);
 
 			DefinNamesMCB.State(true);
 			if (Settings.Default.ProvNames > 0)
@@ -1076,31 +1073,21 @@ namespace EU4_PCP
 		{
 			if (DisableLoadMCB.State()) return;
 
-			DisableLoadMCB.State(true);
-
-			RemLoadMCB.State(false);
-			FullyLoadMCB.State(false);
-			Settings.Default.AutoLoad = 0;
+			Settings.Default.AutoLoad = DisableLoadMCB.CheckRadio();
 		}
 
 		private void RemLoadMCB_Click(object sender, EventArgs e)
 		{
 			if (RemLoadMCB.State()) return;
 
-			RemLoadMCB.State(true);
-			DisableLoadMCB.State(false);
-			FullyLoadMCB.State(false);
-			Settings.Default.AutoLoad = 1;
+			Settings.Default.AutoLoad = RemLoadMCB.CheckRadio();
 		}
 
 		private void FullyLoadMCB_Click(object sender, EventArgs e)
 		{
 			if (FullyLoadMCB.State()) return;
 
-			FullyLoadMCB.State(true);
-			DisableLoadMCB.State(false);
-			RemLoadMCB.State(false);
-			Settings.Default.AutoLoad = 2;
+			Settings.Default.AutoLoad = FullyLoadMCB.CheckRadio();
 		}
 
 		private void CheckDupliMCB_CheckedChanged(object sender, EventArgs e)
@@ -1355,6 +1342,31 @@ namespace EU4_PCP
 	public static class MainWinExtensions
 	{
 		/// <summary>
+		/// Checks the menu radio button and unchecks the other radio buttons in the same sub-menu.
+		/// </summary>
+		/// <param name="item">The menu radio button to check.</param>
+		/// <returns>Radio button index in the sub-menu.</returns>
+		public static sbyte CheckRadio(this ToolStripMenuItem item)
+        {
+            foreach (ToolStripMenuItem menuItem in item.GetCurrentParent().Items)
+            {
+				menuItem.State(menuItem == item);
+			}
+
+            return (sbyte)item.GetCurrentParent().Items.IndexOf(item);
+		}
+
+		/// <summary>
+		/// Checks the <see cref="RadioButton"/> at a selected index in a sub-menu.
+		/// </summary>
+		/// <param name="menu">A toolstrip sub-menu containing a dropdown of radio buttons.</param>
+		/// <param name="index">The index of the radio button to check.</param>
+		public static void CheckRadio(this ToolStripMenuItem menu, sbyte index)
+        {
+            ((ToolStripMenuItem)menu.DropDownItems[index]).State(true);
+		}
+
+		/// <summary>
 		/// Sets menu item check state. <br />
 		/// (Updates image in process)
 		/// </summary>
@@ -1379,7 +1391,7 @@ namespace EU4_PCP
 			{
 				item.Image = item.OwnerItem.Tag switch
 				{
-					"RadioButton" => Resources.UncheckedRadio,
+					"Radio" => Resources.UncheckedRadio,
 
 					"CheckBox" => Resources.UncheckedBox,
 
