@@ -91,17 +91,9 @@ namespace EU4_PCP
 
 			AutoLoadSM.CheckRadio(Settings.Default.AutoLoad);
 
-			DefinNamesMCB.State(true);
-			if (Settings.Default.ProvNames > 0)
-			{
-				LocNamesMCB.State(true);
-				if (Settings.Default.ProvNames > 1)
-				{
-					DynNamesMCB.State(true);
-					GameBookmarkCB.Enabled = true;
-					ModBookmarkCB.Enabled = true;
-				}
-			}
+			ProvNamesSM.CheckBox(Settings.Default.ProvNames);
+			GameBookmarkCB.Enabled =
+			ModBookmarkCB.Enabled = DynNamesMCB.State();
 
 			CheckDupliMCB.State(Settings.Default.ColorDupli);
 			ShowAllProvsMCB.State(Settings.Default.ShowRNW);
@@ -113,6 +105,7 @@ namespace EU4_PCP
 			}
 			else IgnoreRnwMCB.State(true);
 
+			// Adding handlers here because they kept disappearing
 			GamePathMB.Click += GamePathMB_Click;
 			ModPathMB.Click += ModPathMB_Click;
 		}
@@ -1104,11 +1097,8 @@ namespace EU4_PCP
 
 		private void DefinNamesMCB_Click(object sender, EventArgs e)
 		{
-			DefinNamesMCB.State(true);
-			LocNamesMCB.State(false);
-			DynNamesMCB.State(false);
-			Settings.Default.ProvNames = 0;
-			
+			Settings.Default.ProvNames = DefinNamesMCB.CheckBox();
+
 			if (ProvTable.Rows.Count == 0) return;
 			Critical(CriticalType.Begin);
 			Critical(CriticalType.Finish, MainSequence());
@@ -1116,10 +1106,7 @@ namespace EU4_PCP
 
 		private void LocNamesMCB_Click(object sender, EventArgs e)
 		{
-			DefinNamesMCB.State(true);
-			LocNamesMCB.State(true);
-			DynNamesMCB.State(false);
-			Settings.Default.ProvNames = 1;
+			Settings.Default.ProvNames = LocNamesMCB.CheckBox();
 
 			if (ProvTable.Rows.Count == 0) return;
 			Critical(CriticalType.Begin);
@@ -1132,10 +1119,7 @@ namespace EU4_PCP
 
 		private void DynNamesMCB_Click(object sender, EventArgs e)
 		{
-			DefinNamesMCB.State(true);
-			LocNamesMCB.State(true);
-			DynNamesMCB.State(true);
-			Settings.Default.ProvNames = 2;
+			Settings.Default.ProvNames = DynNamesMCB.CheckBox();
 
 			if (ProvTable.Rows.Count == 0) return;
 			Critical(CriticalType.Begin);
@@ -1341,6 +1325,24 @@ namespace EU4_PCP
 
 	public static class MainWinExtensions
 	{
+		public static sbyte CheckBox(this ToolStripMenuItem item)
+        {
+			var parent = item.OwnerItem as ToolStripMenuItem;
+			var index = (sbyte)parent.DropDownItems.IndexOf(item);
+
+			CheckBox(parent, index);
+
+			return index;
+		}
+
+		public static void CheckBox(this ToolStripMenuItem menu, sbyte index)
+        {
+            for (int i = 0; i <= index; i++)
+            {
+				((ToolStripMenuItem)menu.DropDownItems[i]).State(true);
+			}
+        }
+
 		/// <summary>
 		/// Checks the menu radio button and unchecks the other radio buttons in the same sub-menu.
 		/// </summary>
@@ -1359,7 +1361,7 @@ namespace EU4_PCP
 		/// <summary>
 		/// Checks the <see cref="RadioButton"/> at a selected index in a sub-menu.
 		/// </summary>
-		/// <param name="menu">A toolstrip sub-menu containing a dropdown of radio buttons.</param>
+		/// <param name="menu">A tool strip sub-menu containing a drop down of radio buttons.</param>
 		/// <param name="index">The index of the radio button to check.</param>
 		public static void CheckRadio(this ToolStripMenuItem menu, sbyte index)
         {
