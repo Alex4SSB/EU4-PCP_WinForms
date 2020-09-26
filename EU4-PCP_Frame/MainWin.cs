@@ -436,26 +436,17 @@ namespace EU4_PCP
 		}
 
 		/// <summary>
-		/// Generates an exclusive random color, that doesn't exist in the provinces table.
+		/// [A shortcut to the default RandomProvColor call.]<br />
+		/// Generates an exclusive random color, that doesn't exist in the provinces array, 
+		/// and updates the relevant display controls.
 		/// </summary>
 		private void RndPrep()
-		{
-			var rnd = new Random();
-			int r, g, b;
-			var tempColor = new Color();
+        {
+			GenColL.BackColor = RandomProvColor(provinces);
 
-			do
-			{
-				r = rnd.Next(0, 255);
-				g = rnd.Next(0, 255);
-				b = rnd.Next(0, 255);
-				tempColor = Color.FromArgb(r, g, b);
-			} while (provinces.Count(p => p && p.Color == tempColor) > 0);
-
-			RedTB.Text = r.ToString();
-			GreenTB.Text = g.ToString();
-			BlueTB.Text = b.ToString();
-			GenColL.BackColor = tempColor;
+			RedTB.Text = GenColL.BackColor.R.ToString();
+			GreenTB.Text = GenColL.BackColor.G.ToString();
+			BlueTB.Text = GenColL.BackColor.B.ToString();
 
 			if (!NextProvNameTB.ReadOnly)
 				NextProvNumberTB.Text = provinces.Length.ToString();

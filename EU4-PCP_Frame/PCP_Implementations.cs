@@ -1065,6 +1065,28 @@ namespace EU4_PCP
 			return false;
 		}
 
+		/// <summary>
+		/// Generates an exclusive random <see cref="Color"/>, that doesn't exist in the given <see cref="Province"/> array.
+		/// </summary>
+		/// <param name="provArr">The <see cref="Province"/> array to be searched.</param>
+		/// <returns>The generated <see cref="Color"/>.</returns>
+		public static Color RandomProvColor(Province[] provArr)
+		{
+			var rnd = new Random();
+			int r, g, b;
+			var tempColor = new Color();
+
+			do
+			{
+				r = rnd.Next(0, 255);
+				g = rnd.Next(0, 255);
+				b = rnd.Next(0, 255);
+				tempColor = Color.FromArgb(r, g, b);
+			} while (provArr.Count(p => p && p.Color == tempColor) > 0);
+
+			return tempColor;
+		}
+
 		#region File Fetching
 
 		/// <summary>

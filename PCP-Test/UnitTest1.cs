@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PCP_Test.Properties;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using static EU4_PCP.PCP_Implementations;
@@ -277,6 +278,22 @@ namespace EU4_PCP.Tests
             {
                 Assert.AreEqual(owners[i], LastEvent(Resources.Prov_151, EventType.Province, dates[i]));
             }
+        }
+
+        [TestMethod]
+        public void RandomProvColorTest()
+        {
+            var testProv = new Province[] {
+                new Province() {Color = new P_Color("130", "12", "56")},
+                new Province() {Color = new P_Color("1", "40", "100")},
+                new Province() {Color = new P_Color("78", "32", "47")},
+                new Province() {Color = new P_Color("23", "190", "200")},
+                new Province() {Color = new P_Color("90", "212", "231")}
+            };
+
+            Color newColor = RandomProvColor(testProv);
+
+            Assert.IsTrue(testProv.Count(p => p.Color == newColor) == 0);
         }
     }
 }
