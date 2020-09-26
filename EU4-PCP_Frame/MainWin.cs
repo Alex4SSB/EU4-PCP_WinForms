@@ -85,12 +85,12 @@ namespace EU4_PCP
 		/// </summary>
 		private void SettingsInit()
 		{
-			AutoLoadSM.Tag = "Radio";
-			ProvNamesSM.Tag = "CheckBox";
-			DuplicatesSM.Tag = "CheckBox";
+			AutoLoadSM.Tag = MenuOption.Radio;
+			ProvNamesSM.Tag = MenuOption.CheckBox;
+			DuplicatesSM.Tag = MenuOption.CheckBox;
+			GlobSetM.Tag = MenuOption.CheckBox;
 
-			AutoLoadSM.CheckRadio(Settings.Default.AutoLoad);
-
+			AutoLoadSM.CheckBox(Settings.Default.AutoLoad);
 			ProvNamesSM.CheckBox(Settings.Default.ProvNames);
 			GameBookmarkCB.Enabled =
 			ModBookmarkCB.Enabled = DynNamesMCB.State();
@@ -1066,21 +1066,21 @@ namespace EU4_PCP
 		{
 			if (DisableLoadMCB.State()) return;
 
-			Settings.Default.AutoLoad = DisableLoadMCB.CheckRadio();
+			Settings.Default.AutoLoad = DisableLoadMCB.CheckBox();
 		}
 
 		private void RemLoadMCB_Click(object sender, EventArgs e)
 		{
 			if (RemLoadMCB.State()) return;
 
-			Settings.Default.AutoLoad = RemLoadMCB.CheckRadio();
+			Settings.Default.AutoLoad = RemLoadMCB.CheckBox();
 		}
 
 		private void FullyLoadMCB_Click(object sender, EventArgs e)
 		{
 			if (FullyLoadMCB.State()) return;
 
-			Settings.Default.AutoLoad = FullyLoadMCB.CheckRadio();
+			Settings.Default.AutoLoad = FullyLoadMCB.CheckBox();
 		}
 
 		private void CheckDupliMCB_CheckedChanged(object sender, EventArgs e)
@@ -1325,6 +1325,12 @@ namespace EU4_PCP
 
 	public static class MainWinExtensions
 	{
+
+		/// <summary>
+		/// Updates the check-state of a given drop-down menu option and the other options in the menu.
+		/// </summary>
+		/// <param name="item">The menu option to check.</param>
+		/// <returns>Option index in the drop-down menu.</returns>
 		public static sbyte CheckBox(this ToolStripMenuItem item)
         {
 			var parent = item.OwnerItem as ToolStripMenuItem;
@@ -1332,40 +1338,33 @@ namespace EU4_PCP
 
 			CheckBox(parent, index);
 
-			return index;
+            return index;
 		}
 
+		/// <summary>
+		/// Handles check state of exclusive / consecutive options in drop-down menus (radio-buttons and check-boxes).
+		/// </summary>
+		/// <param name="menu"></param>
+		/// <param name="index"></param>
 		public static void CheckBox(this ToolStripMenuItem menu, sbyte index)
         {
-            for (int i = 0; i <= index; i++)
-            {
-				((ToolStripMenuItem)menu.DropDownItems[i]).State(true);
-			}
-        }
+			bool radio = (MenuOption)menu.Tag == MenuOption.Radio;
 
-		/// <summary>
-		/// Checks the menu radio button and unchecks the other radio buttons in the same sub-menu.
-		/// </summary>
-		/// <param name="item">The menu radio button to check.</param>
-		/// <returns>Radio button index in the sub-menu.</returns>
-		public static sbyte CheckRadio(this ToolStripMenuItem item)
-        {
-            foreach (ToolStripMenuItem menuItem in item.GetCurrentParent().Items)
-            {
-				menuItem.State(menuItem == item);
+            for (sbyte i = 0; i < menu.DropDownItems.Count; i++)
+			{
+				CheckDropDown(menu, i, radio ? i == index : i <= index);
 			}
-
-            return (sbyte)item.GetCurrentParent().Items.IndexOf(item);
 		}
 
 		/// <summary>
-		/// Checks the <see cref="RadioButton"/> at a selected index in a sub-menu.
+		/// Sets the check-state of the option at the selected index in a sub-menu.
 		/// </summary>
-		/// <param name="menu">A tool strip sub-menu containing a drop down of radio buttons.</param>
-		/// <param name="index">The index of the radio button to check.</param>
-		public static void CheckRadio(this ToolStripMenuItem menu, sbyte index)
+		/// <param name="menu">A drop-down menu containing radio-buttons or check-boxes.</param>
+		/// <param name="index">The index of the option to set.</param>
+		/// <param name="state">The check-state to set.</param>
+		public static void CheckDropDown(this ToolStripMenuItem menu, sbyte index, bool state = true)
         {
-            ((ToolStripMenuItem)menu.DropDownItems[index]).State(true);
+            ((ToolStripMenuItem)menu.DropDownItems[index]).State(state);
 		}
 
 		/// <summary>
@@ -1382,9 +1381,9 @@ namespace EU4_PCP
 			{
 				item.Image = item.OwnerItem.Tag switch
 				{
-					"Radio" => Resources.CheckedRadio,
+					MenuOption.Radio => Resources.CheckedRadio,
 
-					"CheckBox" => Resources.CheckedIconBox,
+					MenuOption.CheckBox => Resources.CheckedIconBox,
 
 					_ => throw new NotImplementedException(),
 				};
@@ -1393,9 +1392,9 @@ namespace EU4_PCP
 			{
 				item.Image = item.OwnerItem.Tag switch
 				{
-					"Radio" => Resources.UncheckedRadio,
+					MenuOption.Radio => Resources.UncheckedRadio,
 
-					"CheckBox" => Resources.UncheckedBox,
+					MenuOption.CheckBox => Resources.UncheckedBox,
 
 					_ => throw new NotImplementedException(),
 				};

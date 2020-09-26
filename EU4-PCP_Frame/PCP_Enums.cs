@@ -69,4 +69,10 @@
         NoCulGroups,
         NoCountries
     }
+
+    public enum MenuOption
+    {
+        Radio,
+        CheckBox
+    }
 }

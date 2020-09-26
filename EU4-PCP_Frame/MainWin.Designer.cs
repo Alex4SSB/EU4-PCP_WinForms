@@ -51,8 +51,6 @@
             this.DefinNamesMCB = new System.Windows.Forms.ToolStripMenuItem();
             this.LocNamesMCB = new System.Windows.Forms.ToolStripMenuItem();
             this.DynNamesMCB = new System.Windows.Forms.ToolStripMenuItem();
-            this.ProvNamesMS1 = new System.Windows.Forms.ToolStripSeparator();
-            this.ShowAllProvsMCB = new System.Windows.Forms.ToolStripMenuItem();
             this.ModSetM = new System.Windows.Forms.ToolStripMenuItem();
             this.DuplicatesSM = new System.Windows.Forms.ToolStripMenuItem();
             this.CheckDupliMCB = new System.Windows.Forms.ToolStripMenuItem();
@@ -113,6 +111,8 @@
             this.ModProvCountTB = new DarkUI.Controls.DarkTextBox();
             this.BrowserFBD = new System.Windows.Forms.FolderBrowserDialog();
             this.TextBoxTT = new System.Windows.Forms.ToolTip(this.components);
+            this.ShowAllProvsMCB = new System.Windows.Forms.ToolStripMenuItem();
+            this.GlobSetTSS1 = new System.Windows.Forms.ToolStripSeparator();
             this.MainMS.SuspendLayout();
             this.ColorPickerGB.SuspendLayout();
             this.GenCM.SuspendLayout();
@@ -157,7 +157,7 @@
             this.GamePathMB});
             this.GamePathSM.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.GamePathSM.Name = "GamePathSM";
-            this.GamePathSM.Size = new System.Drawing.Size(105, 22);
+            this.GamePathSM.Size = new System.Drawing.Size(180, 22);
             this.GamePathSM.Text = "Game";
             // 
             // GamePathMTB
@@ -185,7 +185,7 @@
             this.ModPathMB});
             this.ModPathSM.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.ModPathSM.Name = "ModPathSM";
-            this.ModPathSM.Size = new System.Drawing.Size(105, 22);
+            this.ModPathSM.Size = new System.Drawing.Size(180, 22);
             this.ModPathSM.Text = "Mod";
             // 
             // ModPathMTB
@@ -210,7 +210,9 @@
             this.GlobSetM.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.GlobSetM.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AutoLoadSM,
-            this.ProvNamesSM});
+            this.ProvNamesSM,
+            this.GlobSetTSS1,
+            this.ShowAllProvsMCB});
             this.GlobSetM.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.GlobSetM.Name = "GlobSetM";
             this.GlobSetM.Size = new System.Drawing.Size(98, 20);
@@ -226,7 +228,7 @@
             this.FullyLoadMCB});
             this.AutoLoadSM.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.AutoLoadSM.Name = "AutoLoadSM";
-            this.AutoLoadSM.Size = new System.Drawing.Size(160, 22);
+            this.AutoLoadSM.Size = new System.Drawing.Size(180, 22);
             this.AutoLoadSM.Tag = "";
             this.AutoLoadSM.Text = "Auto-Load";
             // 
@@ -236,7 +238,7 @@
             this.DisableLoadMCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.DisableLoadMCB.Image = global::EU4_PCP.Properties.Resources.UncheckedRadio;
             this.DisableLoadMCB.Name = "DisableLoadMCB";
-            this.DisableLoadMCB.Size = new System.Drawing.Size(164, 22);
+            this.DisableLoadMCB.Size = new System.Drawing.Size(180, 22);
             this.DisableLoadMCB.Text = "Disabled";
             this.DisableLoadMCB.Click += new System.EventHandler(this.DisableLoadMCB_Click);
             // 
@@ -246,7 +248,7 @@
             this.RemLoadMCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.RemLoadMCB.Image = global::EU4_PCP.Properties.Resources.UncheckedRadio;
             this.RemLoadMCB.Name = "RemLoadMCB";
-            this.RemLoadMCB.Size = new System.Drawing.Size(164, 22);
+            this.RemLoadMCB.Size = new System.Drawing.Size(180, 22);
             this.RemLoadMCB.Text = "Remember Paths";
             this.RemLoadMCB.Click += new System.EventHandler(this.RemLoadMCB_Click);
             // 
@@ -256,7 +258,7 @@
             this.FullyLoadMCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.FullyLoadMCB.Image = global::EU4_PCP.Properties.Resources.UncheckedRadio;
             this.FullyLoadMCB.Name = "FullyLoadMCB";
-            this.FullyLoadMCB.Size = new System.Drawing.Size(164, 22);
+            this.FullyLoadMCB.Size = new System.Drawing.Size(180, 22);
             this.FullyLoadMCB.Text = "Load Last Mod";
             this.FullyLoadMCB.Click += new System.EventHandler(this.FullyLoadMCB_Click);
             // 
@@ -266,12 +268,10 @@
             this.ProvNamesSM.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DefinNamesMCB,
             this.LocNamesMCB,
-            this.DynNamesMCB,
-            this.ProvNamesMS1,
-            this.ShowAllProvsMCB});
+            this.DynNamesMCB});
             this.ProvNamesSM.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.ProvNamesSM.Name = "ProvNamesSM";
-            this.ProvNamesSM.Size = new System.Drawing.Size(160, 22);
+            this.ProvNamesSM.Size = new System.Drawing.Size(180, 22);
             this.ProvNamesSM.Text = "Province Names";
             this.ProvNamesSM.DropDownOpening += new System.EventHandler(this.ProvNamesSM_DropDownOpening);
             // 
@@ -281,7 +281,7 @@
             this.DefinNamesMCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.DefinNamesMCB.Image = global::EU4_PCP.Properties.Resources.UncheckedBox;
             this.DefinNamesMCB.Name = "DefinNamesMCB";
-            this.DefinNamesMCB.Size = new System.Drawing.Size(174, 22);
+            this.DefinNamesMCB.Size = new System.Drawing.Size(180, 22);
             this.DefinNamesMCB.Text = "From Definition";
             this.DefinNamesMCB.Click += new System.EventHandler(this.DefinNamesMCB_Click);
             // 
@@ -291,7 +291,7 @@
             this.LocNamesMCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.LocNamesMCB.Image = ((System.Drawing.Image)(resources.GetObject("LocNamesMCB.Image")));
             this.LocNamesMCB.Name = "LocNamesMCB";
-            this.LocNamesMCB.Size = new System.Drawing.Size(174, 22);
+            this.LocNamesMCB.Size = new System.Drawing.Size(180, 22);
             this.LocNamesMCB.Text = "From Localisation";
             this.LocNamesMCB.Click += new System.EventHandler(this.LocNamesMCB_Click);
             // 
@@ -301,27 +301,9 @@
             this.DynNamesMCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.DynNamesMCB.Image = ((System.Drawing.Image)(resources.GetObject("DynNamesMCB.Image")));
             this.DynNamesMCB.Name = "DynNamesMCB";
-            this.DynNamesMCB.Size = new System.Drawing.Size(174, 22);
+            this.DynNamesMCB.Size = new System.Drawing.Size(180, 22);
             this.DynNamesMCB.Text = "Dynamic";
             this.DynNamesMCB.Click += new System.EventHandler(this.DynNamesMCB_Click);
-            // 
-            // ProvNamesMS1
-            // 
-            this.ProvNamesMS1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.ProvNamesMS1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.ProvNamesMS1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.ProvNamesMS1.Name = "ProvNamesMS1";
-            this.ProvNamesMS1.Size = new System.Drawing.Size(171, 6);
-            // 
-            // ShowAllProvsMCB
-            // 
-            this.ShowAllProvsMCB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.ShowAllProvsMCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.ShowAllProvsMCB.Image = global::EU4_PCP.Properties.Resources.UncheckedBox;
-            this.ShowAllProvsMCB.Name = "ShowAllProvsMCB";
-            this.ShowAllProvsMCB.Size = new System.Drawing.Size(174, 22);
-            this.ShowAllProvsMCB.Text = "Show All Provinces";
-            this.ShowAllProvsMCB.Click += new System.EventHandler(this.ShowAllProvsMCB_Click);
             // 
             // ModSetM
             // 
@@ -342,7 +324,7 @@
             this.IgnoreRnwMCB});
             this.DuplicatesSM.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.DuplicatesSM.Name = "DuplicatesSM";
-            this.DuplicatesSM.Size = new System.Drawing.Size(160, 22);
+            this.DuplicatesSM.Size = new System.Drawing.Size(180, 22);
             this.DuplicatesSM.Text = "Color duplicates";
             // 
             // CheckDupliMCB
@@ -1034,6 +1016,23 @@
             this.ModProvCountTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.ModProvCountTB.MouseHover += new System.EventHandler(this.ModProvCountTB_MouseHover);
             // 
+            // ShowAllProvsMCB
+            // 
+            this.ShowAllProvsMCB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.ShowAllProvsMCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.ShowAllProvsMCB.Image = global::EU4_PCP.Properties.Resources.UncheckedBox;
+            this.ShowAllProvsMCB.Name = "ShowAllProvsMCB";
+            this.ShowAllProvsMCB.Size = new System.Drawing.Size(180, 22);
+            this.ShowAllProvsMCB.Text = "Show All Provinces";
+            // 
+            // GlobSetTSS1
+            // 
+            this.GlobSetTSS1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.GlobSetTSS1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.GlobSetTSS1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.GlobSetTSS1.Name = "GlobSetTSS1";
+            this.GlobSetTSS1.Size = new System.Drawing.Size(177, 6);
+            // 
             // MainWin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1083,7 +1082,6 @@
         private System.Windows.Forms.ToolStripMenuItem DuplicatesSM;
         private System.Windows.Forms.ToolStripMenuItem StatsM;
         private System.Windows.Forms.ToolStripMenuItem ProvNamesSM;
-        private System.Windows.Forms.ToolStripSeparator ProvNamesMS1;
         private System.Windows.Forms.ToolStripMenuItem LoadingTimeML;
         private System.Windows.Forms.ToolStripMenuItem LoadingValueML;
         private DarkUI.Controls.DarkGroupBox ColorPickerGB;
@@ -1139,7 +1137,6 @@
         public System.Windows.Forms.ToolStripMenuItem DefinNamesMCB;
         public System.Windows.Forms.ToolStripMenuItem LocNamesMCB;
         public System.Windows.Forms.ToolStripMenuItem DynNamesMCB;
-        public System.Windows.Forms.ToolStripMenuItem ShowAllProvsMCB;
         public System.Windows.Forms.ToolStripMenuItem CheckDupliMCB;
         public System.Windows.Forms.ToolStripMenuItem IgnoreRnwMCB;
         private DarkUI.Controls.DarkContextMenu ProvCM;
@@ -1155,6 +1152,8 @@
         private System.Windows.Forms.ToolStripMenuItem ModPathMB;
         private DarkUI.Controls.DarkContextMenu GenCM;
         private System.Windows.Forms.ToolStripMenuItem NewColorMB;
+        private System.Windows.Forms.ToolStripSeparator GlobSetTSS1;
+        public System.Windows.Forms.ToolStripMenuItem ShowAllProvsMCB;
     }
 }
 
