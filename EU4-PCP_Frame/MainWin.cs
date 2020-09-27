@@ -17,7 +17,7 @@ using static EU4_PCP.PCP_RegEx;
 
 namespace EU4_PCP
 {
-    public partial class MainWin : DarkForm
+	public partial class MainWin : DarkForm
 	{
 		public MainWin()
 		{
@@ -137,7 +137,7 @@ namespace EU4_PCP
 			ModSelCB.Items.Clear();
 			ModSelCB.Items.Add("[Vanilla - no mod]");
 
-			if (PathHandler(Scope.Mod, Mode.Read))
+			if (PathHandler(Scope.Mod))
 			{
 				ModPrep();
 				ModSelCB.Enabled = true;
@@ -166,7 +166,7 @@ namespace EU4_PCP
 		{
 			if (DisableLoadMCB.State() ||
 				Settings.Default.GamePath.Length == 0 ||
-				!PathHandler(Scope.Game, Mode.Read)) return true;
+				!PathHandler(Scope.Game)) return true;
 			gamePath = GamePathMTB.Text;
 			DocsPrep();
 
@@ -174,81 +174,90 @@ namespace EU4_PCP
 		}
 
 		/// <summary>
-		/// Handles all path validation for game and mod.
+		/// Handles path validation for game and mod.
 		/// </summary>
 		/// <param name="scope">Game / Mod.</param>
-		/// <param name="mode">Read from settings or Write to settings.</param>
 		/// <returns><see langword="true"/> if the validation was successful.</returns>
-		private bool PathHandler(Scope scope, Mode mode)
-		{
-			string setting = "";
-			ToolStripTextBox box = null;
-			switch (scope)
-			{
-				case Scope.Game:
-					setting = Settings.Default.GamePath;
-					box = GamePathMTB;
-					break;
-				case Scope.Mod:
-					setting = Settings.Default.ModPath;
-					box = ModPathMTB;
-					break;
-				default:
-					break;
-			}
+		private bool PathHandler(Scope scope) => PathHandler(scope, SettingsRead(scope));
 
-			if (setting.Contains('|'))
+		/// <summary>
+		/// Handles path validation for game and mod.
+		/// </summary>
+		/// <param name="scope">Game / Mod.</param>
+		/// <param name="setting">The setting from which to read.</param>
+		/// <returns><see langword="true"/> if the validation was successful.</returns>
+		private bool PathHandler(Scope scope, string setting)
+		{
+			if (setting.Contains('|')) // Legacy support
 				setting = setting.Split('|')[0];
 
-			switch (mode)
+			switch (scope)
 			{
-				case Mode.Read:
-					switch (scope)
+				case Scope.Game when !File.Exists(setting + gameFile):
+					ErrorMsg(ErrorType.GameExe);
+					SettingsWrite(scope);
+					return false;
+				case Scope.Mod:
+					if (setting.Length < 1)
 					{
-						case Scope.Game when !File.Exists(setting + gameFile):
-							ErrorMsg(ErrorType.GameExe);
-							SetWr(scope, "");
-							return false;
-						case Scope.Mod:
-							if (setting.Length < 1)
-							{
-								if (Directory.Exists($@"{selectedDocsPath}\mod"))
-								{
-									paradoxModPath = $@"{selectedDocsPath}\mod";
-									setting = paradoxModPath;
-								}
-								else return false;
-							}
-							else paradoxModPath = setting;
-							break;
-						default:
-							break;
+						var path = selectedDocsPath + modPath;
+						if (Directory.Exists(path))
+						{
+							paradoxModPath =
+							setting = path;
+						}
+						else return false;
 					}
-					box.Text = setting;
-					break;
-				case Mode.Write:
-					SetWr(scope, box.Text);
+					else paradoxModPath = setting;
 					break;
 				default:
 					break;
 			}
+			PathWrite(scope, setting);
+
 			return true;
 		}
 
 		/// <summary>
-		/// Writes to the game / mod path settings.
+		/// Reads path from game / mod settings.
 		/// </summary>
 		/// <param name="scope">Game / Mod.</param>
-		/// <param name="s">The string to store in the settings.</param>
-		private void SetWr(Scope scope, string s)
+		/// <returns>The path as string.</returns>
+		private string SettingsRead(Scope scope) => scope switch
+		{
+			Scope.Game => Settings.Default.GamePath,
+			Scope.Mod => Settings.Default.ModPath,
+			_ => "",
+		};
+
+		/// <summary>
+		/// Writes to the game / mod path settings from their respective text-boxes.
+		/// </summary>
+		/// <param name="scope">Game / Mod.</param>
+		private void SettingsWrite(Scope scope)
 		{
 			switch (scope)
 			{
 				case Scope.Game:
-					Settings.Default.GamePath = s;
+					Settings.Default.GamePath = GamePathMTB.Text;
 					break;
 				case Scope.Mod:
-					Settings.Default.ModPath = s;
+					Settings.Default.ModPath = ModPathMTB.Text;
+					break;
+				default:
+					break;
+			}
+		}
+
+		private void PathWrite(Scope scope, string path)
+		{
+			switch (scope)
+			{
+				case Scope.Game:
+					GamePathMTB.Text = path;
+					break;
+				case Scope.Mod:
+					ModPathMTB.Text = path;
 					break;
 				default:
 					break;
@@ -431,7 +440,7 @@ namespace EU4_PCP
 		/// and updates the relevant display controls.
 		/// </summary>
 		private void RndPrep()
-        {
+		{
 			GenColL.BackColor = RandomProvColor(provinces);
 
 			RedTB.Text = GenColL.BackColor.R.ToString();
@@ -844,7 +853,7 @@ namespace EU4_PCP
 				default:
 					break;
 			}
-			PathHandler(scope, Mode.Write);
+			SettingsWrite(scope);
 
 			Critical(CriticalType.Finish, LaunchSequence());
 		}
@@ -1190,10 +1199,10 @@ namespace EU4_PCP
 		{
 			var menu = sender as ToolStripMenuItem;
 
-            foreach (ToolStripItem item in menu.DropDownItems)
-            {
+			foreach (ToolStripItem item in menu.DropDownItems)
+			{
 				item.Enabled = !lockdown;
-            }
+			}
 		}
 
 		private void ProvNamesSM_DropDownOpening(object sender, EventArgs e)
@@ -1314,8 +1323,8 @@ namespace EU4_PCP
 			NextProvNameTB.BackColor = Colors.BlueBackground;
 		}
 
-        private void NewColorMB_Click(object sender, EventArgs e)
-        {
+		private void NewColorMB_Click(object sender, EventArgs e)
+		{
 			if (!lockdown) RndPrep();
 		}
 
@@ -1332,13 +1341,13 @@ namespace EU4_PCP
 		/// <param name="item">The menu option to check.</param>
 		/// <returns>Option index in the drop-down menu.</returns>
 		public static sbyte CheckBox(this ToolStripMenuItem item)
-        {
+		{
 			var parent = item.OwnerItem as ToolStripMenuItem;
 			var index = (sbyte)parent.DropDownItems.IndexOf(item);
 
 			CheckBox(parent, index);
 
-            return index;
+			return index;
 		}
 
 		/// <summary>
@@ -1347,10 +1356,10 @@ namespace EU4_PCP
 		/// <param name="menu"></param>
 		/// <param name="index"></param>
 		public static void CheckBox(this ToolStripMenuItem menu, sbyte index)
-        {
+		{
 			bool radio = (MenuOption)menu.Tag == MenuOption.Radio;
 
-            for (sbyte i = 0; i < menu.DropDownItems.Count; i++)
+			for (sbyte i = 0; i < menu.DropDownItems.Count; i++)
 			{
 				CheckDropDown(menu, i, radio ? i == index : i <= index);
 			}
@@ -1363,8 +1372,8 @@ namespace EU4_PCP
 		/// <param name="index">The index of the option to set.</param>
 		/// <param name="state">The check-state to set.</param>
 		public static void CheckDropDown(this ToolStripMenuItem menu, sbyte index, bool state = true)
-        {
-            ((ToolStripMenuItem)menu.DropDownItems[index]).State(state);
+		{
+			((ToolStripMenuItem)menu.DropDownItems[index]).State(state);
 		}
 
 		/// <summary>

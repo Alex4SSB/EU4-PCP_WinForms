@@ -8,6 +8,7 @@ namespace EU4_PCP
 		public static readonly string docsFolder = @"\Documents\Paradox Interactive\Europa Universalis IV";
 		public static readonly string docsPath = $@"{userFolder}{docsFolder}";
 		public static readonly string oneDrivePath = $@"{userFolder}\OneDrive{docsFolder}";
+		public static readonly string modPath = @"\mod";
 		public static string paradoxModPath = ""; // The folder that contains the .mod files
 		public static string steamModPath = ""; // Current Mod - parsed from the .mod file
 		public static string selectedDocsPath = ""; // OneDrive / Offline
