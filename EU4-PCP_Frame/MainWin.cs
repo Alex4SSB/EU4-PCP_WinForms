@@ -194,9 +194,8 @@ namespace EU4_PCP
 			switch (scope)
 			{
 				case Scope.Game when !File.Exists(setting + gameFile):
-					ErrorMsg(ErrorType.GameExe);
 					SettingsWrite(scope);
-					return false;
+					return ErrorMsg(ErrorType.GameExe);
 				case Scope.Mod:
 					if (setting.Length < 1)
 					{
@@ -280,10 +279,7 @@ namespace EU4_PCP
 			ClearArrays();
 
 			if (BookStatus(true) && !DefinSetup(DecidePath()))
-			{
-				ErrorMsg(ErrorType.DefinRead);
-				return false;
-			}
+				return ErrorMsg(ErrorType.DefinRead);
 
 			if (!enDyn)
 			{
@@ -297,27 +293,23 @@ namespace EU4_PCP
 			PopulateTable();
 			GameVer();
 
+			ModInfoGB.Text = "Mod";
 			if (selectedMod)
 			{
 				ModStartDateTB.Text = startDate.ToString(DATE_FORMAT);
-				ModInfoGB.Text = $"Mod - {selectedMod.Ver}";
-				CountProv(Scope.Mod);
-				PopulateBooks(Scope.Mod);
-				EnableBooks(Scope.Mod);
+				ModInfoGB.Text += $" - {selectedMod.Ver}";
 			}
 			else
-			{
 				GameStartDateTB.Text = startDate.ToString(DATE_FORMAT);
-				ModInfoGB.Text = "Mod";
-				CountProv(Scope.Game);
-				PopulateBooks(Scope.Game);
-				EnableBooks(Scope.Game);
-			}
+
+			CountProv(selectedMod);
+			PopulateBooks(selectedMod);
+			EnableBooks(selectedMod);
 
 			// Unless a bookmark is selected, perform relevant max_provinces check
 			if (BookStatus(true) &&
-				(!selectedMod && MaxProvinces(Scope.Game)) ||
-				(selectedMod && MaxProvinces(Scope.Mod)))
+				(!selectedMod && !MaxProvinces(Scope.Game)) ||
+				(selectedMod && !MaxProvinces(Scope.Mod)))
 				return false;
 
 			ClearCP(); // Clear the color picker, and call the randomizer
@@ -336,16 +328,10 @@ namespace EU4_PCP
 			if (!enLoc) return true;
 
 			if (!FetchFiles(FileType.Localisation))
-			{
-				ErrorMsg(ErrorType.LocFolder);
-				return false;
-			}
-			
+				return ErrorMsg(ErrorType.LocFolder);
+
 			if (!LocPrep(LocScope.Province))
-			{
-				ErrorMsg(ErrorType.LocRead);
-				return false;
-			}
+				return ErrorMsg(ErrorType.LocRead);
 
 			return DynamicSequence();
 		}
@@ -365,15 +351,9 @@ namespace EU4_PCP
 				() => FetchFiles(FileType.Country));
 
 			if (cultures.Count < 1)
-			{
-				ErrorMsg(ErrorType.NoCultures);
-				return false;
-			}
+				return ErrorMsg(ErrorType.NoCultures);
 			else if (cultures.Where(cul => cul && cul.Group).Count() < 1)
-			{
-				ErrorMsg(ErrorType.NoCulGroups);
-				return false;
-			}
+				return ErrorMsg(ErrorType.NoCulGroups);
 
 			DefinesPrep();
 
@@ -382,10 +362,7 @@ namespace EU4_PCP
 				() => FetchDefines());
 
 			if (countries.Count < 1)
-			{
-				ErrorMsg(ErrorType.NoCountries);
-				return false;
-			}
+				return ErrorMsg(ErrorType.NoCountries);
 
 			if (enBooks) FetchFiles(FileType.Bookmark);
 
@@ -394,10 +371,8 @@ namespace EU4_PCP
 				() => success = FetchFiles(FileType.Province));
 
 			if (!success)
-			{
-				ErrorMsg(ErrorType.HistoryProvFolder);
-				return false;
-			}
+				return ErrorMsg(ErrorType.HistoryProvFolder);
+
 			if (!ValDate()) return false;
 
 			Parallel.Invoke(
@@ -425,8 +400,8 @@ namespace EU4_PCP
 			NextProvNameTB.Text = "";
 			if (!ColorPickerGB.Enabled)
 			{
-				RedTB.Text = "0";
-				GreenTB.Text = "0";
+				RedTB.Text =
+				GreenTB.Text =
 				BlueTB.Text = "0";
 				GenColL.BackColor = Color.Black;
 				NextProvNumberTB.Text = "";
@@ -454,8 +429,8 @@ namespace EU4_PCP
 		/// <summary>
 		/// Default file max provinces.
 		/// </summary>
-		/// <param name="scope"></param>
-		/// <returns><see langword="true"/> upon failure.</returns>
+		/// <param name="scope">Game / Mod.</param>
+		/// <returns><see langword="false"/> upon failure.</returns>
 		private bool MaxProvinces(Scope scope)
 		{
 			var filePath = gamePath;
@@ -468,8 +443,7 @@ namespace EU4_PCP
 			}
 			catch (Exception)
 			{
-				ErrorMsg(ErrorType.DefMapRead);
-				return true;
+				return ErrorMsg(ErrorType.DefMapRead);
 			}
 			var match = maxProvRE.Match(d_file);
 
@@ -487,8 +461,7 @@ namespace EU4_PCP
 					default:
 						break;
 				}
-				ErrorMsg(ErrorType.DefMapMaxProv);
-				return true;
+				return ErrorMsg(ErrorType.DefMapMaxProv);
 			}
 
 			switch (scope)
@@ -506,7 +479,7 @@ namespace EU4_PCP
 			// Update TB colors
 			ProvCountColor();
 
-			return false;
+			return true;
 		}
 
 		/// <summary>
@@ -558,10 +531,12 @@ namespace EU4_PCP
 			if (colors.Distinct().Count() == indexes.Length) return; // No duplicates
 			for (int prov = 1; prov < colors.Length; prov++)
 			{
-				if (colors[prov] != colors[prov - 1]) continue;
-				if (!provinces[indexes[prov]].Show || !provinces[indexes[prov - 1]].Show) continue;
-				if (IgnoreRnwMCB.State() && (provinces[indexes[prov]].IsRNW(false) || provinces[indexes[prov - 1]].IsRNW(false))) continue;
-
+				if (colors[prov] != colors[prov - 1]									|| 
+					!provinces[indexes[prov]].Show										|| 
+					!provinces[indexes[prov - 1]].Show									|| 
+					(IgnoreRnwMCB.State() && (provinces[indexes[prov]].IsRNW(false))	||
+					provinces[indexes[prov - 1]].IsRNW(false))
+					) continue;
 				duplicates.Add(new Dupli(provinces[indexes[prov]], provinces[indexes[prov - 1]]));
 			}
 
@@ -682,11 +657,8 @@ namespace EU4_PCP
 			}
 			ProvTableSB.Maximum = ProvTable.RowCount - ProvTable.DisplayedRowCount(false) + 1;
 			ProvTable.ClearSelection();
-			if (ProvTableSB.Maximum < 1)
-				ProvTableSB.Visible = false;
-			else
-				ProvTableSB.Visible = true;
-		}
+			ProvTableSB.Visible = ProvTableSB.Maximum >= 1;
+        }
 
 		/// <summary>
 		/// Paints the new rows in ProvTable in alternate colors.
@@ -694,27 +666,25 @@ namespace EU4_PCP
 		/// <param name="newCount">New row count.</param>
 		/// <param name="oldCount">Row count before last change.</param>
 		private void PaintTable(int newCount, int oldCount)
-		{
-			if (oldCount < newCount)
-			{
-				for (int row = oldCount; row < newCount; row++)
-				{
-					if (row % 2 == 0)
-					{
-						for (int col = 1; col < 6; col++)
-						{
-							ProvTable[col, row].Style.BackColor = Colors.HeaderBackground;
-						}
-					}
-				}
-			}
-		}
+        {
+            if (oldCount >= newCount) return;
 
-		/// <summary>
-		/// Update the bookmark CBs with all relevant bookmarks.
-		/// </summary>
-		/// <param name="scope">Game / Mod.</param>
-		private void PopulateBooks(Scope scope)
+			for (int row = oldCount; row < newCount; row++)
+            {
+                if (row % 2 != 0) continue;
+
+				for (int col = 1; col < 6; col++)
+                {
+                    ProvTable[col, row].Style.BackColor = Colors.HeaderBackground;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Update the bookmark CBs with all relevant bookmarks.
+        /// </summary>
+        /// <param name="scope">Game / Mod.</param>
+        private void PopulateBooks(Scope scope)
 		{
 			if (!BookStatus(false)) return;
 
@@ -917,7 +887,8 @@ namespace EU4_PCP
 		/// <summary>
 		/// Adds the new <see cref="Province"/> to the definition.csv file, and updates the default.map file.
 		/// </summary>
-		private void NewProv()
+		/// <returns><see langword="false"/> upon failure in the process.</returns>
+		private bool NewProv()
 		{
 			byte[] byteStream;
 			string textStream;
@@ -929,8 +900,7 @@ namespace EU4_PCP
 			}
 			catch (Exception)
 			{
-				ErrorMsg(ErrorType.DefinRead);
-				return;
+				return ErrorMsg(ErrorType.DefinRead);
 			}
 
 			var defFile = textStream.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
@@ -964,8 +934,7 @@ namespace EU4_PCP
 				}
 				catch (Exception)
 				{
-					ErrorMsg(ErrorType.DefinWrite);
-					return;
+					return ErrorMsg(ErrorType.DefinWrite);
 				}
 			}
 			else // Add province
@@ -989,8 +958,7 @@ namespace EU4_PCP
 				}
 				catch (Exception)
 				{
-					ErrorMsg(ErrorType.DefinWrite);
-					return;
+					return ErrorMsg(ErrorType.DefinWrite);
 				}
 
 				string defMap;
@@ -1000,8 +968,7 @@ namespace EU4_PCP
 				}
 				catch (Exception)
 				{
-					ErrorMsg(ErrorType.DefMapRead);
-					return;
+					return ErrorMsg(ErrorType.DefMapRead);
 				}
 				defMap = defMapRE.Replace(defMap, $"max_provinces = {ModMaxProvTB.Text}");
 				try
@@ -1010,7 +977,7 @@ namespace EU4_PCP
 				}
 				catch (Exception)
 				{
-					ErrorMsg(ErrorType.DefMapWrite);
+					return ErrorMsg(ErrorType.DefMapWrite);
 				}
 			}
 			
@@ -1028,6 +995,8 @@ namespace EU4_PCP
 				ProvCountColor();
 				PaintDupli();
 			}
+
+			return true;
 		}
 
 		/// <summary>

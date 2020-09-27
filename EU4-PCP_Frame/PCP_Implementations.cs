@@ -1060,17 +1060,15 @@ namespace EU4_PCP
 		/// <returns><see langword="true"/> if the date is valid.</returns>
 		public static bool ValDate()
 		{
-			if (startDate > DateTime.MinValue) return true;
-			ErrorMsg(ErrorType.ValDate);
-			return false;
-		}
+            return startDate > DateTime.MinValue || ErrorMsg(ErrorType.ValDate);
+        }
 
-		/// <summary>
-		/// Generates an exclusive random <see cref="Color"/>, that doesn't exist in the given <see cref="Province"/> array.
-		/// </summary>
-		/// <param name="provArr">The <see cref="Province"/> array to be searched.</param>
-		/// <returns>The generated <see cref="Color"/>.</returns>
-		public static Color RandomProvColor(Province[] provArr)
+        /// <summary>
+        /// Generates an exclusive random <see cref="Color"/>, that doesn't exist in the given <see cref="Province"/> array.
+        /// </summary>
+        /// <param name="provArr">The <see cref="Province"/> array to be searched.</param>
+        /// <returns>The generated <see cref="Color"/>.</returns>
+        public static Color RandomProvColor(Province[] provArr)
 		{
 			var rnd = new Random();
 			int r, g, b;
@@ -1252,11 +1250,17 @@ namespace EU4_PCP
 
 		#endregion
 
+		public static bool ErrorMsg(ErrorType type, bool returnVal = false)
+        {
+			Error_Msg(type);
+			return returnVal;
+        }
+
 		/// <summary>
 		/// Handles all error messages.
 		/// </summary>
 		/// <param name="type">The error type</param>
-		public static void ErrorMsg(ErrorType type) => _ = (type switch
+		private static void Error_Msg(ErrorType type) => _ = (type switch
 		{
 			ErrorType.DefinRead => MessageBox.Show("The definition.csv file is missing or corrupt",
 				"Unable to parse definition file", MessageBoxButtons.OK, MessageBoxIcon.Error),

@@ -238,6 +238,11 @@ namespace EU4_PCP
 			return obj is object;
 		}
 
+		public static implicit operator Scope(ModObj obj)
+        {
+			return obj ? Scope.Mod : Scope.Game;
+        }
+
 		public override string ToString()
 		{
 			return Name;
