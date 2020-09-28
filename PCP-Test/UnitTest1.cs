@@ -2,7 +2,6 @@
 using PCP_Test.Properties;
 using System;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using static EU4_PCP.PCP_Implementations;
 
@@ -294,6 +293,38 @@ namespace EU4_PCP.Tests
             Color newColor = RandomProvColor(testProv);
 
             Assert.IsTrue(testProv.Count(p => p.Color == newColor) == 0);
+        }
+
+        [TestMethod]
+        public void MemberScopeTest()
+        {
+            // Also tests both C-tors
+
+            string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\TestFiles\"));
+            
+            var gameMembers = new MembersCount[] {
+                new MembersCount($@"{path}\gamePath\localisation\aow_l_english.yml", "3", "1"),
+                new MembersCount($@"{path}\gamePath\localisation\manchu_l_english.yml", "43", "0"),
+                new MembersCount($@"{path}\gamePath\localisation\EU4_l_english.yml", "1", "1"),
+                new MembersCount($@"{path}\gamePath\localisation\emperor_map_l_english.yml", "91", "0")
+            };
+
+            var modMembers = new MembersCount[] {
+                new MembersCount() { Path = $@"modPath\localisation\mod_aow_l_english.yml"},
+                new MembersCount() { Path = $@"modPath\localisation\mod_manchu_l_english.yml"}
+            };
+
+            foreach (var item in gameMembers)
+            {
+                item.MemberScope(path);
+                Assert.IsTrue(item.Scope == Scope.Game);
+            }
+
+            foreach (var item in modMembers)
+            {
+                item.MemberScope(path);
+                Assert.IsTrue(item.Scope == Scope.Mod);
+            }
         }
     }
 }

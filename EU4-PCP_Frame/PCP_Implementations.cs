@@ -164,13 +164,20 @@ namespace EU4_PCP
 		};
 
 		/// <summary>
+		/// [Default overload for MemberScope] <br />
 		/// Determines member scope by whether it contains the game path.
 		/// </summary>
 		/// <param name="member">The member of which to determine the scope.</param>
-		public static void MemberScope(this MembersCount member)
+		public static void MemberScope(this MembersCount member) => MemberScope(member, gamePath);
+
+		/// <summary>
+		/// Determines member scope by whether it contains the provided path.
+		/// </summary>
+		/// <param name="member">The member of which to determine the scope.</param>
+		public static void MemberScope(this MembersCount member, string path)
 		{
 			member.Scope = 
-				member.Path.Contains(Directory.GetParent(gamePath + locPath).FullName) ? 
+				member.Path.Contains(Directory.GetParent(path + locPath).FullName) ? 
 				Scope.Game : Scope.Mod;
 		}
 

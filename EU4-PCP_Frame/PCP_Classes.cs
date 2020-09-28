@@ -216,7 +216,7 @@ namespace EU4_PCP
 			return $"{Path}|{Count}|{(int)Type}";
 		}
 
-		public MembersCount(string[] member)
+        public MembersCount(params string[] member)
 		{
 			Path = member[0];
 			Count = int.Parse(member[1]);
