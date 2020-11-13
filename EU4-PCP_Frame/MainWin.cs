@@ -149,9 +149,12 @@ namespace EU4_PCP
 			if (FullyLoadMCB.State() &&
 				ModSelCB.Items.Contains(Settings.Default.LastSelMod))
 			{
+				if (!MainSequence()) return false;
+
+				lockdown = false;
 				ModSelCB.SelectedItem = Settings.Default.LastSelMod;
-				selectedMod = mods[ModSelCB.SelectedIndex - 1];
-				steamModPath = selectedMod.Path;
+				lockdown = true;
+				return true;
 			}
 			else ModSelCB.SelectedIndex = 0;
 
