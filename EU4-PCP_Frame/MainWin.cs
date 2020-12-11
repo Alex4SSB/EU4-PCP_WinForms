@@ -351,32 +351,32 @@ namespace EU4_PCP
 
 			Parallel.Invoke(
 				() => CulturePrep(),
-				() => FetchFiles(FileType.Country));
-
-			if (cultures.Count < 1)
-				return ErrorMsg(ErrorType.NoCultures);
-			else if (cultures.Where(cul => cul && cul.Group).Count() < 1)
-				return ErrorMsg(ErrorType.NoCulGroups);
-
-			DefinesPrep();
-
-			Parallel.Invoke(
-				() => CountryCulSetup(),
 				() => FetchDefines());
 
-			if (countries.Count < 1)
-				return ErrorMsg(ErrorType.NoCountries);
+			if (cultures.Any())
+				return ErrorMsg(ErrorType.NoCultures);
+			else if (cultures.Where(cul => cul && cul.Group).Any())
+				return ErrorMsg(ErrorType.NoCulGroups);
 
-			if (enBooks) FetchFiles(FileType.Bookmark);
+			Parallel.Invoke(
+				() => DefinesPrep(),
+				() => { if (enBooks) FetchFiles(FileType.Bookmark); });
 
 			Parallel.Invoke(
 				() => { if (enBooks) BookPrep(); },
+				() => FetchFiles(FileType.Country));
+
+			if (!ValDate()) return false;
+
+			Parallel.Invoke(
+				() => CountryCulSetup(),
 				() => success = FetchFiles(FileType.Province));
 
 			if (!success)
 				return ErrorMsg(ErrorType.HistoryProvFolder);
 
-			if (!ValDate()) return false;
+			if (countries.Any())
+				return ErrorMsg(ErrorType.NoCountries);
 
 			Parallel.Invoke(
 				() => OwnerSetup(),
