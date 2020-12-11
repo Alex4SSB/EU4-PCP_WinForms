@@ -353,9 +353,9 @@ namespace EU4_PCP
 				() => CulturePrep(),
 				() => FetchDefines());
 
-			if (cultures.Any())
+			if (!cultures.Any())
 				return ErrorMsg(ErrorType.NoCultures);
-			else if (cultures.Where(cul => cul && cul.Group).Any())
+			else if (!cultures.Where(cul => cul && cul.Group).Any())
 				return ErrorMsg(ErrorType.NoCulGroups);
 
 			Parallel.Invoke(
@@ -375,7 +375,7 @@ namespace EU4_PCP
 			if (!success)
 				return ErrorMsg(ErrorType.HistoryProvFolder);
 
-			if (countries.Any())
+			if (!countries.Any())
 				return ErrorMsg(ErrorType.NoCountries);
 
 			Parallel.Invoke(
