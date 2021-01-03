@@ -7,7 +7,7 @@ namespace EU4_PCP
 		// Global read-only RegEx patterns
 		public static readonly Regex definesDateRE = new Regex(@"(?<=START_DATE *= *"")[\d.]+(?="")");
 		public static readonly Regex definesFileRE = new Regex(@"\w+\.lua$");
-		public static readonly Regex locNameRE = new Regex(@"(?<="").+(?="")");
+		public static readonly Regex locNameRE = new Regex(@"(?<="").+?(?="")");
 		public static readonly Regex bookLocCodeRE = new Regex(@"\w+(?=:)");
 		public static readonly Regex bookmarkCodeRE = new Regex(@"(?<=^\t*name *= *"")\w+(?="")", RegexOptions.Multiline);
 		public static readonly Regex bookmarkDateRE = new Regex(@"(?<=^\t*date *= *)[\d.]+", RegexOptions.Multiline);

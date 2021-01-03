@@ -7,7 +7,7 @@ namespace EU4_PCP
 	{
 		// MISC
 		public static readonly string APP_NAME = "EU4 Province Color Picker";
-		public static readonly string APP_VER = "1.4.7";
+		public static readonly string APP_VER = "1.4.8";
 		public static readonly string[] NOT_ENG = { "_l_french", "_l_german", "_l_spanish" };
 		public static readonly string[] NOT_CUL = {
 			"graphical_culture", "second_graphical_culture", "male_names", "female_names", "dynasty_names", "primary"};

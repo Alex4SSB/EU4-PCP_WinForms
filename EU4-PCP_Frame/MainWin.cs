@@ -1273,7 +1273,10 @@ namespace EU4_PCP
 		private void ProvTable_MouseDown(object sender, MouseEventArgs e)
 		{
 			ProvTable.ClearSelection();
-			ProvTable.Rows[ProvTable.HitTest(e.X, e.Y).RowIndex].Selected = true;
+            int rowIndex = ProvTable.HitTest(e.X, e.Y).RowIndex;
+			if (rowIndex < 0) return;
+
+            ProvTable.Rows[rowIndex].Selected = true;
 			ChangeColorSM.Visible =
 				ProvTable.SelectedRows[0].Cells[1].Style.BackColor == Color.Maroon;
 		}

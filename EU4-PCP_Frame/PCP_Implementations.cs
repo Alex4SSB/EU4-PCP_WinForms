@@ -1059,6 +1059,7 @@ namespace EU4_PCP
 			bookmarks.Clear();
 			provFiles.Clear();
 			duplicates.Clear();
+			provNameFiles.Clear();
 		}
 
 		/// <summary>

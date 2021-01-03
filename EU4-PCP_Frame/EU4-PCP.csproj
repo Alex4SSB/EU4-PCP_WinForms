@@ -112,7 +112,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DarkUI">
-      <HintPath>..\DarkUI\DarkUI\DarkUI\bin\Release\DarkUI.dll</HintPath>
+      <HintPath>..\..\Alex4SSB\EU4-PCP\DarkUI\DarkUI\DarkUI\bin\Release\DarkUI.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
